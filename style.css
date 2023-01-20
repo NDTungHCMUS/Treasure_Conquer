@@ -18,6 +18,37 @@ body{
     width: 100%;
 }
 
+.end_game {
+    display: block;
+    text-align: center;
+    min-width: 100%;
+    min-height: 100vh;
+    background-color: #e3f6ff;
+}
+
+.blur_end_game_scr {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: #5a7582;
+    opacity: 0.9;
+    top: 0;
+    left: 0;
+}
+
+.exit_screen {
+    display: none;
+    position: fixed;
+    width: 200px;
+    height: 100px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .initial_screen{
     display: block;
     text-align: center;
