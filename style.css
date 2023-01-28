@@ -21,6 +21,11 @@ body{
     height: 100%;
 }
 
+button:hover{
+    transform: scale(1.05);
+    color: brown;
+}
+
 /*
 * INITIAL SCREEN
 */
@@ -34,7 +39,9 @@ body{
     min-height: 100vh;
 
     /* Color */
-    background-color: cadetblue;
+    background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)), 
+    url("Textures/pirate_background.jpg");
+    background-size: cover;
 }
 
 .initial_screen h1{
@@ -71,20 +78,22 @@ body{
 
     /* Displaying & Box Model */
     display: none;
-    grid-template-rows: 50px 2fr 1fr 1fr;
+    grid-template-rows: 50px 2fr 1fr 1fr 10px;
     grid-template-columns: 5px 5fr 2fr 5px;
     text-align: center;
     min-width: 100%;
     min-height: 100vh;
 
     /* Color */
-    background-color: cadetblue;
+    background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)), 
+    url("Textures/pirate_background.jpg");
+    background-size: cover;
 }
 
 .restroom_screen h3{
     /* Displaying & Box Model */
     grid-column: 2 / 4;
-    grid-row: 1 / 2;
+    grid-row: 1;
     justify-self: flex-start;
     left: 10px;
 }
@@ -98,7 +107,8 @@ body{
     margin: 5px;
 
     /* Color */
-    background-color: aliceblue;
+    background-image: url("Textures/treasure-scroll.jpg");
+    background-size: cover;
 }
 
 .update{
@@ -110,18 +120,124 @@ body{
     margin: 5px;
 
     /* Color */
-    background-color: aliceblue;
+    background-image: url("Textures/treasure-scroll.jpg");
+    background-size: cover;
 }
 
 .update input{
     /* Displaying & Box Model */
     width: 200px;
     height: 30px;
-    margin: 10px 0 0 0;
+    margin: 10px 0 10px 0;
 
     /* Color */
     background-color: darkgray;
 }
+
+.update .color_options{
+    /* Displaying & Box Model */
+    margin: 35px 0 0 27px;
+}
+
+.color_options .option{
+    /* Positioning */
+    position: relative;
+
+    /* Displaying & Box Model */
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+
+    /* Color */
+    background-color: black;
+}
+
+#row1 .option:nth-child(1){
+    background-color: darkgray;
+}
+
+#row1 .option:nth-child(2){
+    background-color: aliceblue;
+}
+
+#row1 .option:nth-child(3){
+    background-color: burlywood;
+}
+
+#row1 .option:nth-child(4){
+    background-color: gold;
+}
+
+#row2 .option:nth-child(1){
+    background-color: chocolate;
+}
+
+#row2 .option:nth-child(2){
+    background-color: mediumblue;
+}
+
+#row2 .option:nth-child(3){
+    background-color: forestgreen;
+}
+
+#row2 .option:nth-child(4){
+    background-color: darkgoldenrod;
+}
+
+#row3 .option:nth-child(1){
+    background-color: mediumseagreen;
+}
+
+#row3 .option:nth-child(2){
+    background-color: mediumturquoise;
+}
+
+#row3 .option:nth-child(3){
+    background-color: darkmagenta;
+}
+
+#row3 .option:nth-child(4){
+    background-color: fuchsia;
+}
+
+#row4 .option:nth-child(1){
+    background-color: crimson;
+}
+
+#row4 .option:nth-child(2){
+    background-color: tomato;
+}
+
+#row4 .option:nth-child(3){
+    background-color: darkorange;
+}
+
+#row4 .option:nth-child(4){
+    background-color: darkslategray;
+}
+
+.color_options .option:is(:hover, .selected)::before{
+    /* Positioning */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    top: 50%;
+    left: 50%;
+    width: 28px;
+    height: 28px;
+    background: inherit;
+    border-radius: inherit;
+    border: 2px solid;
+    content: "";
+
+    /* Colors */
+    border-color: aliceblue;
+
+    /* Transitions & Animations */
+    transform: translate(-50%, -50%);
+    filter: brightness(100%) contrast(90%);
+}
+
 
 .customize{
     /* Displaying & Box Model */
@@ -132,7 +248,26 @@ body{
     margin: 5px;
 
     /* Color */
-    background-color: aliceblue;
+    background-image: url("Textures/treasure-scroll.jpg");
+    background-size: cover;
+}
+
+.customize div{
+    /* Displaying & Box Model */
+    display: flex;
+    margin: 30px 0 0 30px;
+    font-size: 16px;
+}
+
+.customize label{
+    /* Displaying & Box Model */
+    width: 420px;
+    text-align: left;
+}
+
+.customize input{
+    /* Displaying & Box Model */
+    width: 250px;
 }
 
 .restroom_screen .button{
@@ -156,6 +291,219 @@ body{
 #startGameBtn{
     /* Displaying & Box Model */
     width: 150px;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+
+    /* Color */
+    background-color: lightgreen;
+}
+
+/*
+* GAME SCREEN
+*/
+
+.game_screen{
+    /* Positioning */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    display: none;
+    grid-template-rows: 50px 50px 3fr 2fr;
+    grid-template-columns: 5px 2fr 5fr 5px;
+    text-align: center;
+    min-width: 100%;
+    min-height: 100vh;
+
+    /* Color */
+    background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)), 
+    url("Textures/pirate_background.jpg");
+    background-size: cover;
+}
+
+#role{
+    /* Displaying & Box Model */
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: flex-start;
+    margin: 10px;
+}
+
+#time{
+    /* Displaying & Box Model */
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: center;
+    margin: 10px;
+}
+
+.game_screen .button{
+    /* Displaying & Box Model */
+    grid-column: 2 / 4;
+    grid-row: 2;
+    justify-self: flex-start;
+}
+
+#activateBtn{
+    /* Displaying & Box Model */
+    width: 100px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+
+    /* Color */
+    background-color: indianred;
+}
+
+#voteBtn{
+    /* Displaying & Box Model */
+    width: 100px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+
+    /* Color */
+    background-color: lightgreen;
+}
+
+.game_screen .chat{
+    /* Displaying & Box Model */
+    grid-column: 2;
+    grid-row: 3 / 5;
+    justify-content: center;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+
+    /* Color */
+    background-image: url("Textures/treasure-scroll.jpg");
+    background-size: cover;
+}
+
+.chat input {
+    /* Positioning */
+    position: absolute;
+    
+    /* Displaying & Box Model */
+    display: flex;
+    justify-self: center;
+    width: 280px;
+    height: 30px;
+    left: 25px;
+    bottom: 15px;
+
+    /* Color */
+    background-color: darkgray;
+}
+
+.treasure{
+    /* Displaying & Box Model */
+    grid-column: 3;
+    grid-row: 3;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+
+    /* Color */
+    background-image: url("Textures/treasure-scroll.jpg");
+    background-size: cover;
+}
+
+.treasure .chests{
+    /* Displaying & Box Model */
+    display: flex;
+    justify-content: space-around;
+    margin: 150px 0 0 0;
+}
+
+.treasure img{
+    /* Displaying & Box Model */
+    width: 100px;
+    height: 80px;
+}
+
+.treasure span{
+    
+}
+
+.leaderboard{
+    /* Displaying & Box Model */
+    grid-column: 3;
+    grid-row: 4;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+
+    /* Color */
+    background-image: url("Textures/treasure-scroll.jpg");
+    background-size: cover;
+}
+
+/*
+* ACTIVATE SCREEN
+*/
+
+.activate_screen{
+    position: absolute;
+
+    /* Displaying & Box Model */
+    display: none;
+    width: 800px;
+    height: 500px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
+    
+    /* Color */
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/*
+* VOTE SCREEN
+*/
+
+.vote_screen{
+    position: absolute;
+
+    /* Displaying & Box Model */
+    display: none;
+    width: 800px;
+    height: 500px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
+    
+    /* Color */
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.vote_screen .player_list{
+    /* Displaying & Box Model */
+    width: 790px;
+    height: 400px;
+    text-align: center;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+
+    /* Color */
+    background: rgba(240, 248, 255, 0.6);
+}
+
+#skipVoteBtn{
+    /* Displaying & Box Model */
+    width: 100px;
     height: 50px;
     border: none;
     border-radius: 10px;
