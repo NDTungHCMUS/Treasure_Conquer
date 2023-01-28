@@ -30,15 +30,102 @@
                 <h5>PLAYER LIST</h5>
             </div>
             <div class="update">
-                <h5>UPDATE</h5>
+                <h5>NAME & COLOR</h5>
                 <input type="text" placeholder="player..">
+                <table class="color_options" cellspacing="20px">
+                    <tr id="row1">
+                        <td class="option selected"></td>
+                        <td class="option"></td>
+                        <td class="option"></td>
+                        <td class="option"></td>
+                    </tr>
+                    <tr id="row2">
+                        <td class="option"></td>
+                        <td class="option"></td>
+                        <td class="option"></td>
+                        <td class="option"></td>
+                    </tr>
+                    <tr id="row3">
+                        <td class="option"></td>
+                        <td class="option"></td>
+                        <td class="option"></td>
+                        <td class="option"></td>
+                    </tr>
+                    <tr id="row4">
+                        <td class="option"></td>
+                        <td class="option"></td>
+                        <td class="option"></td>
+                        <td class="option"></td>
+                    </tr>
+                </table>
             </div>
             <div class="customize">
                 <h5>CUSTOMIZE</h5>
+                <div>
+                    <label> Number of killers (2 - 3): </label>
+                    <input type="range" id="killer_range" min="2" max="3" value="2">
+                </div>
+                <div>
+                    <label> Number of turns (4 - 6): </label>
+                    <input type="range" id="turn_range" min="4" max="6" value="5">
+                </div>
+                <div>
+                    <label> Treasure choosing duration (30s - 60s): </label>
+                    <input type="range" id="treasure_range" min="30" max="60" step="10" value="30">
+                </div>
+                <div>
+                    <label> Vote duration (90s - 150s): </label>
+                    <input type="range" id="vote_range" min="90" max="150" step="10" value="90">
+                </div>
             </div>
             <div class="button">
                 <button id="leaveRoomBtn">Leave Room</button>
                 <button id="startGameBtn">Start</button>
+            </div>
+        </div>
+        <div class="game_screen">
+            <h4 id="role">Role: </h4>
+            <h4 id="time">Time: </h4>
+            <div class="button">
+                <button id="activateBtn">Activate</button>
+                <button id="voteBtn">Vote</button>
+            </div>
+            <div class="chat">
+                <h5>CHAT</h5>
+                <input type="text">
+            </div>
+            <div class="treasure">
+                <h5>TREASURE</h5>
+                <div class="chests">
+                    <div>
+                        <img id="c40" src="Textures/closed_chest.svg" alt="">
+                        <p>40$</p>
+                    </div>
+                    <div>
+                        <img id="c60" src="Textures/closed_chest.svg" alt="">
+                        <p>60$</p>
+                    </div>
+                    <div>
+                        <img id="c80" src="Textures/closed_chest.svg" alt="">
+                        <p>80$</p>
+                    </div>
+                    <div>
+                        <img id="c120" src="Textures/closed_chest.svg" alt="">
+                        <p>120$</p>
+                    </div>
+                </div>
+            </div>
+            <div class="leaderboard">
+                <h5>LEADERBOARD</h5>
+            </div>
+        </div>
+        <div class="activate_screen"></div>
+        <div class="vote_screen">
+            <div class="player_list">
+                <h5>PLAYER LIST</h5>
+            </div>
+            <div>
+                <button id="skipVoteBtn">Skip vote</button>
             </div>
         </div>
     </div>
