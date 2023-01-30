@@ -40,7 +40,7 @@ button:hover{
 
     /* Color */
     background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)), 
-    url("Textures/pirate_background.jpg");
+    url("/Textures/pirate_background.jpg");
     background-size: cover;
 }
 
@@ -86,7 +86,7 @@ button:hover{
 
     /* Color */
     background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)), 
-    url("Textures/pirate_background.jpg");
+    url("/Textures/pirate_background.jpg");
     background-size: cover;
 }
 
@@ -107,7 +107,7 @@ button:hover{
     margin: 5px;
 
     /* Color */
-    background-image: url("Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/treasure-scroll.jpg");
     background-size: cover;
 }
 
@@ -120,7 +120,7 @@ button:hover{
     margin: 5px;
 
     /* Color */
-    background-image: url("Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/treasure-scroll.jpg");
     background-size: cover;
 }
 
@@ -235,7 +235,7 @@ button:hover{
 
     /* Transitions & Animations */
     transform: translate(-50%, -50%);
-    filter: brightness(100%) contrast(90%);
+    filter: contrast(90%);
 }
 
 
@@ -248,7 +248,7 @@ button:hover{
     margin: 5px;
 
     /* Color */
-    background-image: url("Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/treasure-scroll.jpg");
     background-size: cover;
 }
 
@@ -318,7 +318,7 @@ button:hover{
 
     /* Color */
     background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)), 
-    url("Textures/pirate_background.jpg");
+    url("/Textures/pirate_background.jpg");
     background-size: cover;
 }
 
@@ -379,7 +379,7 @@ button:hover{
     margin: 5px;
 
     /* Color */
-    background-image: url("Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/treasure-scroll.jpg");
     background-size: cover;
 }
 
@@ -408,7 +408,7 @@ button:hover{
     margin: 5px;
 
     /* Color */
-    background-image: url("Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/treasure-scroll.jpg");
     background-size: cover;
 }
 
@@ -438,7 +438,7 @@ button:hover{
     margin: 5px;
 
     /* Color */
-    background-image: url("Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/treasure-scroll.jpg");
     background-size: cover;
 }
 

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel = "stylesheet" type = "text/css" href = "style.css" >
     <title>Document</title>
 </head>
 
@@ -28,6 +28,7 @@
             <h3>ID: </h3>
             <div class="player_list">
                 <h5>PLAYER LIST</h5>
+                <div id = "show_player_list"></div>
             </div>
             <div class="update">
                 <h5>NAME & COLOR</h5>
@@ -98,19 +99,19 @@
                 <h5>TREASURE</h5>
                 <div class="chests">
                     <div>
-                        <img id="c40" src="Textures/closed_chest.svg" alt="">
+                        <img id="c40" src="../Textures/closed_chest.svg" alt="">
                         <p>40$</p>
                     </div>
                     <div>
-                        <img id="c60" src="Textures/closed_chest.svg" alt="">
+                        <img id="c60" src="../Textures/closed_chest.svg" alt="">
                         <p>60$</p>
                     </div>
                     <div>
-                        <img id="c80" src="Textures/closed_chest.svg" alt="">
+                        <img id="c80" src="../Textures/closed_chest.svg" alt="">
                         <p>80$</p>
                     </div>
                     <div>
-                        <img id="c120" src="Textures/closed_chest.svg" alt="">
+                        <img id="c120" src="../Textures/closed_chest.svg" alt="">
                         <p>120$</p>
                     </div>
                 </div>
@@ -130,6 +131,21 @@
         </div>
     </div>
 </body>
+<script src="socket.io/socket.io.js"></script>
+<script src="/index.js"></script>
+<script> 
+// var socket = io("http://localhost:5500");
+// socket.on("server-send-data", function(data){
+//     var m = document.querySelector(".initial_screen h4");
+//     m.innerText += data;
 
-<script src="index.js"></script>
+//     var x = document.querySelector(".initial_screen h1");
+//     x.style.color = "red";
+// })
+// const t = document.querySelector("#newRoomBtn");
+// t.addEventListener("click", (e) => {
+//     e.preventDefault();
+//     socket.emit("send-data", "red");
+// })
+</script>
 </html>

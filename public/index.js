@@ -1,9 +1,35 @@
+// Connect server
+
+var socket = io("http://localhost:5500");
+socket.emit("joined");
+
+// Player
+
+let players = [];
+class Player{
+    constructor(index, name){
+        this.index = index;
+        this.name = name;
+    }
+}
+const currentPlayer = new Array(12);
+for (let i = 0; i < currentPlayer.length; i++){
+    currentPlayer[i] = new Player(i, "Player " + (i + 1));
+}
+
+// User events
+
 const initialScr = document.querySelector('.initial_screen');
 const roomBtns = document.querySelectorAll('.initial_screen button');
+const newRoomBtn = document.querySelector('.initial_screen #newRoomBtn');
+const roomIDInput = document.querySelector('.initial_screen #roomCodeInput');
+const joinRoomBtn = document.querySelector('.initial_screen #joinRoomBtn');
 
 const restroomScr = document.querySelector('.restroom_screen');
+const roomIDMessage = document.querySelector('.restroom_screen h3');
 const leaveRoomBtn = document.querySelector('.restroom_screen #leaveRoomBtn');
 const startGameBtn = document.querySelector('.restroom_screen #startGameBtn');
+const player_list = document.querySelector(".player_list #show_player_list");
 const colorOptns = document.querySelectorAll('.restroom_screen .color_options .option');
 
 const gameScr = document.querySelector('.game_screen');
@@ -28,6 +54,10 @@ const randomRole = () => {
         }
         else return role[2];
     }
+}
+
+const randomRoomID = () => {
+    return Math.floor(Math.random() * 90000) + 10000;
 }
 
 // Event listener
@@ -79,3 +109,53 @@ activateBtn.addEventListener("click", () => {
 voteBtn.addEventListener("click", () => {
     voteScr.style.display = "flex";
 });
+
+// Socket events
+socket.on("joined", (listUser) => {
+    players = [];
+    listUser.forEach((player) => {
+        players.push(player);
+        console.log(player.name);     
+    })
+})
+
+let id = -1;
+socket.on("own_join", (userID) => {
+    id = userID;
+});
+
+socket.on("join", (eachUser) => {
+    players.push(eachUser);
+    player_list.innerHTML = "";
+    for (let i = 0; i < players.length; i++){
+        player_list.innerHTML += `<div>${players[i].name}</div>`;
+    }
+    if (id >= 0) player_list.childNodes[id].style.fontWeight = "bold";
+});
+
+newRoomBtn.addEventListener("click", (e) => {
+    const roomID = randomRoomID();
+    e.preventDefault();
+    var index = players.length;
+    roomIDMessage.textContent = "ID: " + roomID;
+    socket.emit("create room", roomID.toString());
+    socket.emit("join", currentPlayer[index], index);
+});
+
+joinRoomBtn.addEventListener("click", () => {
+    var index = players.length;
+    socket.emit("join room", roomIDInput.value.toString());
+    let check = false;
+    socket.on("join success", bool => {
+        check = bool;
+    })
+    console.log(check);
+    if (check){
+        roomIDMessage.textContent = "ID: " + roomIDInput.value;
+        socket.emit("join", currentPlayer[index], index);
+    }
+})
+
+
+
+
