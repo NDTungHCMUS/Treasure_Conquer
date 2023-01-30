@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel = "stylesheet" type = "text/css" href = "style.css" >
+    <link rel="stylesheet" type="text/css" href="style.css">
     <title>Document</title>
 </head>
 
@@ -63,20 +63,24 @@
             <div class="customize">
                 <h5>CUSTOMIZE</h5>
                 <div>
-                    <label> Number of killers (2 - 3): </label>
+                    <label> Number of killers: </label>
                     <input type="range" id="killer_range" min="2" max="3" value="2">
+                    <span>0</span>
                 </div>
                 <div>
-                    <label> Number of turns (4 - 6): </label>
+                    <label> Number of turns: </label>
                     <input type="range" id="turn_range" min="4" max="6" value="5">
+                    <span>0</span>
                 </div>
                 <div>
-                    <label> Treasure choosing duration (30s - 60s): </label>
-                    <input type="range" id="treasure_range" min="30" max="60" step="10" value="30">
+                    <label> Treasure choosing duration: </label>
+                    <input type="range" id="treasure_range" min="30" max="60" step="5" value="30">
+                    <span>0</span>
                 </div>
                 <div>
-                    <label> Vote duration (90s - 150s): </label>
-                    <input type="range" id="vote_range" min="90" max="150" step="10" value="90">
+                    <label> Vote duration: </label>
+                    <input type="range" id="vote_range" min="90" max="150" step="5" value="90">
+                    <span>0</span>
                 </div>
             </div>
             <div class="button">
@@ -98,20 +102,35 @@
             <div class="treasure">
                 <h5>TREASURE</h5>
                 <div class="chests">
-                    <div>
-                        <img id="c40" src="../Textures/closed_chest.svg" alt="">
+                    <div class="chest">
+                        <ul class="chest_list">
+                            <li class="option">1</li>
+                            <li class="option">2</li>
+                            <li class="option">3</li>
+                            <li class="option">4</li>
+                        </ul>
+                        <img id="c40" src="/Textures/closed_chest.svg" alt="">
                         <p>40$</p>
                     </div>
-                    <div>
-                        <img id="c60" src="../Textures/closed_chest.svg" alt="">
+                    <div class="chest">
+                        <ul class="chest_list">
+                            <li class="option">1</li>
+                        </ul>
+                        <img id="c60" src="/Textures/closed_chest.svg" alt="">
                         <p>60$</p>
                     </div>
-                    <div>
-                        <img id="c80" src="../Textures/closed_chest.svg" alt="">
+                    <div class="chest">
+                        <ul class="chest_list">
+                            <li class="option">1</li>
+                        </ul>
+                        <img id="c80" src="/Textures/closed_chest.svg" alt="">
                         <p>80$</p>
                     </div>
-                    <div>
-                        <img id="c120" src="../Textures/closed_chest.svg" alt="">
+                    <div class="chest">
+                        <ul class="chest_list">
+                            <li class="option">1</li>
+                        </ul>
+                        <img id="c120" src="/Textures/closed_chest.svg" alt="">
                         <p>120$</p>
                     </div>
                 </div>
@@ -119,6 +138,11 @@
             <div class="leaderboard">
                 <h5>LEADERBOARD</h5>
             </div>
+        </div>
+        <div class="role_screen">
+            <p id="role_mes"></p>
+            <p id="role_desc"></p>
+            <div class="character"></div>
         </div>
         <div class="activate_screen"></div>
         <div class="vote_screen">
@@ -133,19 +157,4 @@
 </body>
 <script src="socket.io/socket.io.js"></script>
 <script src="/index.js"></script>
-<script> 
-// var socket = io("http://localhost:5500");
-// socket.on("server-send-data", function(data){
-//     var m = document.querySelector(".initial_screen h4");
-//     m.innerText += data;
-
-//     var x = document.querySelector(".initial_screen h1");
-//     x.style.color = "red";
-// })
-// const t = document.querySelector("#newRoomBtn");
-// t.addEventListener("click", (e) => {
-//     e.preventDefault();
-//     socket.emit("send-data", "red");
-// })
-</script>
 </html>
