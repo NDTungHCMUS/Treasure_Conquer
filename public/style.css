@@ -22,8 +22,11 @@ body{
 }
 
 button:hover{
-    transform: scale(1.05);
+    /* Color */
     color: brown;
+
+    /* Transitions & Animations */
+    transform: scale(1.05);
 }
 
 /*
@@ -136,7 +139,7 @@ button:hover{
 
 .update .color_options{
     /* Displaying & Box Model */
-    margin: 35px 0 0 27px;
+    margin: 50px 0 0 60px;
 }
 
 .color_options .option{
@@ -150,6 +153,9 @@ button:hover{
 
     /* Color */
     background-color: black;
+
+    /* Transitions & Animations */
+    cursor: pointer;
 }
 
 #row1 .option:nth-child(1){
@@ -235,7 +241,7 @@ button:hover{
 
     /* Transitions & Animations */
     transform: translate(-50%, -50%);
-    filter: contrast(90%);
+    filter: brightness(100%) contrast(90%);
 }
 
 
@@ -256,6 +262,8 @@ button:hover{
     /* Displaying & Box Model */
     display: flex;
     margin: 30px 0 0 30px;
+
+    /* Text */
     font-size: 16px;
 }
 
@@ -268,6 +276,12 @@ button:hover{
 .customize input{
     /* Displaying & Box Model */
     width: 250px;
+    margin: 0 10px 0 0;
+}
+
+.customize span{
+    /* Text */
+    font-weight: bold;
 }
 
 .restroom_screen .button{
@@ -415,18 +429,52 @@ button:hover{
 .treasure .chests{
     /* Displaying & Box Model */
     display: flex;
+    text-align: center;
     justify-content: space-around;
-    margin: 150px 0 0 0;
+    margin: 80px 0 0 0;
+}
+
+.chests .chest_list{
+    /* Displaying & Box Model */
+    display: flex;
+    justify-content: space-around;
+    list-style: none;
+
+    /* Transitions & Animations */
+    cursor: pointer;
+}
+
+.chest_list .option{
+    /* Displaying & Box Model */
+    width: 20%;
+    border-radius: 3px;
+
+    /* Color */
+    background-image: url("/Textures/closed_chest.svg");
+    background-size: cover;
+    color: aliceblue;
+
+    /* Text */
+    font-weight: bold;
+}
+
+.chests .option:is(:hover, .selected){
+    /* Color */
+    color: aqua;
+
+    /* Transitions & Animations */
+    filter: brightness(120%) contrast(90%);
 }
 
 .treasure img{
     /* Displaying & Box Model */
-    width: 100px;
-    height: 80px;
+    width: 150px;
+    height: 120px;
 }
 
-.treasure span{
-    
+.treasure p{
+    /* Text */
+    font-weight: bold;
 }
 
 .leaderboard{
@@ -443,10 +491,11 @@ button:hover{
 }
 
 /*
-* ACTIVATE SCREEN
+* ROLE SCREEN
 */
 
-.activate_screen{
+.role_screen{
+    /* Position */
     position: absolute;
 
     /* Displaying & Box Model */
@@ -462,7 +511,51 @@ button:hover{
     box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
     
     /* Color */
-    background: rgba(255, 255, 255, 0.4);
+    background-image: url("/Textures/treasure-scroll.jpg");
+    background-size: cover;
+}
+
+.role_screen p{
+    /* Displaying & Box Model */
+    margin: 40px;
+}
+
+.role_screen #role_mes{
+    /* Text */
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.role_screen .character{
+    /* Displaying & Box Model */
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+}
+
+/*
+* ACTIVATE SCREEN
+*/
+
+.activate_screen{
+    /* Position */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    display: none;
+    width: 800px;
+    height: 500px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
+    
+    /* Color */
+    background-image: url("/Textures/treasure-scroll.jpg");
+    background-size: cover;
 }
 
 /*
@@ -470,6 +563,7 @@ button:hover{
 */
 
 .vote_screen{
+    /* Position */
     position: absolute;
 
     /* Displaying & Box Model */
@@ -485,7 +579,8 @@ button:hover{
     box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
     
     /* Color */
-    background: rgba(255, 255, 255, 0.4);
+    background-image: url("/Textures/treasure-scroll.jpg");
+    background-size: cover;
 }
 
 .vote_screen .player_list{
@@ -498,7 +593,7 @@ button:hover{
     margin: 5px;
 
     /* Color */
-    background: rgba(240, 248, 255, 0.6);
+    background: rgba(240, 248, 255, 0.4);
 }
 
 #skipVoteBtn{
