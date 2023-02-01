@@ -18,31 +18,31 @@ for (let i = 0; i < currentPlayer.length; i++){
 
 // User events
 
-const initialScr = document.querySelector('.initial_screen');
-const roomBtns = document.querySelectorAll('.initial_screen button');
-const newRoomBtn = document.querySelector('.initial_screen #newRoomBtn');
-const roomIDInput = document.querySelector('.initial_screen #roomCodeInput');
-const joinRoomBtn = document.querySelector('.initial_screen #joinRoomBtn');
+const initialScr = $('.initial_screen');
+const roomBtns = $('.initial_screen button');
+const newRoomBtn = $('.initial_screen #newRoomBtn');
+const roomIDInput = $('.initial_screen #roomCodeInput');
+const joinRoomBtn = $('.initial_screen #joinRoomBtn');
 
-const restroomScr = document.querySelector('.restroom_screen');
-const roomIDMessage = document.querySelector('.restroom_screen h3');
-const leaveRoomBtn = document.querySelector('.restroom_screen #leaveRoomBtn');
-const startGameBtn = document.querySelector('.restroom_screen #startGameBtn');
-const player_list = document.querySelector(".player_list #show_player_list");
-const colorOptns = document.querySelectorAll('.restroom_screen .color_options .option');
-const sliders = document.querySelectorAll('.restroom_screen .customize div');
+const restroomScr = $('.restroom_screen');
+const roomIDMessage = $('.restroom_screen h3');
+const leaveRoomBtn = $('.restroom_screen #leaveRoomBtn');
+const startGameBtn = $('.restroom_screen #startGameBtn');
+const player_list = $(".player_list #show_player_list");
+const colorOptns = $('.restroom_screen .color_options .option');
+const sliders = $('.restroom_screen .customize div');
 
-const gameScr = document.querySelector('.game_screen');
-const roleName = document.querySelector('#role');
-const activateBtn = document.querySelector('.game_screen #activateBtn');
-const voteBtn = document.querySelector('.game_screen #voteBtn');
-const chests = document.querySelectorAll('.game_screen .chests .option');
-const roleScr = document.querySelector('.role_screen');
-const roleMes = document.querySelector('#role_mes');
-const roleDesc = document.querySelector('#role_desc');
-const roleChr = document.querySelector('.role_screen .character');
-const activateScr = document.querySelector('.activate_screen');
-const voteScr = document.querySelector('.vote_screen');
+const gameScr = $('.game_screen');
+const roleName = $('#role');
+const activateBtn = $('.game_screen #activateBtn');
+const voteBtn = $('.game_screen #voteBtn');
+const chests = $('.game_screen .chests .option');
+const roleScr = $('.role_screen');
+const roleMes = $('#role_mes');
+const roleDesc = $('#role_desc');
+const roleChr = $('.role_screen .character');
+const activateScr = $('.activate_screen');
+const voteScr = $('.vote_screen');
 
 const temp = Math.floor(Math.random() * 6);
 const role = ["Adventurer", "Killer", "Hunter"];
@@ -62,17 +62,17 @@ const randomRole = () => {
 }
 
 const characterRole = () => {
-    roleMes.innerText = randomRole();
+    roleMes.text(randomRole());
     if (temp === 0) {
-        roleDesc.innerText = "Nhiệm vụ của bạn là tìm ra Killer đang trà trộn trong đoàn, sống sót và chiến thắng cùng Hunter.\n Mỗi lượt săn, bạn biết được số người chơi chọn 4 loại kho báu.";
+        roleDesc.text("Nhiệm vụ của bạn là tìm ra Killer đang trà trộn trong đoàn, sống sót và chiến thắng cùng Hunter.\n Mỗi lượt săn, bạn biết được số người chơi chọn 4 loại kho báu.");
     }
     else {
         if (temp < 3) {
-            roleDesc.innerText = "Nhiệm vụ của bạn là cố gắng sống sót và kiếm được nhiều tiền nhất.\n Mỗi lượt săn, bạn có thể giết 1 Hunter nếu chỉ có Hunter đó săn cùng kho báu với bạn.";
+            roleDesc.text("Nhiệm vụ của bạn là cố gắng sống sót và kiếm được nhiều tiền nhất.\n Mỗi lượt săn, bạn có thể giết 1 Hunter nếu chỉ có Hunter đó săn cùng kho báu với bạn.");
         }
-        else roleDesc.innerText = "Nhiệm vụ của bạn là tìm giết Killer đang trà trộn trong đoàn.\n Mỗi lượt săn, nếu bạn được nhiều tiền nhất, bạn sẽ nhận được sự chú ý từ các thành viên khác và Killer sẽ không thể giết bạn. ";
+        else roleDesc.text("Nhiệm vụ của bạn là tìm giết Killer đang trà trộn trong đoàn.\n Mỗi lượt săn, nếu bạn được nhiều tiền nhất, bạn sẽ nhận được sự chú ý từ các thành viên khác và Killer sẽ không thể giết bạn.");
     }
-    roleChr.style.backgroundColor = selectedColor;
+    roleChr.css('background-color', selectedColor);
 }
 
 const randomRoomID = () => {
@@ -81,77 +81,142 @@ const randomRoomID = () => {
 
 // Event listener
 
-window.addEventListener('mouseup', (event) => {
-	if (!voteScr.contains(event.target) && voteScr.style.display != "none"){
-        voteScr.style.display = "none";
+// window.addEventListener('mouseup', (event) => {
+// 	if (!voteScr.contains(event.target) && voteScr.style.display != "none"){
+//         voteScr.style.display = "none";
+//     }
+// });
+
+// window.addEventListener('mouseup', (event) => {
+// 	if (!activateScr.contains(event.target) && activateScr.style.display != "none"){
+//         activateScr.style.display = "none";
+//     }
+// });
+
+$(window).on('mouseup', (e) => {
+    const container = $('.activate_screen, .vote_screen');
+    if (!container.is(e.target) && container.has(e.target).length === 0){
+        container.fadeOut();
     }
 });
 
-window.addEventListener('mouseup', (event) => {
-	if (!activateScr.contains(event.target) && activateScr.style.display != "none"){
-        activateScr.style.display = "none";
-    }
+// roomBtns.forEach(btn => {
+//     btn.addEventListener("click", () => {
+//         restroomScr.style.display = "grid";
+//         initialScr.style.display = "none";
+//     });
+// });
+
+roomBtns.on('click', () => {
+    restroomScr.css('display', "grid");
+    initialScr.css('display', "none");
 });
 
-roomBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-        restroomScr.style.display = "grid";
-        initialScr.style.display = "none";
-    });
+// leaveRoomBtn.addEventListener("click", () => {
+//     initialScr.style.display = "flex";
+//     restroomScr.style.display = "none";
+// });
+
+leaveRoomBtn.on('click', () => {
+    initialScr.css('display', "flex");
+    restroomScr.css('display', "none");
 });
 
-leaveRoomBtn.addEventListener("click", () => {
-    initialScr.style.display = "flex";
-    restroomScr.style.display = "none";
-});
+// startGameBtn.addEventListener("click", () => {
+//     gameScr.style.display = "grid";
+//     restroomScr.style.display = "none";
+//     roleScr.style.display = "flex";
+//     roleName.textContent = "Role: " + randomRole();
+//     if (temp > 2){
+//         activateBtn.style.display = "none";
+//     }
+//     setTimeout(() => {
+//         roleScr.style.display = "none";
+//     }, 10000);
+//     characterRole();
+// });
 
-startGameBtn.addEventListener("click", () => {
-    gameScr.style.display = "grid";
-    restroomScr.style.display = "none";
-    roleScr.style.display = "flex";
-    roleName.textContent = "Role: " + randomRole();
-    if (temp > 2){
-        activateBtn.style.display = "none";
+startGameBtn.on('click', () => {
+    gameScr.css('display', "grid");
+    restroomScr.css('display', "none");
+    roleScr.css('display', "flex");
+    roleName.text("Role: " + randomRole());
+    if (temp > 2) {
+        activateBtn.hide();
     }
     setTimeout(() => {
-        roleScr.style.display = "none";
-    }, 10000);
+        roleScr.fadeOut();
+    }, 8000);
     characterRole();
 });
 
-sliders.forEach(slider => {
-    let range = slider.getElementsByTagName('input')[0];
-    let val = slider.getElementsByTagName('span')[0];
-    val.textContent = range.value;
-    range.addEventListener('input', () => {
-        val.textContent = range.value;
+// sliders.forEach(slider => {
+//     let range = slider.getElementsByTagName('input')[0];
+//     let val = slider.getElementsByTagName('span')[0];
+//     val.textContent = range.value;
+//     range.addEventListener('input', () => {
+//         val.textContent = range.value;
+//     });
+// });
+
+for (let i = 0; i < sliders.length; i++) {
+    let range = sliders.eq(i).find('input');
+    let val = sliders.eq(i).find('span');
+    val.text(range.val());
+    range.on('input', () => {
+        val.text(range.val());
     });
-});
+}
 
-colorOptns.forEach(optn => {
-    optn.addEventListener("click", () => {
-        const elem = document.querySelector(".color_options .selected");
-        if (elem != null) elem.classList.remove("selected");
-        optn.classList.add("selected");
-        selectedColor = window.getComputedStyle(optn).getPropertyValue("background-color");
+// colorOptns.forEach(optn => {
+//     optn.addEventListener("click", () => {
+//         const elem = $(".color_options .selected");
+//         if (elem != null) elem.classList.remove("selected");
+//         optn.classList.add("selected");
+//         selectedColor = window.getComputedStyle(optn).getPropertyValue("background-color");
+//     });
+// });
+
+for (let i = 0; i < colorOptns.length; i++){
+    colorOptns.eq(i).on('click', () => {
+        const elem = $('.color_options .selected');
+        if (elem != null) elem.removeClass('selected');
+        colorOptns.eq(i).addClass('selected');
+        selectedColor = colorOptns.eq(i).css('background-color');
     });
+}
+
+// activateBtn.addEventListener("click", () => {
+//     activateScr.style.display = "flex";
+// });
+
+// voteBtn.addEventListener("click", () => {
+//     voteScr.style.display = "flex";
+// });
+
+activateBtn.on('click', () => {
+    activateScr.css('display', 'flex');
 });
 
-activateBtn.addEventListener("click", () => {
-    activateScr.style.display = "flex";
+voteBtn.on('click', () => {
+    voteScr.css('display', 'flex');
 });
 
-voteBtn.addEventListener("click", () => {
-    voteScr.style.display = "flex";
-});
+// chests.forEach(optn => {
+//     optn.addEventListener("click", () => {
+//         const elem = $(".chests .option.selected");
+//         if (elem != null) elem.classList.remove("selected");
+//         optn.classList.add("selected");
+//     });
+// });
 
-chests.forEach(optn => {
-    optn.addEventListener("click", () => {
-        const elem = document.querySelector(".chests .option.selected");
-        if (elem != null) elem.classList.remove("selected");
-        optn.classList.add("selected");
+for (let i = 0; i < chests.length; i++) {
+    chests.eq(i).on('click', () => {
+        const elem = $('.chests .option.selected');
+        if (elem != null) elem.removeClass('selected');
+        chests.eq(i).addClass('selected');
     });
-});
+}
 
 // Socket events
 socket.on("joined", (listUser) => {
@@ -169,23 +234,44 @@ socket.on("own_join", (userID) => {
 
 socket.on("join", (eachUser) => {
     players.push(eachUser);
-    player_list.innerHTML = "";
     for (let i = 0; i < players.length; i++){
-        player_list.innerHTML += `<div>${players[i].name}</div>`;
+        player_list.append(`<div>${players[i].name}</div>`);
     }
-    if (id >= 0) player_list.childNodes[id].style.fontWeight = "bold";
+    if (id >= 0) player_list.eq(id).css('font-weight', "bold");
 });
 
-newRoomBtn.addEventListener("click", (e) => {
+// newRoomBtn.addEventListener("click", (e) => {
+//     const roomID = randomRoomID();
+//     e.preventDefault();
+//     var index = players.length;
+//     roomIDMessage.textContent = "ID: " + roomID;
+//     socket.emit("create room", roomID.toString());
+//     socket.emit("join", currentPlayer[index], index);
+// });
+
+newRoomBtn.on("click", () => {
     const roomID = randomRoomID();
-    e.preventDefault();
     var index = players.length;
-    roomIDMessage.textContent = "ID: " + roomID;
+    roomIDMessage.text("ID: " + roomID);
     socket.emit("create room", roomID.toString());
     socket.emit("join", currentPlayer[index], index);
 });
 
-joinRoomBtn.addEventListener("click", () => {
+// joinRoomBtn.addEventListener("click", () => {
+//     var index = players.length;
+//     socket.emit("join room", roomIDInput.value.toString());
+//     let check = false;
+//     socket.on("join success", bool => {
+//         check = bool;
+//     })
+//     console.log(check);
+//     if (check){
+//         roomIDMessage.textContent = "ID: " + roomIDInput.value;
+//         socket.emit("join", currentPlayer[index], index);
+//     }
+// });
+
+joinRoomBtn.on('click', () => {
     var index = players.length;
     socket.emit("join room", roomIDInput.value.toString());
     let check = false;
@@ -194,7 +280,9 @@ joinRoomBtn.addEventListener("click", () => {
     })
     console.log(check);
     if (check){
-        roomIDMessage.textContent = "ID: " + roomIDInput.value;
+        roomIDMessage.text("ID: " + roomIDInput.value);
         socket.emit("join", currentPlayer[index], index);
     }
 });
+
+// Da chinh sua code khi them thu vien jQuery
