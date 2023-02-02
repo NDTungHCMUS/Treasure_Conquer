@@ -49,14 +49,19 @@ button:hover{
 
 .initial_screen h1{
     /* Displaying & Box Model */
-    margin: 50px 0 100px 0;
+    margin: 50px 0 70px 0;
 }
 
 .initial_screen input {
     /* Displaying & Box Model */
     width: 200px;
-    height: 30px;
+    height: 40px;
     margin: 10px;
+}
+
+.initial_screen #usernameInput{
+    /* Displaying & Box Model */
+    margin: 50px;
 }
 
 .initial_screen button{
@@ -127,14 +132,9 @@ button:hover{
     background-size: cover;
 }
 
-.update input{
+.update h5{
     /* Displaying & Box Model */
-    width: 200px;
-    height: 30px;
-    margin: 10px 0 10px 0;
-
-    /* Color */
-    background-color: darkgray;
+    margin: 30px 0 30px 0;
 }
 
 .update .color_options{
@@ -408,9 +408,6 @@ button:hover{
     height: 30px;
     left: 25px;
     bottom: 15px;
-
-    /* Color */
-    background-color: darkgray;
 }
 
 .treasure{
