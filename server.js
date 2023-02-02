@@ -47,7 +47,6 @@ io.on("connection", (socket) => {
         socket.join(player.room);
         io.emit("allUsers", players);
         io.to(player.room).emit("updateRoom", getRoomUsers(player.room));
-        socket.emit("highlight", getRoomUsers(player.room), player.id);
     });
 
     socket.on("allUsers", () => {
