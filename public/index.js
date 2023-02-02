@@ -1,6 +1,7 @@
 // Connect server
+
 var socket = io("http://localhost:5500");
-socket.emit("joined");
+socket.emit("allUsers");
 
 // Player
 
@@ -15,39 +16,6 @@ const currentPlayer = new Array(12);
 for (let i = 0; i < currentPlayer.length; i++){
     currentPlayer[i] = new Player(i, "Player " + (i + 1));
 }
-
-// User events
-
-const initialScr = $('.initial_screen');
-const roomBtns = $('.initial_screen button');
-const newRoomBtn = $('.initial_screen #newRoomBtn');
-const roomIDInput = $('.initial_screen #roomCodeInput');
-const joinRoomBtn = $('.initial_screen #joinRoomBtn');
-
-const restroomScr = $('.restroom_screen');
-const roomIDMessage = $('.restroom_screen h3');
-const leaveRoomBtn = $('.restroom_screen #leaveRoomBtn');
-const startGameBtn = $('.restroom_screen #startGameBtn');
-const player_list = $(".player_list #show_player_list");
-const colorOptns = $('.restroom_screen .color_options .option');
-const sliders = $('.restroom_screen .customize div');
-
-const gameScr = $('.game_screen');
-const roleName = $('#role');
-const activateBtn = $('.game_screen #activateBtn');
-const voteBtn = $('.game_screen #voteBtn');
-const chests = $('.game_screen .chests .option');
-const roleScr = $('.role_screen');
-const roleMes = $('#role_mes');
-const roleDesc = $('#role_desc');
-const roleChr = $('.role_screen .character');
-const activateScr = $('.activate_screen');
-const voteScr = $('.vote_screen');
-
-const temp = Math.floor(Math.random() * 6);
-const role = ["Adventurer", "Killer", "Hunter"];
-
-let selectedColor = "#a9a9a9";
 
 const randomRole = () => {
     if (temp === 0) {
@@ -79,19 +47,68 @@ const randomRoomID = () => {
     return Math.floor(Math.random() * 90000) + 10000;
 }
 
-// Event listener
+const playerJoin = (id, username, room) => {
+    const player = {id, username, room};
+    players.push(player);
+    return player;
+};
 
-// window.addEventListener('mouseup', (event) => {
-// 	if (!voteScr.contains(event.target) && voteScr.style.display != "none"){
-//         voteScr.style.display = "none";
-//     }
-// });
+const playerLeave = (id) => {
+    const index = players.findIndex(player => player.id === id);
+    if (index !== -1) {
+        return players.splice(index, 1)[0];
+    }
+} 
 
-// window.addEventListener('mouseup', (event) => {
-// 	if (!activateScr.contains(event.target) && activateScr.style.display != "none"){
-//         activateScr.style.display = "none";
-//     }
-// });
+const getCurrentPlayer = (id) => {
+    return players.find(player => player.id === id);
+}
+
+const getRoomUsers = (room) => {
+    return players.filter(player => player.room === room);
+}
+
+const getActiveRooms = (players) => {
+    return new Set(players.map(player => player.room));
+}
+
+const getActiveNames = (players) => {
+    return players.map(player => player.username);
+}
+
+// User events
+
+const initialScr = $('.initial_screen');
+const roomBtns = $('.initial_screen button');
+const usernameInput = $('.initial_screen #usernameInput');
+const newRoomBtn = $('.initial_screen #newRoomBtn');
+const roomIDInput = $('.initial_screen #roomCodeInput');
+const joinRoomBtn = $('.initial_screen #joinRoomBtn');
+
+const restroomScr = $('.restroom_screen');
+const roomIDMessage = $('.restroom_screen h3');
+const leaveRoomBtn = $('.restroom_screen #leaveRoomBtn');
+const startGameBtn = $('.restroom_screen #startGameBtn');
+const player_list = $(".player_list #show_player_list");
+const colorOptns = $('.restroom_screen .color_options .option');
+const sliders = $('.restroom_screen .customize div');
+
+const gameScr = $('.game_screen');
+const roleName = $('#role');
+const activateBtn = $('.game_screen #activateBtn');
+const voteBtn = $('.game_screen #voteBtn');
+const chests = $('.game_screen .chests .option');
+const roleScr = $('.role_screen');
+const roleMes = $('#role_mes');
+const roleDesc = $('#role_desc');
+const roleChr = $('.role_screen .character');
+const activateScr = $('.activate_screen');
+const voteScr = $('.vote_screen');
+
+const temp = Math.floor(Math.random() * 6);
+const role = ["Adventurer", "Killer", "Hunter"];
+
+let selectedColor = "#a9a9a9";
 
 $(window).on('mouseup', (e) => {
     const container = $('.activate_screen, .vote_screen');
@@ -100,41 +117,10 @@ $(window).on('mouseup', (e) => {
     }
 });
 
-// roomBtns.forEach(btn => {
-//     btn.addEventListener("click", () => {
-//         restroomScr.style.display = "grid";
-//         initialScr.style.display = "none";
-//     });
-// });
-
-roomBtns.on('click', () => {
-    restroomScr.css('display', "grid");
-    initialScr.css('display', "none");
-});
-
-// leaveRoomBtn.addEventListener("click", () => {
-//     initialScr.style.display = "flex";
-//     restroomScr.style.display = "none";
-// });
-
 leaveRoomBtn.on('click', () => {
     initialScr.css('display', "flex");
     restroomScr.css('display', "none");
 });
-
-// startGameBtn.addEventListener("click", () => {
-//     gameScr.style.display = "grid";
-//     restroomScr.style.display = "none";
-//     roleScr.style.display = "flex";
-//     roleName.textContent = "Role: " + randomRole();
-//     if (temp > 2){
-//         activateBtn.style.display = "none";
-//     }
-//     setTimeout(() => {
-//         roleScr.style.display = "none";
-//     }, 10000);
-//     characterRole();
-// });
 
 startGameBtn.on('click', () => {
     gameScr.css('display', "grid");
@@ -150,15 +136,6 @@ startGameBtn.on('click', () => {
     characterRole();
 });
 
-// sliders.forEach(slider => {
-//     let range = slider.getElementsByTagName('input')[0];
-//     let val = slider.getElementsByTagName('span')[0];
-//     val.textContent = range.value;
-//     range.addEventListener('input', () => {
-//         val.textContent = range.value;
-//     });
-// });
-
 for (let i = 0; i < sliders.length; i++) {
     let range = sliders.eq(i).find('input');
     let val = sliders.eq(i).find('span');
@@ -167,15 +144,6 @@ for (let i = 0; i < sliders.length; i++) {
         val.text(range.val());
     });
 }
-
-// colorOptns.forEach(optn => {
-//     optn.addEventListener("click", () => {
-//         const elem = $(".color_options .selected");
-//         if (elem != null) elem.classList.remove("selected");
-//         optn.classList.add("selected");
-//         selectedColor = window.getComputedStyle(optn).getPropertyValue("background-color");
-//     });
-// });
 
 for (let i = 0; i < colorOptns.length; i++){
     colorOptns.eq(i).on('click', () => {
@@ -186,14 +154,6 @@ for (let i = 0; i < colorOptns.length; i++){
     });
 }
 
-// activateBtn.addEventListener("click", () => {
-//     activateScr.style.display = "flex";
-// });
-
-// voteBtn.addEventListener("click", () => {
-//     voteScr.style.display = "flex";
-// });
-
 activateBtn.on('click', () => {
     activateScr.css('display', 'flex');
 });
@@ -201,14 +161,6 @@ activateBtn.on('click', () => {
 voteBtn.on('click', () => {
     voteScr.css('display', 'flex');
 });
-
-// chests.forEach(optn => {
-//     optn.addEventListener("click", () => {
-//         const elem = $(".chests .option.selected");
-//         if (elem != null) elem.classList.remove("selected");
-//         optn.classList.add("selected");
-//     });
-// });
 
 for (let i = 0; i < chests.length; i++) {
     chests.eq(i).on('click', () => {
@@ -219,70 +171,68 @@ for (let i = 0; i < chests.length; i++) {
 }
 
 // Socket events
-socket.on("joined", (listUser) => {
-    players = [];
-    listUser.forEach((player) => {
-        players.push(player);
-        console.log(player.name);     
-    })
-})
 
-let id = -1;
-socket.on("own_join", (userID) => {
-    id = userID;
+socket.on("allUsers", listUser => {
+    players = listUser;
 });
 
-socket.on("join", (eachUser) => {
-    players.push(eachUser);
-    for (let i = 0; i < players.length; i++){
-        player_list.append(`<div>${players[i].name}</div>`);
-    }
-    if (id >= 0) player_list.eq(id).css('font-weight', "bold");
+socket.on("updateRoom", roomUsers => {
+    player_list.html(``);
+    roomUsers.forEach(player => {
+        player_list.append(`<div>${player.username}</div>`);
+    });
 });
 
-// newRoomBtn.addEventListener("click", (e) => {
-//     const roomID = randomRoomID();
-//     e.preventDefault();
-//     var index = players.length;
-//     roomIDMessage.textContent = "ID: " + roomID;
-//     socket.emit("create room", roomID.toString());
-//     socket.emit("join", currentPlayer[index], index);
-// });
+socket.on("highlight", (roomUsers, id) => { // Highlight bi sai
+    const index = roomUsers.findIndex(player => player.id === id);
+    player_list.eq(index).css('font-weight', "bold");
+});
 
 newRoomBtn.on("click", () => {
-    const roomID = randomRoomID();
-    var index = players.length;
+    const usernames = getActiveNames(players);
+    const rooms = getActiveRooms(players);
+    if (!usernameInput.val()){
+        alert("Forgot to enter username!!!");
+        return;
+    }
+    if (usernames.includes(usernameInput.val())){
+        alert("Existed username!!!");
+        return;
+    }
+    const roomID = randomRoomID().toString();
+    while (rooms.has(roomID)){
+        roomID = randomRoomID().toString();
+    }
+    const username = usernameInput.val();
+    socket.emit("joinRoom", username, roomID);
     roomIDMessage.text("ID: " + roomID);
-    socket.emit("create room", roomID.toString());
-    socket.emit("join", currentPlayer[index], index);
+    restroomScr.css('display', "grid");
+    initialScr.css('display', "none");
 });
-
-// joinRoomBtn.addEventListener("click", () => {
-//     var index = players.length;
-//     socket.emit("join room", roomIDInput.value.toString());
-//     let check = false;
-//     socket.on("join success", bool => {
-//         check = bool;
-//     })
-//     console.log(check);
-//     if (check){
-//         roomIDMessage.textContent = "ID: " + roomIDInput.value;
-//         socket.emit("join", currentPlayer[index], index);
-//     }
-// });
 
 joinRoomBtn.on('click', () => {
-    var index = players.length;
-    socket.emit("join room", roomIDInput.value.toString());
-    let check = false;
-    socket.on("join success", bool => {
-        check = bool;
-    })
-    console.log(check);
-    if (check){
-        roomIDMessage.text("ID: " + roomIDInput.value);
-        socket.emit("join", currentPlayer[index], index);
+    const usernames = getActiveNames(players);
+    const rooms = getActiveRooms(players);
+    if (!usernameInput.val()){
+        alert("Forgot to enter username!!!");
+        return;
     }
-});
-
-// Da chinh sua code khi them thu vien jQuery
+    if (usernames.includes(usernameInput.val())){
+        alert("Existed username!!!");
+        return;
+    }
+    if (!roomIDInput.val()){
+        alert("Forgot to enter room ID!!!");
+        return;
+    }
+    const roomID = roomIDInput.val();
+    if (!rooms.has(roomID)){
+        alert("Invalid room ID!!!");
+        return;
+    }
+    const username = usernameInput.val();
+    socket.emit("joinRoom", username, roomID);
+    roomIDMessage.text("ID: " + roomID);
+    restroomScr.css('display', "grid");
+    initialScr.css('display', "none");
+})
