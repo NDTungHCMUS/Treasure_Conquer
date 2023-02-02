@@ -180,12 +180,10 @@ socket.on("updateRoom", roomUsers => {
     player_list.html(``);
     roomUsers.forEach(player => {
         player_list.append(`<div>${player.username}</div>`);
+        if (player.id === socket.id) {
+            $(".player_list #show_player_list div:last-child").css('font-weight', "bold");
+        }
     });
-});
-
-socket.on("highlight", (roomUsers, id) => { // Highlight bi sai
-    const index = roomUsers.findIndex(player => player.id === id);
-    player_list.eq(index).css('font-weight', "bold");
 });
 
 newRoomBtn.on("click", () => {
@@ -235,4 +233,4 @@ joinRoomBtn.on('click', () => {
     roomIDMessage.text("ID: " + roomID);
     restroomScr.css('display', "grid");
     initialScr.css('display', "none");
-})
+});
