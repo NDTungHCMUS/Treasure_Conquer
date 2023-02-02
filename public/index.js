@@ -12,10 +12,6 @@ class Player{
         this.name = name;
     }
 }
-const currentPlayer = new Array(12);
-for (let i = 0; i < currentPlayer.length; i++){
-    currentPlayer[i] = new Player(i, "Player " + (i + 1));
-}
 
 const randomRole = () => {
     if (temp === 0) {
@@ -35,7 +31,7 @@ const characterRole = () => {
         roleDesc.text("Nhiệm vụ của bạn là tìm ra Killer đang trà trộn trong đoàn, sống sót và chiến thắng cùng Hunter.\n Mỗi lượt săn, bạn biết được số người chơi chọn 4 loại kho báu.");
     }
     else {
-        if (temp < 3) {
+        if (temp <= killerNum) {
             roleDesc.text("Nhiệm vụ của bạn là cố gắng sống sót và kiếm được nhiều tiền nhất.\n Mỗi lượt săn, bạn có thể giết 1 Hunter nếu chỉ có Hunter đó săn cùng kho báu với bạn.");
         }
         else roleDesc.text("Nhiệm vụ của bạn là tìm giết Killer đang trà trộn trong đoàn.\n Mỗi lượt săn, nếu bạn được nhiều tiền nhất, bạn sẽ nhận được sự chú ý từ các thành viên khác và Killer sẽ không thể giết bạn.");
@@ -45,6 +41,28 @@ const characterRole = () => {
 
 const randomRoomID = () => {
     return Math.floor(Math.random() * 90000) + 10000;
+}
+
+const chestList = (ul, n) => {
+    for (let i = 0; i < n; i++){
+        ul.append(`<li class="option">${(i + 1)}</li>`)
+    }
+}
+
+const createChestLists = (n) => {
+    const list_60 = $('.game_screen .chests .c60');
+    const list_80 = $('.game_screen .chests .c80');
+    const list_120 = $('.game_screen .chests .c120');
+
+    const n120 = Math.floor(n / 6);
+    const n60 = Math.floor((n - 1 - n120) / 2);
+    const n80 = Math.floor((n - 2 - n120) / 2);
+    console.log(n - 2 - n120);
+    console.log(n80);
+
+    chestList(list_60, n60);
+    chestList(list_80, n80);
+    chestList(list_120, n120);
 }
 
 const playerJoin = (id, username, room) => {
@@ -105,8 +123,10 @@ const roleChr = $('.role_screen .character');
 const activateScr = $('.activate_screen');
 const voteScr = $('.vote_screen');
 
-const temp = Math.floor(Math.random() * 6);
+let room_size = $(".player_list #show_player_list div").length;
+let temp = Math.floor(Math.random() * room_size);
 const role = ["Adventurer", "Killer", "Hunter"];
+const killerNum = 2;
 
 let selectedColor = "#a9a9a9";
 
@@ -123,17 +143,8 @@ leaveRoomBtn.on('click', () => {
 });
 
 startGameBtn.on('click', () => {
-    gameScr.css('display', "grid");
-    restroomScr.css('display', "none");
-    roleScr.css('display', "flex");
-    roleName.text("Role: " + randomRole());
-    if (temp > 2) {
-        activateBtn.hide();
-    }
-    setTimeout(() => {
-        roleScr.fadeOut();
-    }, 8000);
-    characterRole();
+    const roomID = getCurrentPlayer(socket.id).room;
+    socket.emit("startGame", roomID);
 });
 
 for (let i = 0; i < sliders.length; i++) {
@@ -186,6 +197,28 @@ socket.on("updateRoom", roomUsers => {
     });
 });
 
+socket.on("startGame", () => {
+    room_size = $(".player_list #show_player_list div").length;
+    temp = Math.floor(Math.random() * room_size);
+
+    if (room_size < 6 || room_size > 12){
+        alert("Game should be started with around 6-12 players!!!");
+        return;
+    }
+    gameScr.css('display', "grid");
+    restroomScr.css('display', "none");
+    roleScr.css('display', "flex");
+    roleName.text("Role: " + randomRole());
+    createChestLists(room_size);
+    if (temp > killerNum) {
+        activateBtn.hide();
+    }
+    setTimeout(() => {
+        roleScr.fadeOut();
+    }, 8000);
+    characterRole();
+});
+
 newRoomBtn.on("click", () => {
     const usernames = getActiveNames(players);
     const rooms = getActiveRooms(players);
@@ -231,6 +264,7 @@ joinRoomBtn.on('click', () => {
     const username = usernameInput.val();
     socket.emit("joinRoom", username, roomID);
     roomIDMessage.text("ID: " + roomID);
+    startGameBtn.hide();
     restroomScr.css('display', "grid");
     initialScr.css('display', "none");
 });
