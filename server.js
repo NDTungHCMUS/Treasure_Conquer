@@ -52,6 +52,10 @@ io.on("connection", (socket) => {
     socket.on("allUsers", () => {
         socket.emit("allUsers", players);
     });
+
+    socket.on("startGame", roomID => {
+        io.to(roomID).emit("startGame");
+    });
 })
 server.listen(5500, () => {
     console.log("listen 5500");
