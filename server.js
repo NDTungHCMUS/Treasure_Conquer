@@ -53,6 +53,10 @@ io.on("connection", (socket) => {
         socket.emit("allUsers", players);
     });
 
+    socket.on("customize", (roomID, value, index) => {
+        io.to(roomID).emit("customize", value, index);
+    });
+
     socket.on("startGame", roomID => {
         io.to(roomID).emit("startGame");
     });
