@@ -44,8 +44,10 @@ const randomRoomID = () => {
 }
 
 const chestList = (ul, n) => {
+    let chest;
     for (let i = 0; i < n; i++){
-        ul.append(`<li class="option">${(i + 1)}</li>`)
+        chest = $('<li>').addClass('option').text(i + 1);
+        ul.append(chest);
     }
 }
 
@@ -110,6 +112,7 @@ const startGameBtn = $('.restroom_screen #startGameBtn');
 const player_list = $(".player_list #show_player_list");
 const colorOptns = $('.restroom_screen .color_options .option');
 const sliders = $('.restroom_screen .customize div');
+const ranges = $('.restroom_screen .customize div input');
 
 const gameScr = $('.game_screen');
 const roleName = $('#role');
@@ -123,7 +126,7 @@ const roleChr = $('.role_screen .character');
 const activateScr = $('.activate_screen');
 const voteScr = $('.vote_screen');
 
-let room_size = $(".player_list #show_player_list div").length;
+let room_size = $(".player_list #show_player_list .box").length;
 let temp = Math.floor(Math.random() * room_size);
 const role = ["Adventurer", "Killer", "Hunter"];
 const killerNum = 2;
@@ -144,6 +147,11 @@ leaveRoomBtn.on('click', () => {
 
 startGameBtn.on('click', () => {
     const roomID = getCurrentPlayer(socket.id).room;
+    room_size = $(".player_list #show_player_list .box").length;
+    if (room_size < 6 || room_size > 12){
+        alert("Game should be started with around 6-12 players!!!");
+        return;
+    }
     socket.emit("startGame", roomID);
 });
 
@@ -152,7 +160,8 @@ for (let i = 0; i < sliders.length; i++) {
     let val = sliders.eq(i).find('span');
     val.text(range.val());
     range.on('input', () => {
-        val.text(range.val());
+        const roomID = getCurrentPlayer(socket.id).room;
+        socket.emit("customize", roomID, range.val(), i);
     });
 }
 
@@ -190,21 +199,20 @@ socket.on("allUsers", listUser => {
 socket.on("updateRoom", roomUsers => {
     player_list.html(``);
     roomUsers.forEach(player => {
-        player_list.append(`<div>${player.username}</div>`);
+        const playerDiv = $('<div>').addClass('box');
+        const playerCol = $('<div>').addClass('color');
+        playerDiv.append(playerCol);
+        playerDiv.append(`<p>${player.username}</p>`);
+        player_list.append(playerDiv);
         if (player.id === socket.id) {
-            $(".player_list #show_player_list div:last-child").css('font-weight', "bold");
+            $(".player_list #show_player_list .box:last-child p").css('font-weight', "bold");
         }
     });
 });
 
 socket.on("startGame", () => {
-    room_size = $(".player_list #show_player_list div").length;
+    room_size = $(".player_list #show_player_list .box").length;
     temp = Math.floor(Math.random() * room_size);
-
-    if (room_size < 6 || room_size > 12){
-        alert("Game should be started with around 6-12 players!!!");
-        return;
-    }
     gameScr.css('display', "grid");
     restroomScr.css('display', "none");
     roleScr.css('display', "flex");
@@ -219,7 +227,12 @@ socket.on("startGame", () => {
     characterRole();
 });
 
+socket.on("customize", (value, i) => {
+    sliders.eq(i).find('span').text(value);
+});
+
 newRoomBtn.on("click", () => {
+    // Check valid
     const usernames = getActiveNames(players);
     const rooms = getActiveRooms(players);
     if (!usernameInput.val()){
@@ -234,6 +247,8 @@ newRoomBtn.on("click", () => {
     while (rooms.has(roomID)){
         roomID = randomRoomID().toString();
     }
+
+    // Host event
     const username = usernameInput.val();
     socket.emit("joinRoom", username, roomID);
     roomIDMessage.text("ID: " + roomID);
@@ -242,6 +257,7 @@ newRoomBtn.on("click", () => {
 });
 
 joinRoomBtn.on('click', () => {
+    // Check valid
     const usernames = getActiveNames(players);
     const rooms = getActiveRooms(players);
     if (!usernameInput.val()){
@@ -261,9 +277,12 @@ joinRoomBtn.on('click', () => {
         alert("Invalid room ID!!!");
         return;
     }
+
+    // Guest event
     const username = usernameInput.val();
     socket.emit("joinRoom", username, roomID);
     roomIDMessage.text("ID: " + roomID);
+    ranges.hide();
     startGameBtn.hide();
     restroomScr.css('display', "grid");
     initialScr.css('display', "none");
