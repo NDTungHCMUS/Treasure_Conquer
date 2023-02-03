@@ -1,3 +1,18 @@
+@font-face {
+    font-family: "Brubeck AH";
+    src: url(/Textures/brubeck.ttf);
+}
+
+@font-face {
+    font-family: "Carribean Caps";
+    src: url(/Textures/caric.ttf);
+}
+
+@font-face {
+    font-family: "Rapscallion";
+    src: url(/Textures/rapscall.ttf);
+}
+
 *{
     /* Displaying & Box Model */
     margin: 0;
@@ -5,7 +20,7 @@
     box-sizing: border-box;
 
     /* Text */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI';
 }
 
 body{
@@ -50,6 +65,9 @@ button:hover{
 .initial_screen h1{
     /* Displaying & Box Model */
     margin: 50px 0 70px 0;
+
+    /* Text */
+    font-family: "Carribean Caps";
 }
 
 .initial_screen input {
@@ -86,8 +104,8 @@ button:hover{
 
     /* Displaying & Box Model */
     display: none;
-    grid-template-rows: 50px 2fr 1fr 1fr 10px;
-    grid-template-columns: 5px 5fr 2fr 5px;
+    grid-template-rows: 50px 4fr 3fr 1fr 10px;
+    grid-template-columns: 5px 7fr 3fr 5px;
     text-align: center;
     min-width: 100%;
     min-height: 100vh;
@@ -96,6 +114,9 @@ button:hover{
     background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)), 
     url("/Textures/pirate_background.jpg");
     background-size: cover;
+
+    /* Text */
+    font-size: 18px;
 }
 
 .restroom_screen h3{
@@ -104,6 +125,11 @@ button:hover{
     grid-row: 1;
     justify-self: flex-start;
     left: 10px;
+}
+
+.restroom_screen h4{
+    /* Displaying & Box Model */
+    margin: 10px auto;
 }
 
 .player_list{
@@ -119,6 +145,41 @@ button:hover{
     background-size: cover;
 }
 
+.player_list #show_player_list{
+    /* Displaying & Box Model */
+    display: flex;
+    flex-flow: row wrap;
+    margin: 5px;
+}
+
+.player_list #show_player_list .box{
+    /* Displaying & Box Model */
+    display: flex;
+    width: calc(33.2% - 10px);
+    height: 50px;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+
+    /* Color */
+    background: rgba(255, 255, 255, 0.9);
+}
+
+#show_player_list .box .color{
+    /* Displaying & Box Model */
+    width: 30px;
+    height: 30px;
+    justify-self: flex-start;
+    border-radius: 50%;
+    margin: 10px;
+
+    /* Color */
+    background-color: black;
+}
+
 .update{
     /* Displaying & Box Model */
     grid-column: 3;
@@ -132,14 +193,9 @@ button:hover{
     background-size: cover;
 }
 
-.update h5{
-    /* Displaying & Box Model */
-    margin: 30px 0 30px 0;
-}
-
 .update .color_options{
     /* Displaying & Box Model */
-    margin: 50px 0 0 60px;
+    margin: 0 auto;
 }
 
 .color_options .option{
@@ -244,6 +300,16 @@ button:hover{
     filter: brightness(100%) contrast(90%);
 }
 
+.restroom_screen .character{
+    /* Displaying & Box Model */
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 40px auto;
+
+    /* Color */
+    background-color: white;
+}
 
 .customize{
     /* Displaying & Box Model */
@@ -261,10 +327,7 @@ button:hover{
 .customize div{
     /* Displaying & Box Model */
     display: flex;
-    margin: 30px 0 0 30px;
-
-    /* Text */
-    font-size: 16px;
+    margin: 30px 0 0 50px;
 }
 
 .customize label{
