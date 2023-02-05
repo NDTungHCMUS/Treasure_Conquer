@@ -163,6 +163,7 @@ button:hover{
     border: none;
     border-radius: 10px;
     margin: 5px;
+    position: relative;
 
     /* Color */
     background: rgba(255, 255, 255, 0.9);
@@ -175,6 +176,8 @@ button:hover{
     justify-self: flex-start;
     border-radius: 50%;
     margin: 10px;
+    position: absolute;
+    right: 80%;
 
     /* Color */
     background-color: black;
