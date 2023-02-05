@@ -153,6 +153,9 @@ button:hover{
 }
 
 .player_list #show_player_list .box{
+    /* Position */
+    position: relative;
+
     /* Displaying & Box Model */
     display: flex;
     width: calc(33.2% - 10px);
@@ -163,24 +166,32 @@ button:hover{
     border: none;
     border-radius: 10px;
     margin: 5px;
-    position: relative;
 
     /* Color */
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.7);
 }
 
 #show_player_list .box .color{
+    /* Position */
+    position: absolute;
+
     /* Displaying & Box Model */
     width: 30px;
     height: 30px;
-    justify-self: flex-start;
     border-radius: 50%;
     margin: 10px;
-    position: absolute;
     right: 80%;
 
     /* Color */
     background-color: black;
+}
+
+#show_player_list .box p{
+
+    /* Displaying & Box Model */
+    text-align: center;
+    margin-left: 25px;
+
 }
 
 .update{
@@ -238,7 +249,7 @@ button:hover{
 }
 
 #row2 .option:nth-child(2){
-    background-color: mediumblue;
+    background-color: rgb(0, 72, 205);
 }
 
 #row2 .option:nth-child(3){
@@ -301,6 +312,32 @@ button:hover{
     /* Transitions & Animations */
     transform: translate(-50%, -50%);
     filter: brightness(100%) contrast(90%);
+}
+
+.color_options .option.chosen{
+    /* Transitions & Animations */
+    cursor: default;
+    pointer-events: none;
+}
+
+.color_options .option.chosen::before{
+    /* Positioning */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    top: 50%;
+    left: 50%;
+    width: 26px;
+    height: 26px;
+    background: inherit;
+    border-radius: inherit;
+    content: "";
+
+    /* Colors */
+    background: rgba(0, 0, 0, 0.7);
+
+    /* Transitions & Animations */
+    transform: translate(-50%, -50%);
 }
 
 .restroom_screen .character{
