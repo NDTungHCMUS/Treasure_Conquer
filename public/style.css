@@ -70,6 +70,51 @@ button:hover{
     font-family: "Carribean Caps";
 }
 
+.initial_screen #storyBtn{
+    /* Positioning */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    width: 40px;
+    height: 40px;
+    top: 20px;
+    left: 20px;
+    border-radius: 13px;
+
+    /* Color */
+    background-image: url("/Textures/book_square.svg");
+    background-size: cover;
+}
+
+.initial_screen .story_screen{
+    /* Position */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    display: none;
+    width: 800px;
+    height: 500px;
+    flex-direction: column;
+    align-content: center;
+    text-align: left;
+    padding-top: 50px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
+    
+    /* Color */
+    background-image: url("/Textures/treasure-scroll.jpg");
+    background-size: cover;
+}
+
+.story_screen p{
+    /* Text */
+    margin: 5px 60px;
+    text-indent: 5%;
+    font-size: 20px;
+}
+
 .initial_screen input {
     /* Displaying & Box Model */
     width: 200px;
@@ -192,6 +237,11 @@ button:hover{
     text-align: center;
     margin-left: 25px;
 
+}
+
+#show_player_list .box.current p{
+    /* Text */
+    font-weight: 650;
 }
 
 .update{
