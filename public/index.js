@@ -6,7 +6,8 @@ socket.emit("allUsers");
 // User constants
 
 const initialScr = $('.initial_screen');
-const roomBtns = $('.initial_screen button');
+const storyBtn = $('.initial_screen #storyBtn');
+const storyScr = $('.initial_screen .story_screen');
 let usernameInputDiv = $('.initial_screen #usernameInputDiv');
 let usernameInput = $('.initial_screen #usernameInput');
 let newRoomBtnDiv = $('.initial_screen #newRoomBtnDiv');
@@ -19,7 +20,6 @@ const roomIDMessage = $('.restroom_screen h3');
 const leaveRoomBtn = $('.restroom_screen #leaveRoomBtn');
 const startGameBtn = $('.restroom_screen #startGameBtn');
 const player_list = $(".player_list #show_player_list");
-//const playerBoxes = $(".player_list #show_player_list .box");
 const colorOptns = $('.restroom_screen .color_options .option');
 const sliders = $('.restroom_screen .customize div');
 const ranges = $('.restroom_screen .customize div input');
@@ -40,12 +40,12 @@ let selectedColor;
 let playerBoxes = $(".player_list #show_player_list .box");
 let room_size = playerBoxes.length;
 let temp = Math.floor(Math.random() * room_size);
-const role = ["Adventurer", "Killer", "Hunter"];
+const role = ["Captain", "Killer", "Pirate"];
 const killerNum = 2;
 
 
 $(window).on('mouseup', function(e) {
-    const container = $('.activate_screen, .vote_screen');
+    const container = $('.activate_screen, .vote_screen, .story_screen');
     if (!container.is(e.target) && container.has(e.target).length === 0){
         container.fadeOut();
     }
@@ -79,13 +79,13 @@ const randomRole = function() {
 const characterRole = function() {
     roleMes.text(randomRole());
     if (temp === 0) {
-        roleDesc.text("Nhiệm vụ của bạn là tìm ra Killer đang trà trộn trong đoàn, sống sót và chiến thắng cùng Hunter.\n Mỗi lượt săn, bạn biết được số người chơi chọn 4 loại kho báu.");
+        roleDesc.text("Nhiệm vụ của bạn là tìm ra Killer đang trà trộn trong đoàn, sống sót và chiến thắng cùng Pirate.\n Mỗi lượt tìm kho báu, bạn có quyền theo dõi tình hình 1 kho báu bất kỳ trước khi chọn kho báu. Nếu Killer phát hiện bạn là Captain, bạn thua.\n Bạn biết được thân phận những thủy thủ trong đoàn.");
     }
     else {
         if (temp <= killerNum) {
-            roleDesc.text("Nhiệm vụ của bạn là cố gắng sống sót và kiếm được nhiều tiền nhất.\n Mỗi lượt săn, bạn có thể giết 1 Hunter nếu chỉ có Hunter đó săn cùng kho báu với bạn.");
+            roleDesc.text("Nhiệm vụ của bạn là cố gắng sống sót và kiếm được nhiều tiền nhất.\n Mỗi lượt săn, bạn có thể giết 1 Pirate nếu chỉ có Pirate đó săn cùng kho báu với bạn. Nếu giết thành công 1 Pirate, bạn lấy được thông tin của Captain. Nếu như bạn thua sau các lượt chọn kho báu, bạn vẫn có thể thắng nếu như bạn tìm ra thân phận của Captain.\n Bạn không biết được thân phận những thủy thủ trong đoàn.");
         }
-        else roleDesc.text("Nhiệm vụ của bạn là tìm giết Killer đang trà trộn trong đoàn.\n Mỗi lượt săn, nếu bạn được nhiều tiền nhất, bạn sẽ nhận được sự chú ý từ các thành viên khác và Killer sẽ không thể giết bạn.");
+        else roleDesc.text("Nhiệm vụ của bạn là tìm giết Killer đang trà trộn trong đoàn.\n Bạn không nhớ được thân phận những thủy thủ trong đoàn. Tham gia săn kho báu cùng đồng minh sẽ giúp bạn tăng điểm thân mật. Đạt đủ điểm thân mật bạn sẽ nhận được thông tin của thủy thủ trong đoàn");
     }
     roleChr.css('background-color', selectedColor);
 }
@@ -161,16 +161,6 @@ const getDefaultColor = function() {
     return -1;
 }
 
-// get box index to show in player_list base on playername
-const getBoxIndex = function(player) {
-    for (let i = 0; i < playerBoxes.length; i++){
-        if (playerBoxes.eq(i).find('p').text() == player.username){
-            return i;
-        }
-    }
-    return -1;
-}
-
 /*
 * INITIAL SCREEN
 */
@@ -185,8 +175,8 @@ newRoomBtn.on("click", function() {
     }
     if (!inLeaveState){
         // Check valid
-        if (!usernameInput.val()){
-            alert("Forgot to enter username!!!");
+        if (!usernameInput.val() || usernameInput.val().length > 20){
+            alert("Invalid username!!!");
             return;
         }
         if (activeUsernames.includes(usernameInput.val()) || leaveUsernames.includes(usernameInput.val())){
@@ -200,12 +190,13 @@ newRoomBtn.on("click", function() {
         roomIDMessage.text("ID: " + roomID);
 
         // Handle color
-        const index = getDefaultColor();
-        colorOptns.eq(index).addClass('selected');
-        let boxID = getBoxIndex(getCurrentPlayer(socket.id));
-        selectedColor = colorOptns.eq(index).css('background-color');
-        playerBoxes.eq(boxID).find('.color').css('background-color', selectedColor);
-        socket.emit("selected", roomID, index);
+        setTimeout(() => {
+            const index = getDefaultColor();
+            colorOptns.eq(index).addClass('selected');
+            selectedColor = colorOptns.eq(index).css('background-color');
+            player_list.find('.current').find('.color').css('background-color', selectedColor);
+            socket.emit("selected", roomID, index);
+        }, 100);
 
         // Modify swap room
         usernameInputDiv.html(``);
@@ -218,12 +209,13 @@ newRoomBtn.on("click", function() {
         roomIDMessage.text("ID: " + roomID);
 
         // Handle color
-        const index = getDefaultColor();
-        colorOptns.eq(index).addClass('selected');
-        let boxID = getBoxIndex(getLeavePlayer(socket.id));
-        selectedColor = colorOptns.eq(index).css('background-color');
-        playerBoxes.eq(boxID).find('.color').css('background-color', selectedColor);
-        socket.emit("selected", roomID, index);
+        setTimeout(() => {
+            const index = getDefaultColor();
+            colorOptns.eq(index).addClass('selected');
+            selectedColor = colorOptns.eq(index).css('background-color');
+            player_list.find('.current').find('.color').css('background-color', selectedColor);
+            socket.emit("selected", roomID, index);
+        }, 100);
         
     }
     // Handle swap room
@@ -266,11 +258,10 @@ joinRoomBtn.on('click', function() {
         setTimeout(() => {
             const index = getDefaultColor();
             colorOptns.eq(index).addClass('selected');
-            let boxID = getBoxIndex(getCurrentPlayer(socket.id));
             selectedColor = colorOptns.eq(index).css('background-color');
-            playerBoxes.eq(boxID).find('.color').css('background-color', selectedColor);
+            player_list.find('.current').find('.color').css('background-color', selectedColor);
             socket.emit("selected", roomID, index);
-        }, 200);
+        }, 100);
 
         // Handle swap room
         ranges.hide();
@@ -309,11 +300,10 @@ joinRoomBtn.on('click', function() {
         setTimeout(() => {
             const index = getDefaultColor();
             colorOptns.eq(index).addClass('selected');
-            let boxID = getBoxIndex(getCurrentPlayer(socket.id));
             selectedColor = colorOptns.eq(index).css('background-color');
-            playerBoxes.eq(boxID).find('.color').css('background-color', selectedColor);
+            player_list.find('.current').find('.color').css('background-color', selectedColor);
             socket.emit("selected", roomID, index);
-        }, 200);
+        }, 100);
 
         // Handle swap room
         ranges.hide();
@@ -374,11 +364,10 @@ for (let i = 0; i < colorOptns.length; i++){
     colorOptns.eq(i).on('click', function() {
         const roomID = getCurrentPlayer(socket.id).room;
         const elem = $('.color_options .selected');
-        let index = getBoxIndex(getCurrentPlayer(socket.id));
         if (elem != null) elem.removeClass('selected');
         colorOptns.eq(i).addClass('selected');
         selectedColor = colorOptns.eq(i).css('background-color');
-        playerBoxes.eq(index).find('.color').css('background-color', selectedColor);
+        player_list.find('.current').find('.color').css('background-color', selectedColor);
         socket.emit("selected", roomID, i);
     });
 }
@@ -410,7 +399,7 @@ socket.on("allUsers", function(activeUsers, leaveUsers){
     leavePlayers = leaveUsers;
 });
 
-socket.on("updateUsers", roomUsers => {
+socket.on("updateUsers", function(roomUsers) {
     player_list.html(``);
     roomUsers.forEach(player => {
         const playerDiv = $('<div>').addClass('box');
@@ -419,10 +408,10 @@ socket.on("updateUsers", roomUsers => {
         playerDiv.append(`<p>${player.username}</p>`);
         player_list.append(playerDiv);
         if (player.id === socket.id) {
-            $(".player_list #show_player_list .box:last-child p").css('font-weight', "bold");
-            playerBoxes = $(".player_list #show_player_list .box");
+            $(".player_list #show_player_list .box:last-child").addClass('current');
         }
     });
+    playerBoxes = $(".player_list #show_player_list .box");
 });
 
 socket.on("startGame", function() {
@@ -450,11 +439,16 @@ socket.on("updateColors", function() {
     const elem = $('.color_options .chosen');
     if (elem != null) elem.removeClass('chosen');
     for (let i = 0; i < players.length; i++){
+        let circle_i = colorOptns.eq(players[i].colorID);
         if (players[i].id !== socket.id && players[i].colorID > -1){
-            colorOptns.eq(players[i].colorID).addClass('chosen');
-            const chosenColor = colorOptns.eq(players[i].colorID).css('background-color');
+            circle_i.addClass('chosen');
+            const chosenColor = circle_i.css('background-color');
             console.log(chosenColor);
             playerBoxes.eq(i).find('.color').css('background-color', chosenColor);
         }
+        else {
+            selectedColor = circle_i.css('background-color');
+            player_list.find('.current').find('.color').css('background-color', selectedColor);
+        }
     };
-})
+});
