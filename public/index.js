@@ -7,9 +7,11 @@ socket.emit("allUsers");
 
 const initialScr = $('.initial_screen');
 const roomBtns = $('.initial_screen button');
-const usernameInput = $('.initial_screen #usernameInput');
+let usernameInputDiv = $('.initial_screen #usernameInputDiv');
+let usernameInput = $('.initial_screen #usernameInput');
+let newRoomBtnDiv = $('.initial_screen #newRoomBtnDiv');
 const newRoomBtn = $('.initial_screen #newRoomBtn');
-const roomIDInput = $('.initial_screen #roomCodeInput');
+let roomIDInput = $('.initial_screen #roomCodeInput');
 const joinRoomBtn = $('.initial_screen #joinRoomBtn');
 
 const restroomScr = $('.restroom_screen');
@@ -52,10 +54,13 @@ $(window).on('mouseup', function(e) {
 // User events
 
 let players = [];
+let leavePlayers = [];
+let inLeaveState = false;
+
 class Player{
-    constructor(index, name){
-        this.index = index;
-        this.name = name;
+    constructor(id, username){
+        this.id = id;
+        this.username = username;
     }
 }
 
@@ -113,21 +118,14 @@ const createChestLists = function(n) {
     chestList(list_120, n120);
 }
 
-const playerJoin = function(id, username, room) {
-    const player = {id, username, room};
-    players.push(player);
-    return player;
-};
-
-const playerLeave = function(id) {
-    const index = players.findIndex(player => player.id === id);
-    if (index !== -1) {
-        return players.splice(index, 1)[0];
-    }
-} 
-
+// A player base on id (in players)
 const getCurrentPlayer = function(id) {
     return players.find(player => player.id === id);
+}
+
+// A player base on id (in leavePlayers)
+const getLeavePlayer = function(id) {
+    return leavePlayers.find(player => player.id == id);
 }
 
 const getRoomUsers = function(room) {
@@ -138,14 +136,22 @@ const getActiveRooms = function() {
     return new Set(players.map(player => player.room));
 }
 
+// A list of active player names
 const getActiveNames = function() {
     return players.map(player => player.username);
 }
 
+// A list of player names in leaveRoom state
+const getLeaveNames = function() {
+    return leavePlayers.map(player => player.username);
+}
+
+// 
 const getUsedColors = function() {
     return players.map(player => player.colorID);
 }
 
+// Default color of a player
 const getDefaultColor = function() {
     for (let i = 0; i < colorOptns.length; i++) {
         if (!colorOptns.eq(i).hasClass('chosen')){
@@ -155,6 +161,7 @@ const getDefaultColor = function() {
     return -1;
 }
 
+// get box index to show in player_list base on playername
 const getBoxIndex = function(player) {
     for (let i = 0; i < playerBoxes.length; i++){
         if (playerBoxes.eq(i).find('p').text() == player.username){
@@ -169,74 +176,153 @@ const getBoxIndex = function(player) {
 */
 
 newRoomBtn.on("click", function() {
-    // Check valid
-    const usernames = getActiveNames(players);
+    const activeUsernames = getActiveNames(players);
+    const leaveUsernames = getLeaveNames();
     const rooms = getActiveRooms(players);
-    if (!usernameInput.val()){
-        alert("Forgot to enter username!!!");
-        return;
-    }
-    if (usernames.includes(usernameInput.val())){
-        alert("Existed username!!!");
-        return;
-    }
     const roomID = randomRoomID().toString();
     while (rooms.has(roomID)){
         roomID = randomRoomID().toString();
     }
+    if (!inLeaveState){
+        // Check valid
+        if (!usernameInput.val()){
+            alert("Forgot to enter username!!!");
+            return;
+        }
+        if (activeUsernames.includes(usernameInput.val()) || leaveUsernames.includes(usernameInput.val())){
+            alert("Existed username!!!");
+            return;
+        }
+    
+        // Handle room
+        const username = usernameInput.val();
+        socket.emit("joinRoom", username, roomID);
+        roomIDMessage.text("ID: " + roomID);
 
-    // Host event
-    const username = usernameInput.val();
-    socket.emit("joinRoom", username, roomID);
-    roomIDMessage.text("ID: " + roomID);
-    const index = getDefaultColor();
-    colorOptns.eq(index).addClass('selected');
-    let boxID = getBoxIndex(getCurrentPlayer(socket.id));
-    selectedColor = colorOptns.eq(index).css('background-color');
-    playerBoxes.eq(boxID).find('.color').css('background-color', selectedColor);
-    socket.emit("selected", roomID, index);
-    restroomScr.css('display', "grid");
-    initialScr.css('display', "none");
-});
-
-joinRoomBtn.on('click', function() {
-    // Check valid
-    const usernames = getActiveNames(players);
-    const rooms = getActiveRooms(players);
-    if (!usernameInput.val()){
-        alert("Forgot to enter username!!!");
-        return;
-    }
-    if (usernames.includes(usernameInput.val())){
-        alert("Existed username!!!");
-        return;
-    }
-    if (!roomIDInput.val()){
-        alert("Forgot to enter room ID!!!");
-        return;
-    }
-    const roomID = roomIDInput.val();
-    if (!rooms.has(roomID)){
-        alert("Invalid room ID!!!");
-        return;
-    }
-
-    // Guest event
-    const username = usernameInput.val();
-    socket.emit("joinRoom", username, roomID);
-    roomIDMessage.text("ID: " + roomID);
-    setTimeout(() => {
+        // Handle color
         const index = getDefaultColor();
         colorOptns.eq(index).addClass('selected');
         let boxID = getBoxIndex(getCurrentPlayer(socket.id));
         selectedColor = colorOptns.eq(index).css('background-color');
         playerBoxes.eq(boxID).find('.color').css('background-color', selectedColor);
         socket.emit("selected", roomID, index);
-    }, 200);
-    ranges.hide();
-    startGameBtn.hide();
+
+        // Modify swap room
+        usernameInputDiv.html(``);
+        usernameInputDiv.append(`<p>Welcome ${usernameInput.val()}</p>`);
+        $('.initial_screen h4').remove();
+    }
+    else {
+        let currentPlayer = getLeavePlayer(socket.id);
+        socket.emit("joinRoom", currentPlayer.username, roomID);
+        roomIDMessage.text("ID: " + roomID);
+
+        // Handle color
+        const index = getDefaultColor();
+        colorOptns.eq(index).addClass('selected');
+        let boxID = getBoxIndex(getLeavePlayer(socket.id));
+        selectedColor = colorOptns.eq(index).css('background-color');
+        playerBoxes.eq(boxID).find('.color').css('background-color', selectedColor);
+        socket.emit("selected", roomID, index);
+        
+    }
+    // Handle swap room
+    usernameInput.val('');
+    roomIDInput.val('');
     restroomScr.css('display', "grid");
     initialScr.css('display', "none");
+});
+
+joinRoomBtn.on('click', function() {
+    if (!inLeaveState){
+        // Check valid
+        const activeUsernames = getActiveNames(players);
+        const leaveUsernames = getLeaveNames();
+        const rooms = getActiveRooms(players);
+        if (!usernameInput.val()){
+            alert("Forgot to enter username!!!");
+            return;
+        }
+        if (activeUsernames.includes(usernameInput.val()) || leaveUsernames.includes(usernameInput.val())){
+            alert("Existed username!!!");
+            return;
+        }
+        if (!roomIDInput.val()){
+            alert("Forgot to enter room ID!!!");
+            return;
+        }
+        const roomID = roomIDInput.val();
+        if (!rooms.has(roomID)){
+            alert("Invalid room ID!!!");
+            return;
+        }
+
+        // Handle room
+        const username = usernameInput.val();
+        socket.emit("joinRoom", username, roomID);
+        roomIDMessage.text("ID: " + roomID);
+
+        // Handle color
+        setTimeout(() => {
+            const index = getDefaultColor();
+            colorOptns.eq(index).addClass('selected');
+            let boxID = getBoxIndex(getCurrentPlayer(socket.id));
+            selectedColor = colorOptns.eq(index).css('background-color');
+            playerBoxes.eq(boxID).find('.color').css('background-color', selectedColor);
+            socket.emit("selected", roomID, index);
+        }, 200);
+
+        // Handle swap room
+        ranges.hide();
+        startGameBtn.hide();
+
+        usernameInputDiv.html(``);
+        usernameInputDiv.append(`<p>Welcome ${usernameInput.val()}</p>`);
+        $('.initial_screen h4').remove();
+
+        usernameInput.val('');
+        roomIDInput.val('');
+
+        restroomScr.css('display', "grid");
+        initialScr.css('display', "none");
+
+    }
+    else {
+        // Check valid
+        const rooms = getActiveRooms(players);
+        if (!roomIDInput.val()){
+            alert("Forgot to enter room ID!!!");
+            return;
+        }
+
+        // Handle room
+        const roomID = roomIDInput.val();
+        if (!rooms.has(roomID)){
+            alert("Invalid room ID!!!");
+            return;
+        }
+        let currentPlayer = getLeavePlayer(socket.id);
+        socket.emit("joinRoom", currentPlayer.username, roomID);
+        roomIDMessage.text("ID: " + roomID);
+
+        // Handle color
+        setTimeout(() => {
+            const index = getDefaultColor();
+            colorOptns.eq(index).addClass('selected');
+            let boxID = getBoxIndex(getCurrentPlayer(socket.id));
+            selectedColor = colorOptns.eq(index).css('background-color');
+            playerBoxes.eq(boxID).find('.color').css('background-color', selectedColor);
+            socket.emit("selected", roomID, index);
+        }, 200);
+
+        // Handle swap room
+        ranges.hide();
+        startGameBtn.hide();
+        usernameInput.val('');
+        roomIDInput.val('');
+        restroomScr.css('display', "grid");
+        initialScr.css('display', "none");
+    }
 });
 
 /*
@@ -244,6 +330,22 @@ joinRoomBtn.on('click', function() {
 */
 
 leaveRoomBtn.on('click', function() {
+    console.log(1);
+    players.forEach(function(player){
+        console.log(player);
+    })
+    console.log(2);
+    leavePlayers.forEach(function(player){
+        console.log(player);
+    })
+    inLeaveState = true;
+    let currentPlayer = getCurrentPlayer(socket.id);
+    let leaveIndex = players.indexOf(currentPlayer);
+    if (leaveIndex > -1){
+        players.splice(leaveIndex, 1);
+    }
+    let roomID = currentPlayer.room;
+    socket.emit("leaveRoom", leaveIndex, roomID);   
     initialScr.css('display', "flex");
     restroomScr.css('display', "none");
 });
@@ -303,8 +405,9 @@ for (let i = 0; i < chests.length; i++) {
 
 // Socket events
 
-socket.on("allUsers", listUser => {
-    players = listUser;
+socket.on("allUsers", function(activeUsers, leaveUsers){
+    players = activeUsers;
+    leavePlayers = leaveUsers;
 });
 
 socket.on("updateUsers", roomUsers => {
