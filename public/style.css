@@ -70,25 +70,54 @@ button:hover{
     font-family: "Carribean Caps";
 }
 
-.initial_screen #storyBtn{
-    /* Positioning */
-    position: absolute;
+.button_list {
+    position: fixed;
+    right: 20px;
+    top: 20px;
+}
+
+.button_list #storyBtn{ 
 
     /* Displaying & Box Model */
-    width: 40px;
-    height: 40px;
-    top: 20px;
-    left: 20px;
-    border-radius: 13px;
+    width: 50px;
+    height: 50px;
+    margin: 7px;
+    border-radius: 10px;
 
     /* Color */
-    background-image: url("/Textures/book_square.svg");
+    background-image: url("/Textures/StoryBt.png");
+    background-size: cover;
+}
+
+.button_list #settingBtn{
+    
+    /* Displaying & Box Model */
+    width: 50px;
+    height: 50px;
+    margin: 7px;
+    border-radius: 10px;
+
+    /* Color */
+    background-image: url("/Textures/MusicBt.png");
+    background-size: cover;
+}
+
+.button_list #infoBtn{
+
+    /* Displaying & Box Model */
+    width: 50px;
+    height: 50px;
+    margin: 7px;
+    border-radius: 10px;
+
+    /* Color */
+    background-image: url("/Textures/InfoBt.png");
     background-size: cover;
 }
 
 .initial_screen .story_screen{
     /* Position */
-    position: absolute;
+    z-index: 100;
 
     /* Displaying & Box Model */
     display: none;

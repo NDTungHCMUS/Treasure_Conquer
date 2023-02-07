@@ -225,6 +225,10 @@ newRoomBtn.on("click", function() {
     initialScr.css('display', "none");
 });
 
+storyBtn.on("click", function() {
+    storyScr.css('display', 'block')
+})
+
 joinRoomBtn.on('click', function() {
     if (!inLeaveState){
         // Check valid
@@ -452,3 +456,4 @@ socket.on("updateColors", function() {
         }
     };
 });
+
