@@ -26,11 +26,10 @@ const playerJoin = function(id, username, room) {
     return player;
 };
 
-const playerLeave = function(id, room) {
+const playerLeave = function(index) {
     let player;
-    const index = players.findIndex(player => player.id === id);
     if (index !== -1) {
-         player =  players.splice(index, 1)[0];
+        player =  players.splice(index, 1)[0];
     }
     leavePlayers.push(player);
     return player;
@@ -57,11 +56,11 @@ io.on("connection", function(socket) {
         socket.join(player.room);
         io.emit("allUsers", players, leavePlayers);
         io.to(player.room).emit("updateUsers", getRoomUsers(player.room));
-        io.to(roomID).emit("updateColors");
+        io.to(roomID).emit("updateColors", getRoomUsers(player.room));
     });
 
-    socket.on("leaveRoom", function(leaveIndex, roomID){
-        const player = playerLeave(socket.id);
+    socket.on("leaveRoom", function(leaveIndex){
+        const player = playerLeave(leaveIndex);
         socket.leave(player.room);
         io.emit("allUsers", players, leavePlayers);
         io.to(player.room).emit("updateUsers", getRoomUsers(player.room));
@@ -79,7 +78,7 @@ io.on("connection", function(socket) {
         let player = getCurrentPlayer(socket.id);
         player.colorID = index;
         io.emit("allUsers", players, leavePlayers);
-        io.to(roomID).emit("updateColors");
+        io.to(roomID).emit("updateColors", getRoomUsers(player.room));
     });
 
     socket.on("startGame", function(roomID) {
