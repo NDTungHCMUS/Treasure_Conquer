@@ -39,6 +39,10 @@ const getCurrentPlayer = function(id) {
     return players.find(player => player.id === id);
 }
 
+const getLeavePlayer = function(id) {
+    return leavePlayers.find(player => player.id === id);
+}
+
 const getRoomUsers = function(room) {
     return players.filter(player => player.room === room);
 }
@@ -61,9 +65,11 @@ io.on("connection", function(socket) {
 
     socket.on("leaveRoom", function(leaveIndex){
         const player = playerLeave(leaveIndex);
+        let roomID = player.room;
         socket.leave(player.room);
         io.emit("allUsers", players, leavePlayers);
-        io.to(player.room).emit("updateUsers", getRoomUsers(player.room));
+        io.to(roomID).emit("updateUsers", getRoomUsers(player.room));
+        io.to(roomID).emit("updateColors", getRoomUsers(player.room));
     });
     
     socket.on("allUsers", function() {
@@ -83,6 +89,23 @@ io.on("connection", function(socket) {
 
     socket.on("startGame", function(roomID) {
         io.to(roomID).emit("startGame");
+    });
+
+    socket.on("disconnect", function(){
+        let player;
+        let index = players.indexOf(getCurrentPlayer(socket.id));   
+        if (index != -1){
+            player =  players.splice(index, 1)[0];
+            let roomID = player.room;
+            socket.leave(roomID);     
+            io.to(roomID).emit("updateUsers", getRoomUsers(roomID));
+            io.to(roomID).emit("updateColors", getRoomUsers(roomID));
+        }
+        else {
+            index = leavePlayers.indexOf(getLeavePlayer(socket.id));
+            player = leavePlayers.splice(index, 1)[0];
+        }
+        io.emit("allUsers", players, leavePlayers);
     });
 })
 server.listen(5500, function() {

@@ -133,7 +133,7 @@ const getCurrentPlayer = function(id) {
 
 // A player base on id (in leavePlayers)
 const getLeavePlayer = function(id) {
-    return leavePlayers.find(player => player.id == id);
+    return leavePlayers.find(player => player.id === id);
 }
 
 const getRoomUsers = function(room) {
@@ -355,16 +355,17 @@ for (let i = 0; i < NavPageBtn.length; i++){
 */
 
 leaveRoomBtn.on('click', function() {
-    console.log(1);
-    players.forEach(function(player){
-        console.log(player);
-    })
-    console.log(2);
-    leavePlayers.forEach(function(player){
-        console.log(player);
-    })
+    // console.log(1);
+    // players.forEach(function(player){
+    //     console.log(player);
+    // })
+    // console.log(2);
+    // leavePlayers.forEach(function(player){
+    //     console.log(player);
+    // })
     inLeaveState = true;
     let currentPlayer = getCurrentPlayer(socket.id);
+    colorOptns.eq(currentPlayer.colorID).removeClass('selected');
     let leaveIndex = players.indexOf(currentPlayer);
     if (leaveIndex > -1){
         players.splice(leaveIndex, 1);
@@ -435,6 +436,13 @@ socket.on("allUsers", function(activeUsers, leaveUsers){
 });
 
 socket.on("updateUsers", function(roomUsers) {
+    currentPlayer = getCurrentPlayer(socket.id);
+    if (roomUsers.length){
+        if (roomUsers[0].username == currentPlayer.username){
+            ranges.show();
+            startGameBtn.show();
+        }
+    } 
     player_list.html(``);
     roomUsers.forEach(player => {
         const playerDiv = $('<div>').addClass('box');
