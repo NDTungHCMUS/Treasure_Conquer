@@ -71,13 +71,15 @@ button:hover{
 }
 
 .button_list {
+    /* Positioning */
     position: fixed;
+
+    /* Displaying & Box Model */
     right: 20px;
     top: 20px;
 }
 
 .button_list #storyBtn{ 
-
     /* Displaying & Box Model */
     width: 50px;
     height: 50px;
@@ -90,7 +92,7 @@ button:hover{
 }
 
 .button_list #settingBtn{
-    
+
     /* Displaying & Box Model */
     width: 50px;
     height: 50px;
@@ -117,7 +119,7 @@ button:hover{
 
 .initial_screen .story_screen{
     /* Position */
-    z-index: 100;
+    position: absolute;
 
     /* Displaying & Box Model */
     display: none;
@@ -242,7 +244,7 @@ button:hover{
     margin: 5px;
 
     /* Color */
-    background: rgba(255, 255, 255, 0.7);
+    background-color: rgba(255, 250, 240, 0.5);
 }
 
 #show_player_list .box .color{
@@ -250,21 +252,21 @@ button:hover{
     position: absolute;
 
     /* Displaying & Box Model */
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
+    width: 72px;
+    height: 42px;
     margin: 10px;
-    right: 80%;
+    right: 70%;
 
     /* Color */
-    background-color: black;
+    /* background: url(/Textures/pirate_hat.svg);
+    background-size: cover; */
 }
 
 #show_player_list .box p{
 
     /* Displaying & Box Model */
     text-align: center;
-    margin-left: 25px;
+    margin-left: 50px;
 
 }
 
@@ -320,19 +322,19 @@ button:hover{
 }
 
 #row1 .option:nth-child(4){
-    background-color: gold;
+    background-color: rgb(250, 222, 64);
 }
 
 #row2 .option:nth-child(1){
-    background-color: chocolate;
+    background-color: rgb(194, 109, 48);
 }
 
 #row2 .option:nth-child(2){
-    background-color: rgb(0, 72, 205);
+    background-color: rgb(43, 97, 199);
 }
 
 #row2 .option:nth-child(3){
-    background-color: forestgreen;
+    background-color: rgb(64, 158, 64);
 }
 
 #row2 .option:nth-child(4){
@@ -348,15 +350,15 @@ button:hover{
 }
 
 #row3 .option:nth-child(3){
-    background-color: darkmagenta;
+    background-color: rgb(155, 39, 155);
 }
 
 #row3 .option:nth-child(4){
-    background-color: fuchsia;
+    background-color: rgb(238, 108, 238);
 }
 
 #row4 .option:nth-child(1){
-    background-color: crimson;
+    background-color: rgb(240, 52, 90);
 }
 
 #row4 .option:nth-child(2){
@@ -421,13 +423,9 @@ button:hover{
 
 .restroom_screen .character{
     /* Displaying & Box Model */
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    margin: 40px auto;
-
-    /* Color */
-    background-color: white;
+    width: 140px;
+    height: 180px;
+    margin: 20px auto;
 }
 
 .customize{
@@ -506,8 +504,8 @@ button:hover{
 
     /* Displaying & Box Model */
     display: none;
-    grid-template-rows: 50px 50px 3fr 2fr;
-    grid-template-columns: 5px 2fr 5fr 5px;
+    grid-template-rows: 35px 40px 1fr;
+    grid-template-columns: 1fr 1fr;
     text-align: center;
     min-width: 100%;
     min-height: 100vh;
@@ -518,25 +516,25 @@ button:hover{
     background-size: cover;
 }
 
-#role{
+.game_screen #role{
+    /* Displaying & Box Model */
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: flex-start;
+    margin: 5px;
+}
+
+.game_screen #time{
     /* Displaying & Box Model */
     grid-column: 2;
     grid-row: 1;
-    justify-self: flex-start;
-    margin: 10px;
-}
-
-#time{
-    /* Displaying & Box Model */
-    grid-column: 3;
-    grid-row: 1;
     justify-self: center;
-    margin: 10px;
+    margin: 5px;
 }
 
 .game_screen .button{
     /* Displaying & Box Model */
-    grid-column: 2 / 4;
+    grid-column: 1 / 3;
     grid-row: 2;
     justify-self: flex-start;
 }
@@ -547,7 +545,6 @@ button:hover{
     height: 40px;
     border: none;
     border-radius: 10px;
-    margin: 5px;
 
     /* Color */
     background-color: indianred;
@@ -559,49 +556,21 @@ button:hover{
     height: 40px;
     border: none;
     border-radius: 10px;
-    margin: 5px;
 
     /* Color */
     background-color: lightgreen;
 }
 
-.game_screen .chat{
-    /* Displaying & Box Model */
-    grid-column: 2;
-    grid-row: 3 / 5;
-    justify-content: center;
-    border: none;
-    border-radius: 10px;
-    margin: 5px;
-
-    /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
-    background-size: cover;
-}
-
-.chat input {
-    /* Positioning */
-    position: absolute;
-    
-    /* Displaying & Box Model */
-    display: flex;
-    justify-self: center;
-    width: 280px;
-    height: 30px;
-    left: 25px;
-    bottom: 15px;
-}
-
 .treasure{
     /* Displaying & Box Model */
-    grid-column: 3;
+    grid-column: 1 / 3;
     grid-row: 3;
     border: none;
     border-radius: 10px;
-    margin: 5px;
+    margin: 5px 15px;
 
     /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/treasure_map.png");
     background-size: cover;
 }
 
@@ -656,19 +625,6 @@ button:hover{
     font-weight: bold;
 }
 
-.leaderboard{
-    /* Displaying & Box Model */
-    grid-column: 3;
-    grid-row: 4;
-    border: none;
-    border-radius: 10px;
-    margin: 5px;
-
-    /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
-    background-size: cover;
-}
-
 /*
 * ROLE SCREEN
 */
@@ -696,7 +652,7 @@ button:hover{
 
 .role_screen p{
     /* Displaying & Box Model */
-    margin: 40px;
+    margin: 40px 20px;
 }
 
 .role_screen #role_mes{
@@ -707,9 +663,9 @@ button:hover{
 
 .role_screen .character{
     /* Displaying & Box Model */
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
+    width: 140px;
+    height: 180px;
+    margin: 20px auto;
 }
 
 /*
@@ -742,37 +698,78 @@ button:hover{
 */
 
 .vote_screen{
-    /* Position */
+    /* Positioning */
     position: absolute;
 
     /* Displaying & Box Model */
     display: none;
-    width: 800px;
-    height: 500px;
-    flex-direction: column;
-    align-items: center;
+    grid-template-rows: 80px 3fr 2fr;
+    grid-template-columns: 5px 2fr 5fr 5px;
     text-align: center;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
-    
+    min-width: 100%;
+    min-height: 100vh;
+
+    /* Color */
+    background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)), 
+    url("/Textures/pirate_background.jpg");
+    background-size: cover;
+}
+
+.vote_screen #role{
+    /* Displaying & Box Model */
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: flex-start;
+    margin: 10px;
+}
+
+.vote_screen #time{
+    /* Displaying & Box Model */
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: center;
+    margin: 10px;
+}
+
+.vote_screen .chat{
+    /* Displaying & Box Model */
+    grid-column: 2;
+    grid-row: 2 / 4;
+    justify-content: center;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+
     /* Color */
     background-image: url("/Textures/treasure-scroll.jpg");
     background-size: cover;
 }
 
+.chat input {
+    /* Positioning */
+    position: absolute;
+    
+    /* Displaying & Box Model */
+    display: flex;
+    justify-self: center;
+    width: 280px;
+    height: 30px;
+    margin: auto;
+    bottom: 15px;
+}
+
 .vote_screen .player_list{
     /* Displaying & Box Model */
-    width: 790px;
-    height: 400px;
+    grid-column: 3;
+    grid-row: 2;
     text-align: center;
     border: none;
     border-radius: 10px;
     margin: 5px;
 
     /* Color */
-    background: rgba(240, 248, 255, 0.4);
+    background-image: url("/Textures/treasure-scroll.jpg");
+    background-size: cover;
 }
 
 #skipVoteBtn{
@@ -785,6 +782,19 @@ button:hover{
 
     /* Color */
     background-color: lightgreen;
+}
+
+.leaderboard{
+    /* Displaying & Box Model */
+    grid-column: 3;
+    grid-row: 3;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+
+    /* Color */
+    background-image: url("/Textures/treasure-scroll.jpg");
+    background-size: cover;
 }
 
 /* Positioning */
