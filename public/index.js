@@ -8,12 +8,17 @@ socket.emit("allUsers");
 const initialScr = $('.initial_screen');
 const storyBtn = $('.initial_screen #storyBtn');
 const storyScr = $('.initial_screen .story_screen');
+const storyText = $('.initial_screen .story_screen .text');
 let usernameInputDiv = $('.initial_screen #usernameInputDiv');
 let usernameInput = $('.initial_screen #usernameInput');
 let newRoomBtnDiv = $('.initial_screen #newRoomBtnDiv');
 const newRoomBtn = $('.initial_screen #newRoomBtn');
 let roomIDInput = $('.initial_screen #roomCodeInput');
 const joinRoomBtn = $('.initial_screen #joinRoomBtn');
+
+const NavUpBtn = $('.navigate .up')
+const NavPageBtn = $('.navigate .page-mark')
+const NavDownBtn = $('.navigate .down')
 
 const restroomScr = $('.restroom_screen');
 const roomIDMessage = $('.restroom_screen h3');
@@ -235,7 +240,7 @@ newRoomBtn.on("click", function() {
 
 storyBtn.on("click", function() {
     storyScr.css('display', 'block')
-})
+});
 
 joinRoomBtn.on('click', function() {
     const rooms = getActiveRooms(players);
@@ -316,6 +321,34 @@ joinRoomBtn.on('click', function() {
     restroomScr.css('display', "grid");
     initialScr.css('display', "none");
 });
+// Navigate Story
+const updateNav = function(currentPage){   
+    for (let i = 0; i < NavPageBtn.length; i++){
+    storyText.eq(i).css("display", "none");
+    NavPageBtn.eq(i).css("background-image", "url('Textures/Nagative/Normal.png')");
+    if (i == currentPage) {
+        storyText.eq(i).css("display", "block");
+        NavPageBtn.eq(i).css("background-image","url('Textures/Nagative/Active.png')");
+
+    }
+}}
+let currentPage = 0;
+NavUpBtn.on('click', function() {
+    currentPage = (currentPage + 2)%3;
+    updateNav(currentPage);
+    console.log(currentPage)
+});
+NavDownBtn.on('click', function() {
+    currentPage = (currentPage + 1)%3;
+    updateNav(currentPage);
+    console.log(currentPage)
+});
+for (let i = 0; i < NavPageBtn.length; i++){
+    NavPageBtn.eq(i).on('click', function() {
+        currentPage = i;
+        updateNav(currentPage);
+})}
+
 
 /*
 * RESTROOM SCREEN
