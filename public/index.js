@@ -226,7 +226,7 @@ newRoomBtn.on("click", function() {
 });
 
 storyBtn.on("click", function() {
-    storyScr.css('display', 'block')
+    storyScr.css('display', 'flex')
 })
 
 joinRoomBtn.on('click', function() {
