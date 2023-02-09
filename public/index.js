@@ -23,6 +23,7 @@ const player_list = $(".player_list #show_player_list");
 const colorOptns = $('.restroom_screen .color_options .option');
 const sliders = $('.restroom_screen .customize div');
 const ranges = $('.restroom_screen .customize div input');
+const characterSVG = $('.update .character');
 
 const gameScr = $('.game_screen');
 const roleName = $('#role');
@@ -42,10 +43,11 @@ let room_size = playerBoxes.length;
 let temp = Math.floor(Math.random() * room_size);
 const role = ["Captain", "Killer", "Pirate"];
 const killerNum = 2;
+characterSVG.html($('.textures .spriteDiv').html());
 
 
 $(window).on('mouseup', function(e) {
-    const container = $('.activate_screen, .vote_screen, .story_screen');
+    const container = $('.activate_screen, .story_screen');
     if (!container.is(e.target) && container.has(e.target).length === 0){
         container.fadeOut();
     }
@@ -87,7 +89,8 @@ const characterRole = function() {
         }
         else roleDesc.text("Nhiệm vụ của bạn là tìm giết Killer đang trà trộn trong đoàn.\n Bạn không nhớ được thân phận những thủy thủ trong đoàn. Tham gia săn kho báu cùng đồng minh sẽ giúp bạn tăng điểm thân mật. Đạt đủ điểm thân mật bạn sẽ nhận được thông tin của thủy thủ trong đoàn");
     }
-    roleChr.css('background-color', selectedColor);
+    roleChr.html($('.textures .spriteDiv').html());
+    roleChr.find('.cls-8').css('fill', selectedColor);
 }
 
 const randomRoomID = function() {
@@ -165,6 +168,10 @@ const getDefaultColor = function() {
 * INITIAL SCREEN
 */
 
+storyBtn.on('click', function() {
+    storyScr.css('display', 'flex');
+});
+
 newRoomBtn.on("click", function() {
     const activeUsernames = getActiveNames(players);
     const leaveUsernames = getLeaveNames();
@@ -175,8 +182,8 @@ newRoomBtn.on("click", function() {
     }
     if (!inLeaveState){
         // Check valid
-        if (!usernameInput.val() || usernameInput.val().length > 20){
-            alert("Invalid username!!!");
+        if (!usernameInput.val() || usernameInput.val().length > 16){
+            alert("Your username must have around 1-16 character(s)!!!");
             return;
         }
         if (activeUsernames.includes(usernameInput.val()) || leaveUsernames.includes(usernameInput.val())){
@@ -194,7 +201,8 @@ newRoomBtn.on("click", function() {
             const index = getDefaultColor();
             colorOptns.eq(index).addClass('selected');
             selectedColor = colorOptns.eq(index).css('background-color');
-            player_list.find('.current').find('.color').css('background-color', selectedColor);
+            player_list.find('.current').find('.color').find('.hatcls-2').css('fill', selectedColor);
+            characterSVG.find('.cls-8').css('fill', selectedColor);
             socket.emit("selected", roomID, index);
         }, 100);
 
@@ -213,10 +221,10 @@ newRoomBtn.on("click", function() {
             const index = getDefaultColor();
             colorOptns.eq(index).addClass('selected');
             selectedColor = colorOptns.eq(index).css('background-color');
-            player_list.find('.current').find('.color').css('background-color', selectedColor);
+            player_list.find('.current').find('.color').find('.hatcls-2').css('fill', selectedColor);
+            characterSVG.find('.cls-8').css('fill', selectedColor);
             socket.emit("selected", roomID, index);
         }, 100);
-        
     }
     // Handle swap room
     usernameInput.val('');
@@ -225,18 +233,15 @@ newRoomBtn.on("click", function() {
     initialScr.css('display', "none");
 });
 
-storyBtn.on("click", function() {
-    storyScr.css('display', 'block')
-})
-
 joinRoomBtn.on('click', function() {
+    const rooms = getActiveRooms(players);
+    const roomID = roomIDInput.val();
     if (!inLeaveState){
         // Check valid
         const activeUsernames = getActiveNames(players);
         const leaveUsernames = getLeaveNames();
-        const rooms = getActiveRooms(players);
-        if (!usernameInput.val()){
-            alert("Forgot to enter username!!!");
+        if (!usernameInput.val() || usernameInput.val().length > 16){
+            alert("Your username must have around 1-16 character(s)!!!");
             return;
         }
         if (activeUsernames.includes(usernameInput.val()) || leaveUsernames.includes(usernameInput.val())){
@@ -247,7 +252,6 @@ joinRoomBtn.on('click', function() {
             alert("Forgot to enter room ID!!!");
             return;
         }
-        const roomID = roomIDInput.val();
         if (!rooms.has(roomID)){
             alert("Invalid room ID!!!");
             return;
@@ -263,39 +267,28 @@ joinRoomBtn.on('click', function() {
             const index = getDefaultColor();
             colorOptns.eq(index).addClass('selected');
             selectedColor = colorOptns.eq(index).css('background-color');
-            player_list.find('.current').find('.color').css('background-color', selectedColor);
+            player_list.find('.current').find('.color').find('.hatcls-2').css('fill', selectedColor);
+            characterSVG.find('.cls-8').css('fill', selectedColor);
             socket.emit("selected", roomID, index);
         }, 100);
 
-        // Handle swap room
-        ranges.hide();
-        startGameBtn.hide();
-
+        // Modify swap room
         usernameInputDiv.html(``);
         usernameInputDiv.append(`<p>Welcome ${usernameInput.val()}</p>`);
         $('.initial_screen h4').remove();
-
-        usernameInput.val('');
-        roomIDInput.val('');
-
-        restroomScr.css('display', "grid");
-        initialScr.css('display', "none");
-
     }
     else {
         // Check valid
-        const rooms = getActiveRooms(players);
         if (!roomIDInput.val()){
             alert("Forgot to enter room ID!!!");
             return;
         }
-
-        // Handle room
-        const roomID = roomIDInput.val();
         if (!rooms.has(roomID)){
             alert("Invalid room ID!!!");
             return;
         }
+
+        // Handle room
         let currentPlayer = getLeavePlayer(socket.id);
         socket.emit("joinRoom", currentPlayer.username, roomID);
         roomIDMessage.text("ID: " + roomID);
@@ -305,18 +298,19 @@ joinRoomBtn.on('click', function() {
             const index = getDefaultColor();
             colorOptns.eq(index).addClass('selected');
             selectedColor = colorOptns.eq(index).css('background-color');
-            player_list.find('.current').find('.color').css('background-color', selectedColor);
+            player_list.find('.current').find('.color').find('.hatcls-2').css('fill', selectedColor);
+            characterSVG.find('.cls-8').css('fill', selectedColor);
             socket.emit("selected", roomID, index);
         }, 100);
-
-        // Handle swap room
-        ranges.hide();
-        startGameBtn.hide();
-        usernameInput.val('');
-        roomIDInput.val('');
-        restroomScr.css('display', "grid");
-        initialScr.css('display', "none");
     }
+
+    // Handle swap room
+    ranges.hide();
+    startGameBtn.hide();
+    usernameInput.val('');
+    roomIDInput.val('');
+    restroomScr.css('display', "grid");
+    initialScr.css('display', "none");
 });
 
 /*
@@ -338,8 +332,7 @@ leaveRoomBtn.on('click', function() {
     if (leaveIndex > -1){
         players.splice(leaveIndex, 1);
     }
-    let roomID = currentPlayer.room;
-    socket.emit("leaveRoom", leaveIndex, roomID);   
+    socket.emit("leaveRoom", leaveIndex);   
     initialScr.css('display', "flex");
     restroomScr.css('display', "none");
 });
@@ -347,7 +340,7 @@ leaveRoomBtn.on('click', function() {
 startGameBtn.on('click', function() {
     const roomID = getCurrentPlayer(socket.id).room;
     room_size = playerBoxes.length;
-    if (room_size < 6 || room_size > 12){
+    if (room_size < 2 || room_size > 12){
         alert("Game should be started with around 6-12 players!!!");
         return;
     }
@@ -371,7 +364,8 @@ for (let i = 0; i < colorOptns.length; i++){
         if (elem != null) elem.removeClass('selected');
         colorOptns.eq(i).addClass('selected');
         selectedColor = colorOptns.eq(i).css('background-color');
-        player_list.find('.current').find('.color').css('background-color', selectedColor);
+        player_list.find('.current').find('.color').find('.hatcls-2').css('fill', selectedColor);
+        characterSVG.find('.cls-8').css('fill', selectedColor);
         socket.emit("selected", roomID, i);
     });
 }
@@ -385,7 +379,7 @@ activateBtn.on('click', function() {
 });
 
 voteBtn.on('click', function() {
-    voteScr.css('display', 'flex');
+    voteScr.css('display', 'grid');
 });
 
 for (let i = 0; i < chests.length; i++) {
@@ -407,8 +401,7 @@ socket.on("updateUsers", function(roomUsers) {
     player_list.html(``);
     roomUsers.forEach(player => {
         const playerDiv = $('<div>').addClass('box');
-        const playerCol = $('<div>').addClass('color');
-        playerDiv.append(playerCol);
+        playerDiv.append($('.textures .colorDiv').html());
         playerDiv.append(`<p>${player.username}</p>`);
         player_list.append(playerDiv);
         if (player.id === socket.id) {
@@ -422,8 +415,6 @@ socket.on("startGame", function() {
     room_size = playerBoxes.length;
     temp = Math.floor(Math.random() * room_size);
     gameScr.css('display', "grid");
-    restroomScr.css('display', "none");
-    roleScr.css('display', "flex");
     roleName.text("Role: " + randomRole());
     createChestLists(room_size);
     if (temp > killerNum) {
@@ -433,27 +424,29 @@ socket.on("startGame", function() {
         roleScr.fadeOut();
     }, 8000);
     characterRole();
+    restroomScr.css('display', "none");
+    roleScr.css('display', "flex");
 });
 
 socket.on("customize", function(value, i) {
     sliders.eq(i).find('span').text(value);
 });
 
-socket.on("updateColors", function() {
+socket.on("updateColors", function(roomUsers) {
     const elem = $('.color_options .chosen');
     if (elem != null) elem.removeClass('chosen');
-    for (let i = 0; i < players.length; i++){
-        let circle_i = colorOptns.eq(players[i].colorID);
-        if (players[i].id !== socket.id && players[i].colorID > -1){
+    for (let i = 0; i < roomUsers.length; i++){
+        let circle_i = colorOptns.eq(roomUsers[i].colorID);
+        if (roomUsers[i].id !== socket.id && roomUsers[i].colorID > -1){
+            let chosenColor = circle_i.css('background-color');
             circle_i.addClass('chosen');
-            const chosenColor = circle_i.css('background-color');
-            console.log(chosenColor);
-            playerBoxes.eq(i).find('.color').css('background-color', chosenColor);
+            playerBoxes.eq(i).find('.color').find('.hatcls-2').css('fill', chosenColor);
+            characterSVG.find('.cls-8').css('fill', selectedColor);
         }
         else {
             selectedColor = circle_i.css('background-color');
-            player_list.find('.current').find('.color').css('background-color', selectedColor);
+            player_list.find('.current').find('.color').find('.hatcls-2').css('fill', selectedColor);
+            characterSVG.find('.cls-8').css('fill', selectedColor);
         }
     };
 });
-
