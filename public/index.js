@@ -233,6 +233,10 @@ newRoomBtn.on("click", function() {
     initialScr.css('display', "none");
 });
 
+storyBtn.on("click", function() {
+    storyScr.css('display', 'block')
+})
+
 joinRoomBtn.on('click', function() {
     const rooms = getActiveRooms(players);
     const roomID = roomIDInput.val();
