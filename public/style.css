@@ -88,6 +88,10 @@ button:hover{
     float: left;
 }
 
+.ssi_btn:hover {
+    transform: scale(1.05);
+}
+
 .note_bubble {
     display: none;
     position: absolute;
@@ -121,7 +125,7 @@ button:hover{
     background-image: url("/Textures/InfoBt.png");
 }
 
-.initial_screen .story_screen{
+.initial_screen .ssi_screen{
     /* Position */
     position: absolute;
 
@@ -129,9 +133,6 @@ button:hover{
     display: none;
     width: 800px;
     height: 500px;
-    flex-direction: column;
-    align-content: center;
-    text-align: left;
     padding-top: 50px;
     top: 50%;
     left: 50%;
@@ -143,23 +144,21 @@ button:hover{
     background-size: cover;
 }
 
-.story_screen .text {
+#storyScreen .text {
+    display: none;
     width: 700px;
     height: 500px;
+    
+    flex-direction: column;
+    align-content: center;
+    text-align: left;
 }
 
-.story_screen .text:nth-child(1){
+#storyScreen .text:nth-child(1){
     display: block;
 }
-.story_screen .text:nth-child(2){
-    display: none;
-}
-.story_screen .text:nth-child(3){
-    display: none;
-}
 
-
-.story_screen .navigate {
+#storyScreen .navigate {
     position: absolute;
     right: 0px;
     top: 0px;
@@ -215,12 +214,14 @@ button:hover{
     transform: scale(1.05);
 }
 
-.story_screen p{
+#storyScreen p{
     /* Text */
     margin: 5px 60px;
     text-indent: 5%;
     font-size: 20px;
 }
+
+
 
 .initial_screen input {
     /* Displaying & Box Model */
@@ -499,9 +500,13 @@ button:hover{
 
 .restroom_screen .character{
     /* Displaying & Box Model */
-    width: 140px;
-    height: 180px;
-    margin: 20px auto;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 40px auto;
+
+    /* Color */
+    background-color: white;
 }
 
 .customize{

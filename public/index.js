@@ -7,8 +7,12 @@ socket.emit("allUsers");
 
 const initialScr = $('.initial_screen');
 const storyBtn = $('.initial_screen #storyBtn');
-const storyScr = $('.initial_screen .story_screen');
-const storyText = $('.initial_screen .story_screen .text');
+const settingBtn = $('.initial_screen #settingBtn');
+const infoBtn = $('.initial_screen #infoBtn');
+const storyScr = $('.initial_screen #storyScreen');
+const settingScr = $('.initial_screen #settingScreen');
+const infoScr = $('.initial_screen #infoScreen');
+const storyText = $('.initial_screen #storyScreen .text');
 let usernameInputDiv = $('.initial_screen #usernameInputDiv');
 let usernameInput = $('.initial_screen #usernameInput');
 let newRoomBtnDiv = $('.initial_screen #newRoomBtnDiv');
@@ -241,6 +245,21 @@ newRoomBtn.on("click", function() {
 storyBtn.on("click", function() {
     storyScr.css('display', 'block')
 });
+
+storyBtn.on("click", function() {
+    currentPage = 0;
+    updateNav(0)
+    storyScr.css('display', 'block');
+});
+
+settingBtn.on('click', function() {
+    storyScr.css('display', 'block')
+})
+
+infoBtn.on('click', function() {
+    infoScr.css('display', 'block')
+})
+
 
 joinRoomBtn.on('click', function() {
     const rooms = getActiveRooms(players);
