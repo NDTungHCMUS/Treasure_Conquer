@@ -54,22 +54,22 @@ const getActiveRooms = function() {
 let players = [];
 let leavePlayers = [];
 players.map(player => player.colorID = -1);
+
 io.on("connection", function(socket) {
     socket.on("joinRoom", function(username, roomID) {
         const player = playerJoin(socket.id, username, roomID);
         socket.join(player.room);
         io.emit("allUsers", players, leavePlayers);
-        io.to(player.room).emit("updateUsers", getRoomUsers(player.room));
+        io.to(roomID).emit("updateUsers", getRoomUsers(player.room));
         io.to(roomID).emit("updateColors", getRoomUsers(player.room));
     });
 
     socket.on("leaveRoom", function(leaveIndex){
         const player = playerLeave(leaveIndex);
-        let roomID = player.room;
         socket.leave(player.room);
         io.emit("allUsers", players, leavePlayers);
-        io.to(roomID).emit("updateUsers", getRoomUsers(player.room));
-        io.to(roomID).emit("updateColors", getRoomUsers(player.room));
+        io.to(player.room).emit("updateUsers", getRoomUsers(player.room));
+        io.to(player.room).emit("updateColors", getRoomUsers(player.room));
     });
     
     socket.on("allUsers", function() {
@@ -87,10 +87,16 @@ io.on("connection", function(socket) {
         io.to(roomID).emit("updateColors", getRoomUsers(player.room));
     });
 
-    socket.on("startGame", function(roomID) {
-        io.to(roomID).emit("startGame");
+    socket.on("startGame", function(roomID, room_size) {
+        // Generate random permutation from 0 to n - 1
+        let temp = [...Array(room_size).keys()];
+        for (let i = room_size - 1; i >= 0; i--){
+            let j = Math.floor(Math.random() * (i + 1));
+            [temp[i], temp[j]] = [temp[j], temp[i]];
+        }
+        io.to(roomID).emit("startGame", temp, room_size);
     });
-
+    
     socket.on("disconnect", function(){
         let player;
         let index = players.indexOf(getCurrentPlayer(socket.id));   
