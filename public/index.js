@@ -7,8 +7,10 @@ socket.emit("allUsers");
 
 const initialScr = $('.initial_screen');
 const storyBtn = $('.initial_screen #storyBtn');
-const storyScr = $('.initial_screen .story_screen');
-const storyText = $('.initial_screen .story_screen .text');
+const storyScr = $('.initial_screen #storyScreen');
+const settingBtn = $('.initial_screen #settingBtn');
+const settingScr = $('.initial_screen #settingScreen');
+const storyText = $('.initial_screen #storyScreen .text');
 let usernameInputDiv = $('.initial_screen #usernameInputDiv');
 let usernameInput = $('.initial_screen #usernameInput');
 let newRoomBtnDiv = $('.initial_screen #newRoomBtnDiv');
@@ -52,7 +54,7 @@ const killerNum = 2;
 characterSVG.html($('.textures .spriteDiv').html());
 
 $(window).on('mouseup', function(e) {
-    const container = $('.activate_screen, .story_screen');
+    const container = $('.activate_screen, .ssi_screen');
     if (!container.is(e.target) && container.has(e.target).length === 0){
         container.fadeOut();
     }
@@ -182,9 +184,15 @@ const characterRole = function() {
 * INITIAL SCREEN
 */
 
-storyBtn.on('click', function() {
-    storyScr.css('display', 'flex');
+settingBtn.on('click', function() {
+    settingScr.css('display', 'block');
 });
+
+storyBtn.on('click', function() {
+    storyScr.css('display', 'block');
+});
+
+
 
 newRoomBtn.on("click", function() {
     const activeUsernames = getActiveNames(players);
