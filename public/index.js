@@ -15,10 +15,9 @@ let newRoomBtnDiv = $('.initial_screen #newRoomBtnDiv');
 const newRoomBtn = $('.initial_screen #newRoomBtn');
 let roomIDInput = $('.initial_screen #roomCodeInput');
 const joinRoomBtn = $('.initial_screen #joinRoomBtn');
-
-const NavUpBtn = $('.navigate .up')
-const NavPageBtn = $('.navigate .page-mark')
-const NavDownBtn = $('.navigate .down')
+const NavUpBtn = $('.navigate .up');
+const NavPageBtn = $('.navigate .page-mark');
+const NavDownBtn = $('.navigate .down');
 
 const restroomScr = $('.restroom_screen');
 const roomIDMessage = $('.restroom_screen h3');
@@ -31,6 +30,8 @@ const ranges = $('.restroom_screen .customize div input');
 const characterSVG = $('.update .character');
 
 const gameScr = $('.game_screen');
+const treasureScr = $('.game_screen .treasure');
+const caveScr = $('.game_screen .cave');
 const roleName = $('#role');
 const activateBtn = $('.game_screen #activateBtn');
 const voteBtn = $('.game_screen #voteBtn');
@@ -43,13 +44,12 @@ const activateScr = $('.activate_screen');
 const voteScr = $('.vote_screen');
 
 let selectedColor;
+let randomID = [];
 let playerBoxes = $(".player_list #show_player_list .box");
 let room_size = playerBoxes.length;
-let temp = Math.floor(Math.random() * room_size);
 const role = ["Captain", "Killer", "Pirate"];
 const killerNum = 2;
 characterSVG.html($('.textures .spriteDiv').html());
-
 
 $(window).on('mouseup', function(e) {
     const container = $('.activate_screen, .story_screen');
@@ -69,33 +69,6 @@ class Player{
         this.id = id;
         this.username = username;
     }
-}
-
-const randomRole = function() {
-    if (temp === 0) {
-        return role[0];
-    }
-    else {
-        if (temp < 3) {
-            return role[1];
-        }
-        else return role[2];
-    }
-}
-
-const characterRole = function() {
-    roleMes.text(randomRole());
-    if (temp === 0) {
-        roleDesc.text("Nhiệm vụ của bạn là tìm ra Killer đang trà trộn trong đoàn, sống sót và chiến thắng cùng Pirate.\n Mỗi lượt tìm kho báu, bạn có quyền theo dõi tình hình 1 kho báu bất kỳ trước khi chọn kho báu. Nếu Killer phát hiện bạn là Captain, bạn thua.\n Bạn biết được thân phận những thủy thủ trong đoàn.");
-    }
-    else {
-        if (temp <= killerNum) {
-            roleDesc.text("Nhiệm vụ của bạn là cố gắng sống sót và kiếm được nhiều tiền nhất.\n Mỗi lượt săn, bạn có thể giết 1 Pirate nếu chỉ có Pirate đó săn cùng kho báu với bạn. Nếu giết thành công 1 Pirate, bạn lấy được thông tin của Captain. Nếu như bạn thua sau các lượt chọn kho báu, bạn vẫn có thể thắng nếu như bạn tìm ra thân phận của Captain.\n Bạn không biết được thân phận những thủy thủ trong đoàn.");
-        }
-        else roleDesc.text("Nhiệm vụ của bạn là tìm giết Killer đang trà trộn trong đoàn.\n Bạn không nhớ được thân phận những thủy thủ trong đoàn. Tham gia săn kho báu cùng đồng minh sẽ giúp bạn tăng điểm thân mật. Đạt đủ điểm thân mật bạn sẽ nhận được thông tin của thủy thủ trong đoàn");
-    }
-    roleChr.html($('.textures .spriteDiv').html());
-    roleChr.find('.cls-8').css('fill', selectedColor);
 }
 
 const randomRoomID = function() {
@@ -118,8 +91,6 @@ const createChestLists = function(n) {
     const n120 = Math.floor(n / 6);
     const n60 = Math.floor((n - 1 - n120) / 2);
     const n80 = Math.floor((n - 2 - n120) / 2);
-    console.log(n - 2 - n120);
-    console.log(n80);
 
     chestList(list_60, n60);
     chestList(list_80, n80);
@@ -167,6 +138,44 @@ const getDefaultColor = function() {
         }
     }
     return -1;
+}
+
+const getBoxIndex = function() {
+    for (let i = 0; i < playerBoxes.length; i++) {
+        if (playerBoxes.eq(i).hasClass('current')){
+            return i;
+        }
+    }
+    return -1;
+}
+
+const randomRole = function(i) {
+    console.log(randomID[i]);
+    if (randomID[i] === 0) {
+        return role[0];
+    }
+    else {
+        if (randomID[i] < 3) {
+            return role[1];
+        }
+        else return role[2];
+    }
+}
+
+const characterRole = function() {
+    let i = getBoxIndex();
+    roleMes.text(randomRole(i));
+    if (randomID[i] === 0) {
+        roleDesc.text("Nhiệm vụ của bạn là tìm ra Killer đang trà trộn trong đoàn, sống sót và chiến thắng cùng Pirate.\n Mỗi lượt tìm kho báu, bạn có quyền theo dõi tình hình 1 kho báu bất kỳ trước khi chọn kho báu. \n Bạn biết được thân phận những thủy thủ trong đoàn.");
+    }
+    else {
+        if (randomID[i] <= killerNum) {
+            roleDesc.text("Nhiệm vụ của bạn là cố gắng sống sót và kiếm được nhiều tiền nhất.\n Mỗi lượt săn, bạn có thể giết 1 Pirate nếu chỉ có Pirate đó săn cùng kho báu với bạn. Nếu giết thành công 1 Pirate, bạn lấy được thông tin của Captain.\n Bạn không biết được thân phận những thủy thủ trong đoàn.");
+        }
+        else roleDesc.text("Nhiệm vụ của bạn là tìm giết Killer đang trà trộn trong đoàn.\n Bạn không nhớ được thân phận những thủy thủ trong đoàn. Tham gia săn kho báu cùng đồng minh sẽ giúp bạn tăng điểm thân mật. Đạt đủ điểm thân mật bạn sẽ nhận được thông tin của thủy thủ trong đoàn");
+    }
+    roleChr.html($('.textures .spriteDiv').html());
+    roleChr.find('.cls-8').css('fill', selectedColor);
 }
 
 /*
@@ -236,10 +245,6 @@ newRoomBtn.on("click", function() {
     roomIDInput.val('');
     restroomScr.css('display', "grid");
     initialScr.css('display', "none");
-});
-
-storyBtn.on("click", function() {
-    storyScr.css('display', 'block')
 });
 
 joinRoomBtn.on('click', function() {
@@ -321,6 +326,7 @@ joinRoomBtn.on('click', function() {
     restroomScr.css('display', "grid");
     initialScr.css('display', "none");
 });
+
 // Navigate Story
 const updateNav = function(currentPage){   
     for (let i = 0; i < NavPageBtn.length; i++){
@@ -347,20 +353,19 @@ for (let i = 0; i < NavPageBtn.length; i++){
         updateNav(currentPage);
 })}
 
-
 /*
 * RESTROOM SCREEN
 */
 
 leaveRoomBtn.on('click', function() {
-    // console.log(1);
-    // players.forEach(function(player){
-    //     console.log(player);
-    // })
-    // console.log(2);
-    // leavePlayers.forEach(function(player){
-    //     console.log(player);
-    // })
+    console.log(1);
+    players.forEach(function(player){
+        console.log(player);
+    })
+    console.log(2);
+    leavePlayers.forEach(function(player){
+        console.log(player);
+    })
     inLeaveState = true;
     let currentPlayer = getCurrentPlayer(socket.id);
     colorOptns.eq(currentPlayer.colorID).removeClass('selected');
@@ -380,7 +385,7 @@ startGameBtn.on('click', function() {
         alert("Game should be started with around 6-12 players!!!");
         return;
     }
-    socket.emit("startGame", roomID);
+    socket.emit("startGame", roomID, room_size);
 });
 
 for (let i = 0; i < sliders.length; i++) {
@@ -423,6 +428,8 @@ for (let i = 0; i < chests.length; i++) {
         const elem = $('.chests .option.selected');
         if (elem != null) elem.removeClass('selected');
         chests.eq(i).addClass('selected');
+        treasureScr.fadeOut();
+        caveScr.fadeIn();
     });
 }
 
@@ -434,7 +441,7 @@ socket.on("allUsers", function(activeUsers, leaveUsers){
 });
 
 socket.on("updateUsers", function(roomUsers) {
-    currentPlayer = getCurrentPlayer(socket.id);
+    let currentPlayer = getCurrentPlayer(socket.id);
     if (roomUsers.length){
         if (roomUsers[0].username == currentPlayer.username){
             ranges.show();
@@ -454,19 +461,15 @@ socket.on("updateUsers", function(roomUsers) {
     playerBoxes = $(".player_list #show_player_list .box");
 });
 
-socket.on("startGame", function() {
-    room_size = playerBoxes.length;
-    temp = Math.floor(Math.random() * room_size);
+socket.on("startGame", function(temp, room_size) {
+    randomID = temp;
     gameScr.css('display', "grid");
-    roleName.text("Role: " + randomRole());
     createChestLists(room_size);
-    if (temp > killerNum) {
-        activateBtn.hide();
-    }
     setTimeout(function() {
         roleScr.fadeOut();
     }, 8000);
     characterRole();
+    roleName.text("Role: " + roleMes.text());
     restroomScr.css('display', "none");
     roleScr.css('display', "flex");
 });
