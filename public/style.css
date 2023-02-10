@@ -126,7 +126,7 @@ button:hover{
     position: absolute;
 
     /* Displaying & Box Model */
-    display: block;
+    display: none;
     width: 800px;
     height: 500px;
     flex-direction: column;

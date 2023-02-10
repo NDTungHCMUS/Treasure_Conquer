@@ -336,12 +336,10 @@ let currentPage = 0;
 NavUpBtn.on('click', function() {
     currentPage = (currentPage + 2)%3;
     updateNav(currentPage);
-    console.log(currentPage)
 });
 NavDownBtn.on('click', function() {
     currentPage = (currentPage + 1)%3;
     updateNav(currentPage);
-    console.log(currentPage)
 });
 for (let i = 0; i < NavPageBtn.length; i++){
     NavPageBtn.eq(i).on('click', function() {
