@@ -129,12 +129,12 @@ button:hover{
 
     /* Displaying & Box Model */
     display: none;
-    width: 800px;
+    width: 900px;
     height: 500px;
     flex-direction: column;
     align-content: center;
     text-align: left;
-    padding-top: 50px;
+    padding-top: 20px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -145,9 +145,8 @@ button:hover{
     background-size: cover;
 }
 
-
-#storyScreen .text {
-    width: 700px;
+.story_screen .text {
+    width: 800px;
     height: 500px;
 }
 
@@ -163,16 +162,20 @@ button:hover{
     display: none;
 }
 
-#storyScreen .navigate {
+.story_screen .text:nth-child(4){
+    display: none;
+}
+
+.story_screen .navigate {
     position: absolute;
     right: 0px;
     top: 0px;
     display: flex;
     width: 100px;
     height: 500px;
-    padding-top: 105px;
+    padding-top: 80px;
     flex-direction: column;
-    align-items:center;
+    align-items: center;
     background-color: rgba(0, 0, 0, 0.2);
 }
 
@@ -221,9 +224,42 @@ button:hover{
 
 #storyScreen p{
     /* Text */
-    margin: 5px 60px;
+    margin: 15px 60px;
+    text-align: justify;
     text-indent: 5%;
+}
+
+.story_screen .page1 p{
+    /* Text */
     font-size: 20px;
+}
+
+.story_screen .page2 p{
+    /* Text */
+    font-size: 16px;
+}
+
+.story_screen .page3 p{
+    /* Text */
+    font-size: 20px;
+}
+
+.story_screen .page4 p{
+    /* Text */
+    font-size: 19px;
+}
+
+.story_screen .page4 li{
+    /* Text */
+    text-align: justify;
+    margin: 5px 120px;
+    font-size: 19px;
+}
+
+.story_screen strong{
+    /* Text */
+    margin: 20px;
+    font-size: 22px;
 }
 
 .initial_screen input {
@@ -729,8 +765,8 @@ button:hover{
 
     /* Displaying & Box Model */
     display: none;
-    width: 800px;
-    height: 500px;
+    width: 900px;
+    height: 600px;
     flex-direction: column;
     align-items: center;
     text-align: center;
@@ -746,12 +782,13 @@ button:hover{
 
 .role_screen p{
     /* Displaying & Box Model */
-    margin: 40px 20px;
+    margin: 15px 50px;
+    font-size: 25px;
 }
 
 .role_screen #role_mes{
     /* Text */
-    font-size: 35px;
+    font-size: 40px;
     font-weight: bold;
 }
 

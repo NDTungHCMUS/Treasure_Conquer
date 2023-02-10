@@ -49,7 +49,7 @@ let selectedColor;
 let randomID = [];
 let playerBoxes = $(".player_list #show_player_list .box");
 let room_size = playerBoxes.length;
-const role = ["Captain", "Killer", "Pirate"];
+const role = ["Captain", "Killer", "Blacksmith", "Pirate"];
 const killerNum = 2;
 characterSVG.html($('.textures .spriteDiv').html());
 
@@ -156,25 +156,37 @@ const randomRole = function(i) {
     if (randomID[i] === 0) {
         return role[0];
     }
-    else {
-        if (randomID[i] < 3) {
-            return role[1];
-        }
-        else return role[2];
+    else if (randomID[i] <= killerNum) {
+        return role[1];
     }
+    else if (randomID[i] === killerNum + 1){
+        return role[2];
+    }
+    else return role[3];
 }
 
 const characterRole = function() {
     let i = getBoxIndex();
     roleMes.text(randomRole(i));
     if (randomID[i] === 0) {
-        roleDesc.text("Nhiệm vụ của bạn là tìm ra Killer đang trà trộn trong đoàn, sống sót và chiến thắng cùng Pirate.\n Mỗi lượt tìm kho báu, bạn có quyền theo dõi tình hình 1 kho báu bất kỳ trước khi chọn kho báu. \n Bạn biết được thân phận những thủy thủ trong đoàn.");
+        roleDesc.html("<p>Nhiệm vụ của bạn là tìm ra Killer đang trà trộn trong đoàn, sống sót và chiến thắng cùng Pirate.</p><p>Mỗi lượt tìm kho báu, bạn có quyền theo dõi tình hình 1 kho báu bất kỳ trước khi chọn kho báu.</p><p>Bạn biết được thân phận những thủy thủ trong đoàn.</p>");
+        roleMes.css('color', 'gold');
+        roleDesc.css('color', 'rgb(117, 86, 0)');
+    }
+    else if (randomID[i] <= killerNum) {
+        roleDesc.html("<p>Nhiệm vụ của bạn là cố gắng sống sót và kiếm được nhiều tiền nhất.</p><p>Mỗi lượt săn, bạn có thể giết 1 Pirate nếu chỉ có Pirate đó săn cùng kho báu với bạn. Nếu giết thành công 1 Pirate, bạn lấy được thông tin của Captain.</p><p>Bạn không biết được thân phận những thủy thủ trong đoàn.</p>");
+        roleMes.css('color', 'firebrick');
+        roleDesc.css('color', 'rgb(117, 0, 0)');
+    }
+    else if (randomID[i] === killerNum + 1){
+        roleDesc.html("<p>Nhiệm vụ của bạn là bảo vệ các thành viên trong đoàn.</p><p>Mỗi lượt săn, bạn sẽ ngẫu nhiên nâng cấp trang bị cho 1 thành viên đi săn cùng kho báu với bạn (ưu tiên Captain). Thành viên được nâng cấp trang bị sẽ không bị giết trong lượt tiếp theo.</p><p>Bạn chỉ biết được thân phận của Captain</p>");
+        roleMes.css('color', 'dodgerblue');
+        roleDesc.css('color', 'rgb(0, 57, 114)');
     }
     else {
-        if (randomID[i] <= killerNum) {
-            roleDesc.text("Nhiệm vụ của bạn là cố gắng sống sót và kiếm được nhiều tiền nhất.\n Mỗi lượt săn, bạn có thể giết 1 Pirate nếu chỉ có Pirate đó săn cùng kho báu với bạn. Nếu giết thành công 1 Pirate, bạn lấy được thông tin của Captain.\n Bạn không biết được thân phận những thủy thủ trong đoàn.");
-        }
-        else roleDesc.text("Nhiệm vụ của bạn là tìm giết Killer đang trà trộn trong đoàn.\n Bạn không nhớ được thân phận những thủy thủ trong đoàn. Tham gia săn kho báu cùng đồng minh sẽ giúp bạn tăng điểm thân mật. Đạt đủ điểm thân mật bạn sẽ nhận được thông tin của thủy thủ trong đoàn");
+        roleDesc.html("<p>Nhiệm vụ của bạn là tìm giết Killer đang trà trộn trong đoàn.</p><p>Bạn không nhớ được thân phận những thủy thủ trong đoàn.</p><p>Tham gia săn kho báu cùng đồng minh sẽ giúp bạn tăng điểm thân mật. Đạt đủ điểm thân mật bạn sẽ nhận được thông tin của thủy thủ trong đoàn</p>");
+        roleMes.css('color', 'forestgreen');
+        roleDesc.css('color', 'rgb(0, 82, 0)');
     }
     roleChr.html($('.textures .spriteDiv').html());
     roleChr.find('.cls-8').css('fill', selectedColor);
@@ -348,11 +360,11 @@ const updateNav = function(currentPage){
 }}
 let currentPage = 0;
 NavUpBtn.on('click', function() {
-    currentPage = (currentPage + 2)%3;
+    currentPage = (currentPage + 3) % 4;
     updateNav(currentPage);
 });
 NavDownBtn.on('click', function() {
-    currentPage = (currentPage + 1)%3;
+    currentPage = (currentPage + 1) % 4;
     updateNav(currentPage);
 });
 for (let i = 0; i < NavPageBtn.length; i++){
