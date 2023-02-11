@@ -66,6 +66,7 @@ const randomRole = function(randomID, i) {
     
 let players = [];
 let leavePlayers = [];
+let playingRooms = [];
 let gameStats = [2, 5, 30, 90];
 const role = ["Captain", "Killer", "Blacksmith", "Pirate"];
 
