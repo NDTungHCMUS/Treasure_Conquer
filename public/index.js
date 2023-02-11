@@ -34,7 +34,8 @@ const characterSVG = $('.update .character');
 const gameScr = $('.game_screen');
 const treasureScr = $('.game_screen .treasure');
 const caveScr = $('.game_screen .cave');
-const roleName = $('#role');
+const roleName = $('.game_screen #role');
+const timeDisplay = $('.game_screen #time');
 const activateBtn = $('.game_screen #activateBtn');
 const voteBtn = $('.game_screen #voteBtn');
 const chests = $('.game_screen .chests .option');
@@ -213,10 +214,6 @@ newRoomBtn.on("click", function() {
     while (rooms.has(roomID)){
         roomID = randomRoomID().toString();
     }
-    if (playingRooms.includes(roomID)){
-        alert(`Room ${roomID} has started`);
-        return;
-    }
     if (!inLeaveState){
         // Check valid
         if (!usernameInput.val() || usernameInput.val().length > 16){
@@ -281,7 +278,7 @@ joinRoomBtn.on('click', function() {
         alert("Invalid room ID!!!");
         return;
     }
-    if (playingRooms.includes(roomID)){
+    if (playingRooms.length >0 && playingRooms.includes(roomID)){
         alert(`Room ${roomID} has started`);
         return;
     }
@@ -375,14 +372,6 @@ for (let i = 0; i < NavPageBtn.length; i++){
 */
 
 leaveRoomBtn.on('click', function() {
-    console.log(1);
-    players.forEach(function(player){
-        console.log(player);
-    })
-    console.log(2);
-    leavePlayers.forEach(function(player){
-        console.log(player);
-    })
     inLeaveState = true;
     let currentPlayer = getCurrentPlayer(socket.id);
     colorOptns.eq(currentPlayer.colorID).removeClass('selected');
@@ -483,13 +472,17 @@ socket.on("startGame", function(temp, room_size) {
     randomID = temp;
     gameScr.css('display', "grid");
     createChestLists(room_size);
-    setTimeout(function() {
-        roleScr.fadeOut();
-    }, 8000);
     characterRole();
     roleName.text("Role: " + roleMes.text());
     restroomScr.css('display', "none");
     roleScr.css('display', "flex");
+    setTimeout(function() {
+        roleScr.fadeOut();  
+    }, 8000);   
+});
+
+socket.on('inGamePlay', function(timer){
+    timeDisplay.text("Time: " + timer.toString() + ' s');
 });
 
 socket.on("customize", function(value, i) {

@@ -50,7 +50,7 @@ const getRoomUsers = function(room) {
 const getActiveRooms = function() {
     return new Set(players.map(player => player.room));
 }
-    
+
 let players = [];
 let leavePlayers = [];
 let playingRooms = [];
@@ -95,9 +95,14 @@ io.on("connection", function(socket) {
             let j = Math.floor(Math.random() * (i + 1));
             [temp[i], temp[j]] = [temp[j], temp[i]];
         }
-        playingRooms.push(roomID);
+        playingRooms.push(roomID); 
         io.to(roomID).emit("startGame", temp, room_size);
         io.emit("allUsers", players, leavePlayers, playingRooms);
+        let timer = 30;
+        setInterval(function(){          
+            io.to(roomID).emit('inGamePlay', timer);
+            if (timer > 0) timer--;
+        }, 1000)  
     });
     
     socket.on("disconnect", function(){
