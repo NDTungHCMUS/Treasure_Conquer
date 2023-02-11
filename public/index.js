@@ -3,6 +3,9 @@
 var socket = io("http://localhost:5500");
 socket.emit("allUsers");
 
+
+
+
 // User constants
 
 const initialScr = $('.initial_screen');
@@ -26,6 +29,7 @@ const roomIDMessage = $('.restroom_screen h3');
 const leaveRoomBtn = $('.restroom_screen #leaveRoomBtn');
 const startGameBtn = $('.restroom_screen #startGameBtn');
 const player_list = $(".player_list #show_player_list");
+let playerBoxes = $(".player_list #show_player_list .box");
 const colorOptns = $('.restroom_screen .color_options .option');
 const sliders = $('.restroom_screen .customize div');
 const ranges = $('.restroom_screen .customize div input');
@@ -46,34 +50,16 @@ const roleChr = $('.role_screen .character');
 const activateScr = $('.activate_screen');
 const voteScr = $('.vote_screen');
 
+const role = ["Captain", "Killer", "Blacksmith", "Pirate"];
+let gameStats = [2, 5, 30, 90];
 let selectedColor;
 let randomID = [];
-let playerBoxes = $(".player_list #show_player_list .box");
 let room_size = playerBoxes.length;
-let playingRooms = [];
-const role = ["Captain", "Killer", "Blacksmith", "Pirate"];
-const killerNum = 2;
-characterSVG.html($('.textures .spriteDiv').html());
-
-$(window).on('mouseup', function(e) {
-    const container = $('.activate_screen, .ssi_screen');
-    if (!container.is(e.target) && container.has(e.target).length === 0){
-        container.fadeOut();
-    }
-});
-
-// User events
-
 let players = [];
 let leavePlayers = [];
 let inLeaveState = false;
 
-class Player{
-    constructor(id, username){
-        this.id = id;
-        this.username = username;
-    }
-}
+characterSVG.html($('.textures .spriteDiv').html());
 
 const randomRoomID = function() {
     return Math.floor(Math.random() * 90000) + 10000;
@@ -154,34 +140,33 @@ const getBoxIndex = function() {
 }
 
 const randomRole = function(i) {
-    console.log(randomID[i]);
     if (randomID[i] === 0) {
         return role[0];
     }
-    else if (randomID[i] <= killerNum) {
+    else if (randomID[i] <= gameStats[0]) {
         return role[1];
     }
-    else if (randomID[i] === killerNum + 1){
+    else if (randomID[i] === gameStats[0] + 1){
         return role[2];
     }
     else return role[3];
 }
 
-const characterRole = function() {
+const drawRoleScr = function() {
     let i = getBoxIndex();
     roleMes.text(randomRole(i));
     if (randomID[i] === 0) {
         roleDesc.html("<p>Nhiệm vụ của bạn là tìm ra Killer đang trà trộn trong đoàn, sống sót và chiến thắng cùng Pirate.</p><p>Mỗi lượt tìm kho báu, bạn có quyền theo dõi tình hình 1 kho báu bất kỳ trước khi chọn kho báu.</p><p>Bạn biết được thân phận những thủy thủ trong đoàn.</p>");
-        roleMes.css('color', 'gold');
+        roleMes.css('color', 'goldenrod');
         roleDesc.css('color', 'rgb(117, 86, 0)');
     }
-    else if (randomID[i] <= killerNum) {
-        roleDesc.html("<p>Nhiệm vụ của bạn là cố gắng sống sót và kiếm được nhiều tiền nhất.</p><p>Mỗi lượt săn, bạn có thể giết 1 Pirate nếu chỉ có Pirate đó săn cùng kho báu với bạn. Nếu giết thành công 1 Pirate, bạn lấy được thông tin của Captain.</p><p>Bạn không biết được thân phận những thủy thủ trong đoàn.</p>");
+    else if (randomID[i] <= gameStats[0]) {
+        roleDesc.html("<p>Nhiệm vụ của bạn là cố gắng sống sót và kiếm được nhiều tiền nhất.</p><p>Mỗi lượt săn, bạn có thể giết 1 Pirate nếu chỉ có Pirate đó săn cùng kho báu với bạn. Nếu giết thành công 1 Pirate, bạn lấy được gợi ý thân phận của Captain.</p><p>Bạn không biết được thân phận những thủy thủ trong đoàn.</p>");
         roleMes.css('color', 'firebrick');
         roleDesc.css('color', 'rgb(117, 0, 0)');
     }
-    else if (randomID[i] === killerNum + 1){
-        roleDesc.html("<p>Nhiệm vụ của bạn là bảo vệ các thành viên trong đoàn.</p><p>Mỗi lượt săn, bạn sẽ ngẫu nhiên nâng cấp trang bị cho 1 thành viên đi săn cùng kho báu với bạn (ưu tiên Captain). Thành viên được nâng cấp trang bị sẽ không bị giết trong lượt tiếp theo.</p><p>Bạn chỉ biết được thân phận của Captain</p>");
+    else if (randomID[i] === gameStats[0] + 1){
+        roleDesc.html("<p>Nhiệm vụ của bạn là bảo vệ các thành viên trong đoàn.</p><p>Mỗi lượt săn, bạn sẽ ngẫu nhiên nâng cấp trang bị cho 1 thành viên đi săn cùng kho báu với bạn (ưu tiên Captain). Thành viên được nâng cấp trang bị sẽ không bị giết trong lượt tiếp theo. Bạn không thể tự bảo vệ bản thân trừ lượt đầu tiên.</p><p>Bạn chỉ biết được thân phận của Captain</p>");
         roleMes.css('color', 'dodgerblue');
         roleDesc.css('color', 'rgb(0, 57, 114)');
     }
@@ -190,9 +175,35 @@ const characterRole = function() {
         roleMes.css('color', 'forestgreen');
         roleDesc.css('color', 'rgb(0, 82, 0)');
     }
-    roleChr.html($('.textures .spriteDiv').html());
-    roleChr.find('.cls-8').css('fill', selectedColor);
 }
+
+const drawSprite = function(roomUsers) {
+    let currentPlayer = getCurrentPlayer(socket.id);
+    if (currentPlayer.role !== "Killer"){
+        roleChr.html($('.textures .spriteDiv').html());
+        roleChr.find('.cls-8').css('fill', selectedColor);
+        return;
+    }
+    for (let i = 0; i < roomUsers.length; i++){
+        if (roomUsers[i].role === "Killer"){
+            let chosenColor = playerBoxes.eq(i).find('.color').find('.hatcls-2').css('fill');
+            roleChr.append($('.textures .spriteDiv').html());
+            $('.character .sprite:last-child').find('.cls-8').css('fill', chosenColor);
+        }
+    }
+};
+
+
+
+
+// User events
+
+$(window).on('mouseup', function(e) {
+    const container = $('.activate_screen, #storyScreen, #settingScreen');
+    if (!container.is(e.target) && container.has(e.target).length === 0){
+        container.fadeOut();
+    }
+});
 
 /*
 * INITIAL SCREEN
@@ -341,7 +352,7 @@ joinRoomBtn.on('click', function() {
     initialScr.css('display', "none");
 });
 
-// Navigate Story
+// Navigate story
 const updateNav = function(currentPage){   
     for (let i = 0; i < NavPageBtn.length; i++){
     storyText.eq(i).css("display", "none");
@@ -400,7 +411,8 @@ for (let i = 0; i < sliders.length; i++) {
     val.text(range.val());
     range.on('input', function() {
         const roomID = getCurrentPlayer(socket.id).room;
-        socket.emit("customize", roomID, range.val(), i);
+        gameStats[i] = range.val();
+        socket.emit("customize", roomID, gameStats);
     });
 }
 
@@ -439,6 +451,9 @@ for (let i = 0; i < chests.length; i++) {
     });
 }
 
+
+
+
 // Socket events
 
 socket.on("allUsers", function(activeUsers, leaveUsers, playRooms){
@@ -468,25 +483,29 @@ socket.on("updateUsers", function(roomUsers) {
     playerBoxes = $(".player_list #show_player_list .box");
 });
 
-socket.on("startGame", function(temp, room_size) {
+socket.on("startGame", function(temp, roomUsers) {
     randomID = temp;
     gameScr.css('display', "grid");
-    createChestLists(room_size);
-    characterRole();
+    createChestLists(roomUsers.length);
+    setTimeout(function() {
+        roleScr.fadeOut();
+    }, 8000);
+    drawRoleScr();
+    drawSprite(roomUsers);
     roleName.text("Role: " + roleMes.text());
     restroomScr.css('display', "none");
     roleScr.css('display', "flex");
-    setTimeout(function() {
-        roleScr.fadeOut();  
-    }, 8000);   
 });
 
 socket.on('inGamePlay', function(timer){
     timeDisplay.text("Time: " + timer.toString() + ' s');
 });
 
-socket.on("customize", function(value, i) {
-    sliders.eq(i).find('span').text(value);
+socket.on("customize", function(stats) {
+    gameStats = stats;
+    for (let i = 0; i < sliders.length; i++) {
+        sliders.eq(i).find('span').text(gameStats[i]);
+    }
 });
 
 socket.on("updateColors", function(roomUsers) {
