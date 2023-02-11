@@ -145,7 +145,7 @@ button:hover{
     background-size: cover;
 }
 
-.story_screen .text {
+#storyScreen .text {
     width: 800px;
     height: 500px;
 }
@@ -162,11 +162,11 @@ button:hover{
     display: none;
 }
 
-.story_screen .text:nth-child(4){
+#storyScreen .text:nth-child(4){
     display: none;
 }
 
-.story_screen .navigate {
+#storyScreen .navigate {
     position: absolute;
     right: 0px;
     top: 0px;
@@ -229,34 +229,34 @@ button:hover{
     text-indent: 5%;
 }
 
-.story_screen .page1 p{
+#storyScreen .page1 p{
     /* Text */
     font-size: 20px;
 }
 
-.story_screen .page2 p{
+#storyScreen .page2 p{
     /* Text */
     font-size: 16px;
 }
 
-.story_screen .page3 p{
+#storyScreen .page3 p{
     /* Text */
     font-size: 20px;
 }
 
-.story_screen .page4 p{
+#storyScreen .page4 p{
     /* Text */
     font-size: 19px;
 }
 
-.story_screen .page4 li{
+#storyScreen .page4 li{
     /* Text */
     text-align: justify;
     margin: 5px 120px;
     font-size: 19px;
 }
 
-.story_screen strong{
+#storyScreen strong{
     /* Text */
     margin: 20px;
     font-size: 22px;
