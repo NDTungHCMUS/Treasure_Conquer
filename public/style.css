@@ -794,6 +794,12 @@ button:hover{
 
 .role_screen .character{
     /* Displaying & Box Model */
+    display: flex;
+    justify-content: center;
+}
+
+.character .sprite{
+    /* Displaying & Box Model */
     width: 140px;
     height: 180px;
     margin: 20px auto;
