@@ -69,10 +69,6 @@ let leavePlayers = [];
 let playingRooms = [];
 let gameStats = [2, 5, 30, 90];
 const role = ["Captain", "Killer", "Blacksmith", "Pirate"];
-
-
-
-
 // Socket events
 
 io.on("connection", function(socket) {

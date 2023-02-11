@@ -58,6 +58,7 @@ let room_size = playerBoxes.length;
 let players = [];
 let leavePlayers = [];
 let inLeaveState = false;
+let playingRooms = [];
 
 characterSVG.html($('.textures .spriteDiv').html());
 
