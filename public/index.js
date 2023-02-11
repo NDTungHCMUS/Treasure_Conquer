@@ -49,6 +49,7 @@ let selectedColor;
 let randomID = [];
 let playerBoxes = $(".player_list #show_player_list .box");
 let room_size = playerBoxes.length;
+let playingRooms = [];
 const role = ["Captain", "Killer", "Blacksmith", "Pirate"];
 const killerNum = 2;
 characterSVG.html($('.textures .spriteDiv').html());
@@ -204,8 +205,6 @@ storyBtn.on('click', function() {
     storyScr.css('display', 'block');
 });
 
-
-
 newRoomBtn.on("click", function() {
     const activeUsernames = getActiveNames(players);
     const leaveUsernames = getLeaveNames();
@@ -213,6 +212,10 @@ newRoomBtn.on("click", function() {
     const roomID = randomRoomID().toString();
     while (rooms.has(roomID)){
         roomID = randomRoomID().toString();
+    }
+    if (playingRooms.includes(roomID)){
+        alert(`Room ${roomID} has started`);
+        return;
     }
     if (!inLeaveState){
         // Check valid
@@ -270,6 +273,18 @@ newRoomBtn.on("click", function() {
 joinRoomBtn.on('click', function() {
     const rooms = getActiveRooms(players);
     const roomID = roomIDInput.val();
+    if (!roomIDInput.val()){
+        alert("Forgot to enter room ID!!!");
+        return;
+    }
+    if (!rooms.has(roomID)){
+        alert("Invalid room ID!!!");
+        return;
+    }
+    if (playingRooms.includes(roomID)){
+        alert(`Room ${roomID} has started`);
+        return;
+    }
     if (!inLeaveState){
         // Check valid
         const activeUsernames = getActiveNames(players);
@@ -280,14 +295,6 @@ joinRoomBtn.on('click', function() {
         }
         if (activeUsernames.includes(usernameInput.val()) || leaveUsernames.includes(usernameInput.val())){
             alert("Existed username!!!");
-            return;
-        }
-        if (!roomIDInput.val()){
-            alert("Forgot to enter room ID!!!");
-            return;
-        }
-        if (!rooms.has(roomID)){
-            alert("Invalid room ID!!!");
             return;
         }
 
@@ -312,16 +319,6 @@ joinRoomBtn.on('click', function() {
         $('.initial_screen h4').remove();
     }
     else {
-        // Check valid
-        if (!roomIDInput.val()){
-            alert("Forgot to enter room ID!!!");
-            return;
-        }
-        if (!rooms.has(roomID)){
-            alert("Invalid room ID!!!");
-            return;
-        }
-
         // Handle room
         let currentPlayer = getLeavePlayer(socket.id);
         socket.emit("joinRoom", currentPlayer.username, roomID);
@@ -455,9 +452,10 @@ for (let i = 0; i < chests.length; i++) {
 
 // Socket events
 
-socket.on("allUsers", function(activeUsers, leaveUsers){
+socket.on("allUsers", function(activeUsers, leaveUsers, playRooms){
     players = activeUsers;
     leavePlayers = leaveUsers;
+    playingRooms = playRooms;
 });
 
 socket.on("updateUsers", function(roomUsers) {

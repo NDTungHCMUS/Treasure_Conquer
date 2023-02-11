@@ -53,13 +53,14 @@ const getActiveRooms = function() {
     
 let players = [];
 let leavePlayers = [];
+let playingRooms = [];
 players.map(player => player.colorID = -1);
 
 io.on("connection", function(socket) {
     socket.on("joinRoom", function(username, roomID) {
         const player = playerJoin(socket.id, username, roomID);
         socket.join(player.room);
-        io.emit("allUsers", players, leavePlayers);
+        io.emit("allUsers", players, leavePlayers, playingRooms);
         io.to(roomID).emit("updateUsers", getRoomUsers(player.room));
         io.to(roomID).emit("updateColors", getRoomUsers(player.room));
     });
@@ -67,13 +68,13 @@ io.on("connection", function(socket) {
     socket.on("leaveRoom", function(leaveIndex){
         const player = playerLeave(leaveIndex);
         socket.leave(player.room);
-        io.emit("allUsers", players, leavePlayers);
+        io.emit("allUsers", players, leavePlayers, playingRooms);
         io.to(player.room).emit("updateUsers", getRoomUsers(player.room));
         io.to(player.room).emit("updateColors", getRoomUsers(player.room));
     });
     
     socket.on("allUsers", function() {
-        socket.emit("allUsers", players, leavePlayers);
+        socket.emit("allUsers", players, leavePlayers, playingRooms);
     });
 
     socket.on("customize", function(roomID, value, index) {
@@ -83,7 +84,7 @@ io.on("connection", function(socket) {
     socket.on("selected", function(roomID, index) {
         let player = getCurrentPlayer(socket.id);
         player.colorID = index;
-        io.emit("allUsers", players, leavePlayers);
+        io.emit("allUsers", players, leavePlayers, playingRooms);
         io.to(roomID).emit("updateColors", getRoomUsers(player.room));
     });
 
@@ -94,7 +95,9 @@ io.on("connection", function(socket) {
             let j = Math.floor(Math.random() * (i + 1));
             [temp[i], temp[j]] = [temp[j], temp[i]];
         }
+        playingRooms.push(roomID);
         io.to(roomID).emit("startGame", temp, room_size);
+        io.emit("allUsers", players, leavePlayers, playingRooms);
     });
     
     socket.on("disconnect", function(){
