@@ -33,13 +33,13 @@
                 <div class="setting_content" id="settingMusic">
                     <div class="setting_object" id="musicVol">
                         <label>Âm lượng nhạc</label>
-                        <input type="range" min="0" max="100" value="0">
+                        <input class="slide_sound" type="range" min="0" max="100" value="50">
                         <span></span>
                         <div></div>
                     </div>
                     <div class="setting_object" id="soundVol">
                         <label>Âm lượng tiếng</label>
-                        <input type="range" min="0" max="100" value="0">
+                        <input class="slide_sound" type="range" min="0" max="100" value="50">
                         <span></span>
                         <div></div>
                     </div>
@@ -98,14 +98,14 @@
             </div>
             
             <div id = "usernameInputDiv">
-                <input type="text" placeholder=" Enter username" id="usernameInput"/>
+                <input type="text" placeholder="Enter username" id="usernameInput"/>
             </div>
             <div id = "newRoomBtnDiv">
                 <button id="newRoomBtn">New Room</button>
             </div>
             <h4>OR</h4>
             <div>
-                <input type="text" placeholder=" Enter room ID" id="roomCodeInput"/>
+                <input type="text" placeholder="Enter room ID" id="roomCodeInput"/>
                 <button id="joinRoomBtn">Join Room</button>
             </div>
         </div>
@@ -244,6 +244,9 @@
         </div>
     </div>
 </body>
+<audio class="background_music" src="Textures/Audio/Background1.mp3" autoplay loop></audio>
+<audio class="interaction_sound" src="Textures/Audio/Interaction1cut.mp3"></audio>
+<audio class="interaction_sound" src="Textures/Audio/Interaction3cut.mp3"></audio>
 <script src="https://code.jquery.com/jquery-3.6.3.js"></script>
 <script src="socket.io/socket.io.js"></script>
 <script src="/index.js"></script>
