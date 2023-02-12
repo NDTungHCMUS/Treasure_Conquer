@@ -10,7 +10,9 @@ const storyBtn = $('.initial_screen #storyBtn');
 const storyScr = $('.initial_screen #storyScreen');
 const settingBtn = $('.initial_screen #settingBtn');
 const settingScr = $('.initial_screen #settingScreen');
+const settingContent = $('.initial_screen #settingScreen .setting_content');
 const storyText = $('.initial_screen #storyScreen .text');
+const settingList = $('.initial_screen .setting_list div');
 let usernameInputDiv = $('.initial_screen #usernameInputDiv');
 let usernameInput = $('.initial_screen #usernameInput');
 let newRoomBtnDiv = $('.initial_screen #newRoomBtnDiv');
@@ -45,6 +47,7 @@ const roleChr = $('.role_screen .character');
 const activateScr = $('.activate_screen');
 const voteScr = $('.vote_screen');
 
+let currentPage = 0;
 let selectedColor;
 let randomID = [];
 let playerBoxes = $(".player_list #show_player_list .box");
@@ -192,15 +195,51 @@ const characterRole = function() {
     roleChr.find('.cls-8').css('fill', selectedColor);
 }
 
+const updateNav = function(currentPage){ 
+    for (let i = 0; i < NavPageBtn.length; i++){
+    storyText.eq(i).css("display", "none");
+    NavPageBtn.eq(i).css("background-image", "url('Textures/Nagative/Normal.png')");
+    if (i == currentPage) {
+        storyText.eq(i).css("display", "block");
+        NavPageBtn.eq(i).css("background-image","url('Textures/Nagative/Active.png')");
+
+    }
+}}
+
+const updateVolBtn = function(vol, volBtn) {
+    switch (true) {
+        case (vol.val() == 0):
+            volBtn.css('background-image', "url('Textures/sound_vol_level0.png')"); 
+            break;
+        case (vol.val() <=33):
+            volBtn.css('background-image', "url('Textures/sound_vol_level1.png')"); 
+            break;
+        case (vol.val() <=66):
+            volBtn.css('background-image', "url('Textures/sound_vol_level2.png')"); 
+            break;
+        case (vol.val() <=100):
+            volBtn.css('background-image', "url('Textures/sound_vol_level3.png')"); 
+            break;
+    }
+}
 /*
 * INITIAL SCREEN
 */
 
 settingBtn.on('click', function() {
     settingScr.css('display', 'block');
+    for (let j = 0; j < settingList.length; j++){
+        settingList.eq(j).removeClass('choosen');
+        settingContent.eq(j).css('display', 'none');
+        
+    }
+    settingList.eq(0).addClass('choosen');
+    settingContent.eq(0).css('display', 'block');
 });
 
 storyBtn.on('click', function() {
+    currentPage = 0;
+    updateNav(currentPage);
     storyScr.css('display', 'block');
 });
 
@@ -347,18 +386,19 @@ joinRoomBtn.on('click', function() {
     initialScr.css('display', "none");
 });
 
+for (let i=0; i < settingList.length; i++){
+    settingList.eq(i).on('click', function () {
+        for (let j = 0; j < settingList.length; j++){
+            settingList.eq(j).removeClass('choosen');
+            settingContent.eq(j).css('display', 'none');
+            
+        }
+        settingList.eq(i).addClass('choosen');
+        settingContent.eq(i).css('display', 'block');
+    })
+}
 // Navigate Story
-const updateNav = function(currentPage){   
-    for (let i = 0; i < NavPageBtn.length; i++){
-    storyText.eq(i).css("display", "none");
-    NavPageBtn.eq(i).css("background-image", "url('Textures/Nagative/Normal.png')");
-    if (i == currentPage) {
-        storyText.eq(i).css("display", "block");
-        NavPageBtn.eq(i).css("background-image","url('Textures/Nagative/Active.png')");
 
-    }
-}}
-let currentPage = 0;
 NavUpBtn.on('click', function() {
     currentPage = (currentPage + 3) % 4;
     updateNav(currentPage);
@@ -516,3 +556,55 @@ socket.on("updateColors", function(roomUsers) {
         }
     };
 });
+
+
+/*
+SOUND AND MUSIC
+*/
+const musicVol = $('#settingMusic #musicVol input');
+const soundVol = $('#settingMusic #soundVol input');
+const musicVolSpan = $('#settingMusic #musicVol span');
+const soundVolSpan = $('#settingMusic #soundVol span');
+const musicVolBtn = $('#settingMusic #musicVol div');
+const soundVolBtn = $('#settingMusic #soundVol div');
+let musicMute = false;
+let soundMute = false;
+
+musicVolSpan.text(musicVol.val());
+soundVolSpan.text(soundVol.val());
+musicVolBtn.css('background-image', "url('Textures/sound_vol_level0.png')");
+soundVolBtn.css('background-image', "url('Textures/sound_vol_level0.png')");
+
+musicVolBtn.on('click', function() {
+    if (musicMute) {
+        updateVolBtn(musicVol, musicVolBtn);
+    }
+    else {
+        musicVolBtn.css('background-image', "url('Textures/sound_vol_mute.png')");
+    }
+    musicMute = !musicMute;
+});
+
+soundVolBtn.on('click', function() {
+    if (soundMute) {
+        updateVolBtn(soundVol, soundVolBtn);
+    }
+    else {
+        soundVolBtn.css('background-image', "url('Textures/sound_vol_mute.png')");
+    }
+    soundMute = !soundMute;
+});
+
+musicVol.on('input', function() {
+    musicVolSpan.text(musicVol.val());
+    updateVolBtn(musicVol, musicVolBtn);
+})
+soundVol.on('input', function() {
+    soundVolSpan.text(soundVol.val());
+    updateVolBtn(soundVol, soundVolBtn);
+})
+
+
+
+
+

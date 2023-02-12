@@ -122,7 +122,6 @@ button:hover{
     background-image: url("/Textures/InfoBt.png");
 }
 
-
 .initial_screen .ssi_screen {
     /* Position */
     position: absolute;
@@ -131,8 +130,6 @@ button:hover{
     display: none;
     width: 900px;
     height: 500px;
-    flex-direction: column;
-    align-content: center;
     text-align: left;
     padding-top: 20px;
     top: 50%;
@@ -148,6 +145,8 @@ button:hover{
 #storyScreen .text {
     width: 800px;
     height: 500px;
+    flex-direction: column;
+    align-content: center;
 }
 
 #storyScreen .text:nth-child(1){
@@ -284,6 +283,95 @@ button:hover{
 
     /* Color */
     background-color: aliceblue;
+}
+
+#settingScreen .setting_list {
+    position: absolute;
+
+    top:0px;
+    left:0px;
+    width: 250px;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+#settingScreen .setting_list div{
+    height: 50px;
+    width: 200px;
+    display: flex;
+    align-items:center;
+    justify-content: center;
+    margin-top: 20px;  
+    font-size: 20px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border: 2px solid black;
+    border-radius: 15px;
+
+}
+
+#settingScreen .setting_list div:hover{
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 5px groove; 
+    border-style: double;
+}
+
+#settingScreen .setting_list .choosen {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 5px groove; 
+    border-style: double;
+    pointer-events: none;
+}
+
+#settingScreen .setting_content {
+    position: absolute;
+
+    display: none;
+    width: 650px;
+    height: 100%;
+    top:0;
+    right: 0;
+    align-items: center;
+    padding: 20px; 
+}
+
+.setting_object {
+    display: flex;
+    align-items: center;
+    border: 2px solid black;
+    margin: 10px;
+
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.setting_object label {
+    width: 175px;
+    padding-left: 40px;
+}
+
+.setting_object input {
+    width: 300px;
+}
+
+.setting_object span{
+    width: 15px;
+    margin: 0px 15px;
+}
+
+.setting_object div{
+    width: 50px;
+    height: 40px;
+    background-size: cover;
+}
+
+.setting_object div:hover{
+    transform: scale(1.05);
 }
 
 /*
