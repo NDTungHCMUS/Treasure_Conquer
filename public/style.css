@@ -1,16 +1,16 @@
 @font-face {
     font-family: "Brubeck AH";
-    src: url(/Textures/brubeck.ttf);
+    src: url(/Textures/Font-SVG/brubeck.ttf);
 }
 
 @font-face {
     font-family: "Carribean Caps";
-    src: url(/Textures/caric.ttf);
+    src: url(/Textures/Font-SVG/caric.ttf);
 }
 
 @font-face {
     font-family: "Rapscallion";
-    src: url(/Textures/rapscall.ttf);
+    src: url(/Textures/Font-SVG/rapscall.ttf);
 }
 
 *{
@@ -58,7 +58,7 @@ button:hover{
 
     /* Color */
     background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)), 
-    url("/Textures/pirate_background.jpg");
+    url("/Textures/Background/pirate_background.jpg");
     background-size: cover;
 }
 
@@ -138,7 +138,7 @@ button:hover{
     box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
 
     /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
     background-size: cover;
 }
 
@@ -179,7 +179,7 @@ button:hover{
 }
 
 .navigate .up {
-    background-image: url("/Textures/Nagative/Up.png");
+    background-image: url("/Textures/Navigate/Up.png");
     width: 75px;
     height: 60px;
     margin: 5px;
@@ -188,7 +188,7 @@ button:hover{
 }
 
 .navigate .page-mark {
-    background-image: url("Textures/Nagative/Normal.png");
+    background-image: url("Textures/Navigate/Normal.png");
     width: 60px;
     height: 40px;
     margin: 5px;
@@ -197,15 +197,15 @@ button:hover{
 }
 
 .navigate .page-mark:hover {
-    background-image: url("Textures/Nagative/Active.png");
+    background-image: url("Textures/Navigate/Active.png");
 }
 
 .navigate .page-mark:nth-child(2) {
-    background-image: url("Textures/Nagative/Active.png");
+    background-image: url("Textures/Navigate/Active.png");
 }
 
 .navigate .down {
-    background-image: url("Textures/Nagative/Down.png");
+    background-image: url("Textures/Navigate/Down.png");
     width: 75px;
     height: 60px;
     margin: 5px;
@@ -393,7 +393,7 @@ button:hover{
 
     /* Color */
     background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)), 
-    url("/Textures/pirate_background.jpg");
+    url("/Textures/Background/pirate_background.jpg");
     background-size: cover;
 
     /* Text */
@@ -422,7 +422,7 @@ button:hover{
     margin: 5px;
 
     /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
     background-size: cover;
 }
 
@@ -489,7 +489,7 @@ button:hover{
     margin: 5px;
 
     /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
     background-size: cover;
 }
 
@@ -642,7 +642,7 @@ button:hover{
     margin: 5px;
 
     /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
     background-size: cover;
 }
 
@@ -717,7 +717,7 @@ button:hover{
 
     /* Color */
     background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)), 
-    url("/Textures/pirate_background.jpg");
+    url("/Textures/Background/pirate_background.jpg");
     background-size: cover;
 }
 
@@ -775,7 +775,7 @@ button:hover{
     margin: 5px 15px;
 
     /* Color */
-    background-image: url("/Textures/treasure_map.png");
+    background-image: url("/Textures/Background/treasure_map.png");
     background-size: cover;
 }
 
@@ -803,7 +803,7 @@ button:hover{
     border-radius: 3px;
 
     /* Color */
-    background-image: url("/Textures/closed_chest.svg");
+    background-image: url("/Textures/Font-SVG/closed_chest.svg");
     background-size: cover;
     color: aliceblue;
 
@@ -840,7 +840,7 @@ button:hover{
    margin: 5px 15px;
 
    /* Color */
-   background-image: url("/Textures/cave_background.jpg");
+   background-image: url("/Textures/Background/cave_background.jpg");
    background-size: cover; 
 }
 
@@ -865,7 +865,7 @@ button:hover{
     box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
     
     /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
     background-size: cover;
 }
 
@@ -915,7 +915,7 @@ button:hover{
     box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
     
     /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
     background-size: cover;
 }
 
@@ -937,7 +937,7 @@ button:hover{
 
     /* Color */
     background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)), 
-    url("/Textures/pirate_background.jpg");
+    url("/Textures/Background/pirate_background.jpg");
     background-size: cover;
 }
 
@@ -967,7 +967,7 @@ button:hover{
     margin: 5px;
 
     /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
     background-size: cover;
 }
 
@@ -988,14 +988,109 @@ button:hover{
     /* Displaying & Box Model */
     grid-column: 3;
     grid-row: 2;
+    display: flex;
+    flex-direction: column;
     text-align: center;
     border: none;
     border-radius: 10px;
     margin: 5px;
 
     /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
     background-size: cover;
+}
+
+.player_list #show_vote_list{
+    /* Displaying & Box Model */
+    display: flex;
+    flex-flow: row wrap;
+    margin: 5px;
+}
+
+.player_list #show_vote_list .box{
+    /* Position */
+    position: relative;
+
+    /* Displaying & Box Model */
+    display: flex;
+    width: calc(33.2% - 10px);
+    height: 50px;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+
+    /* Color */
+    background-color: rgba(255, 250, 240, 0.5);
+
+    /* Transitions & Animations */
+    cursor: pointer;
+}
+
+#show_vote_list .box.current{
+    /* Transitions & Animations */
+    cursor: default;
+    pointer-events: none;
+}
+
+#show_vote_list .box:is(:hover, .selected){
+    /* Displaying & Box Model */
+    border: 1px solid black;
+}
+
+#show_vote_list .box.selected::before{
+    /* Positioning */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    top: 50%;
+    left: 85%;
+    width: 50px;
+    height: 25px;
+    border-radius: 5px;
+    content: "Vote";
+
+    /* Colors */
+    background-color: lightgreen;
+
+    /* Transitions & Animations */
+    transform: translate(-50%, -50%);
+    filter: brightness(100%) contrast(90%);
+}
+
+#show_vote_list .box .color{
+    /* Position */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    width: 72px;
+    height: 42px;
+    margin: 10px;
+    right: 70%;
+
+    /* Color */
+    /* background: url(/Textures/pirate_hat.svg);
+    background-size: cover; */
+}
+
+#show_vote_list .box p{
+    /* Displaying & Box Model */
+    text-align: center;
+    margin-left: 50px;
+}
+
+#show_vote_list .box.current p{
+    /* Text */
+    font-weight: 650;
+}
+
+.player_list .btn{
+    /* Displaying & Box Model */
+    display: flex;
+    margin-top: auto;
+    justify-content: center;
 }
 
 #skipVoteBtn{
@@ -1019,8 +1114,52 @@ button:hover{
     margin: 5px;
 
     /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
     background-size: cover;
+}
+
+.leaderboard #show_leaderboard{
+    /* Displaying & Box Model */
+    display: flex;
+    flex-wrap: wrap;
+    margin: 5px 20px;
+}
+
+#show_leaderboard .poster{
+    /* Displaying & Box Model */
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 120px;
+    height: 160px;
+    border-radius: 3px;
+    margin: 5px;
+
+    /* Color */
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
+    background-size: cover;
+
+    /* Transitions & Animations */
+    filter: brightness(110%) hue-rotate(10deg);
+}
+
+#show_leaderboard .poster.current{
+    /* Transitions & Animations */
+    filter: brightness(120%) hue-rotate(15deg);
+}
+
+#show_leaderboard .poster span{
+    /* Displaying & Box Model */
+    margin: 5px 0;
+    margin-top: auto;
+}
+
+#show_leaderboard .poster .color{
+    /* Displaying & Box Model */
+    
+    width: 72px;
+    height: 42px;
+    margin: 8px auto;
 }
 
 /* Positioning */

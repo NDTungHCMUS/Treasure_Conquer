@@ -50,7 +50,11 @@ const roleMes = $('#role_mes');
 const roleDesc = $('#role_desc');
 const roleChr = $('.role_screen .character');
 const activateScr = $('.activate_screen');
+
 const voteScr = $('.vote_screen');
+const voteList = $('.vote_screen #show_vote_list');
+const skipBtn = $('.vote_screen #skipVoteBtn');
+const leaderboard = $('.leaderboard #show_leaderboard');
 
 let currentPage = 0;
 const role = ["Captain", "Killer", "Blacksmith", "Pirate"];
@@ -64,6 +68,7 @@ let inLeaveState = false;
 let playingRooms = [];
 
 characterSVG.html($('.textures .spriteDiv').html());
+voteList.html(player_list.html());
 
 const randomRoomID = function() {
     return Math.floor(Math.random() * 90000) + 10000;
@@ -82,7 +87,7 @@ const createChestLists = function(n) {
     const list_80 = $('.game_screen .chests .c80');
     const list_120 = $('.game_screen .chests .c120');
 
-    const n120 = Math.floor(n / 6);
+    const n120 = Math.floor((n + 2) / 7);
     const n60 = Math.floor((n - 1 - n120) / 2);
     const n80 = Math.floor((n - 2 - n120) / 2);
 
@@ -197,6 +202,34 @@ const drawSprite = function(roomUsers) {
     }
 };
 
+const updateNav = function(currentPage){ 
+    for (let i = 0; i < NavPageBtn.length; i++){
+    storyText.eq(i).css("display", "none");
+    NavPageBtn.eq(i).css("background-image", "url('Textures/Navigate/Normal.png')");
+    if (i == currentPage) {
+        storyText.eq(i).css("display", "block");
+        NavPageBtn.eq(i).css("background-image","url('Textures/Navigate/Active.png')");
+
+    }
+}}
+
+const updateVolBtn = function(vol, volBtn) {
+    switch (true) {
+        case (vol.val() == 0):
+            volBtn.css('background-image', "url('Textures/sound_vol_level0.png')"); 
+            break;
+        case (vol.val() <= 33):
+            volBtn.css('background-image', "url('Textures/sound_vol_level1.png')"); 
+            break;
+        case (vol.val() <= 66):
+            volBtn.css('background-image', "url('Textures/sound_vol_level2.png')"); 
+            break;
+        case (vol.val() <= 100):
+            volBtn.css('background-image', "url('Textures/sound_vol_level3.png')"); 
+            break;
+    }
+}
+
 
 
 
@@ -209,33 +242,6 @@ $(window).on('mouseup', function(e) {
     }
 });
 
-const updateNav = function(currentPage){ 
-    for (let i = 0; i < NavPageBtn.length; i++){
-    storyText.eq(i).css("display", "none");
-    NavPageBtn.eq(i).css("background-image", "url('Textures/Nagative/Normal.png')");
-    if (i == currentPage) {
-        storyText.eq(i).css("display", "block");
-        NavPageBtn.eq(i).css("background-image","url('Textures/Nagative/Active.png')");
-
-    }
-}}
-
-const updateVolBtn = function(vol, volBtn) {
-    switch (true) {
-        case (vol.val() == 0):
-            volBtn.css('background-image', "url('Textures/sound_vol_level0.png')"); 
-            break;
-        case (vol.val() <=33):
-            volBtn.css('background-image', "url('Textures/sound_vol_level1.png')"); 
-            break;
-        case (vol.val() <=66):
-            volBtn.css('background-image', "url('Textures/sound_vol_level2.png')"); 
-            break;
-        case (vol.val() <=100):
-            volBtn.css('background-image', "url('Textures/sound_vol_level3.png')"); 
-            break;
-    }
-}
 /*
 * INITIAL SCREEN
 */
@@ -363,7 +369,7 @@ joinRoomBtn.on('click', function() {
 
         // Modify swap room
         usernameInputDiv.html(``);
-        usernameInputDiv.append(`<p>Welcome ${usernameInput.val()}</p>`);
+        usernameInputDiv.append(`<p>Welcome, ${usernameInput.val()}</p>`);
         $('.initial_screen h4').remove();
     }
     else {
@@ -440,7 +446,7 @@ startGameBtn.on('click', function() {
     const roomID = getCurrentPlayer(socket.id).room;
     room_size = playerBoxes.length;
     if (room_size < 2 || room_size > 12){
-        alert("Game should be started with around 6-12 players!!!");
+        alert("Game should be started with around 5-12 players!!!");
         return;
     }
     socket.emit("startGame", roomID, room_size);
@@ -452,7 +458,7 @@ for (let i = 0; i < sliders.length; i++) {
     val.text(range.val());
     range.on('input', function() {
         const roomID = getCurrentPlayer(socket.id).room;
-        gameStats[i] = range.val();
+        gameStats[i] = parseInt(range.val());
         socket.emit("customize", roomID, gameStats);
     });
 }
@@ -480,6 +486,29 @@ activateBtn.on('click', function() {
 
 voteBtn.on('click', function() {
     voteScr.css('display', 'grid');
+    voteList.html(player_list.html());
+    voteBoxes = $('#show_vote_list .box');
+    for (let i = 0; i < voteBoxes.length; i++) {
+        // Add leaderboard
+        const poster = $('<div>').addClass('poster');
+        if (playerBoxes.eq(i).hasClass('current')) poster.addClass('current');
+        poster.append(`<p>WANTED</p>`);
+        poster.append(voteBoxes.eq(i).html());
+        poster.append(`<span>0$</span>`);
+        leaderboard.append(poster);
+
+        // Add event
+        voteBoxes.eq(i).on('click', function() {
+            const elem = $('#show_vote_list .selected');
+            if (elem != null) elem.removeClass('selected');
+            voteBoxes.eq(i).addClass('selected');
+        });
+    }
+});
+
+skipBtn.on('click', function(){
+    const elem = $('#show_vote_list .selected');
+    if (elem != null) elem.removeClass('selected');
 });
 
 for (let i = 0; i < chests.length; i++) {
@@ -487,6 +516,7 @@ for (let i = 0; i < chests.length; i++) {
         const elem = $('.chests .option.selected');
         if (elem != null) elem.removeClass('selected');
         chests.eq(i).addClass('selected');
+        //socket.emit("chestCave", roomID, i);
         treasureScr.fadeOut();
         caveScr.fadeIn();
     });
@@ -572,6 +602,7 @@ socket.on("updateColors", function(roomUsers) {
 /*
 SOUND AND MUSIC
 */
+
 const musicVol = $('#settingMusic #musicVol input');
 const soundVol = $('#settingMusic #soundVol input');
 const musicVolSpan = $('#settingMusic #musicVol span');
@@ -657,12 +688,6 @@ $('.slide_sound').on('input', function(){
     start++
 })
     
-
 $('.click_sound').on('click', function () {
     cloneAndPlay(interactionSound2);
 })
-
-
-
-
-

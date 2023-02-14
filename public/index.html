@@ -33,13 +33,13 @@
                 <div class="setting_content" id="settingMusic">
                     <div class="setting_object" id="musicVol">
                         <label>Âm lượng nhạc</label>
-                        <input class="slide_sound" type="range" min="0" max="100" value="50">
+                        <input class="slide_sound" type="range" min="0" max="100" value="0">
                         <span></span>
                         <div></div>
                     </div>
                     <div class="setting_object" id="soundVol">
                         <label>Âm lượng tiếng</label>
-                        <input class="slide_sound" type="range" min="0" max="100" value="50">
+                        <input class="slide_sound" type="range" min="0" max="100" value="0">
                         <span></span>
                         <div></div>
                     </div>
@@ -149,12 +149,12 @@
                 <h4>CUSTOMIZE</h4>
                 <div>
                     <label> Number of killers: </label>
-                    <input type="range" id="killer_range" min="2" max="3" value="2">
+                    <input type="range" id="killer_range" min="1" max="3" value="2">
                     <span>0</span>
                 </div>
                 <div>
                     <label> Number of turns: </label>
-                    <input type="range" id="turn_range" min="5" max="7" value="5">
+                    <input type="range" id="turn_range" min="4" max="6" value="5">
                     <span>0</span>
                 </div>
                 <div>
@@ -188,25 +188,25 @@
                             <li class="option">1</li>
                             <li class="option">2</li>
                         </ul>
-                        <img id="c40" src="/Textures/closed_chest.svg" alt="">
+                        <img id="c40" src="/Textures/Font-SVG/closed_chest.svg" alt="">
                         <p>40$</p>
                     </div>
                     <div class="chest">
                         <ul class="chest_list c60">
                         </ul>
-                        <img id="c60" src="/Textures/closed_chest.svg" alt="">
+                        <img id="c60" src="/Textures/Font-SVG/closed_chest.svg" alt="">
                         <p>60$</p>
                     </div>
                     <div class="chest">
                         <ul class="chest_list c80">
                         </ul>
-                        <img id="c80" src="/Textures/closed_chest.svg" alt="">
+                        <img id="c80" src="/Textures/Font-SVG/closed_chest.svg" alt="">
                         <p>80$</p>
                     </div>
                     <div class="chest">
                         <ul class="chest_list c120">
                         </ul>
-                        <img id="c120" src="/Textures/closed_chest.svg" alt="">
+                        <img id="c120" src="/Textures/Font-SVG/closed_chest.svg" alt="">
                         <p>120$</p>
                     </div>
                 </div>
@@ -227,11 +227,15 @@
                 <input type="text">
             </div>
             <div class="player_list">
-                <h5>PLAYER LIST</h5>
-                <button id="skipVoteBtn">Skip vote</button>
+                <h4>VOTE</h4>
+                <div id="show_vote_list"></div>
+                <div class="btn">
+                    <button id="skipVoteBtn">Skip vote</button>
+                </div>
             </div>
             <div class="leaderboard">
                 <h4>LEADERBOARD</h4>
+                <div id="show_leaderboard"></div>
             </div>
         </div>
     </div>
