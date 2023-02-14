@@ -78,6 +78,7 @@ io.on("connection", function(socket) {
         io.emit("allUsers", players, leavePlayers, playingRooms);
         io.to(roomID).emit("updateUsers", getRoomUsers(player.room));
         io.to(roomID).emit("updateColors", getRoomUsers(player.room));
+        io.to(roomID).emit("customize", gameStats);
     });
 
     socket.on("leaveRoom", function(leaveIndex){
@@ -123,7 +124,6 @@ io.on("connection", function(socket) {
             if (timer > 0) timer--;
         }, 1000)  
         io.to(roomID).emit("startGame", temp, roomUsers);
-        console.log(players);
     });
     
     socket.on("disconnect", function(){
