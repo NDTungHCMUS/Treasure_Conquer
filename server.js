@@ -51,14 +51,22 @@ const getActiveRooms = function() {
     return new Set(players.map(player => player.room));
 }
 
+const getChestHunters = function(roomID, i){
+    return getRoomUsers(roomID).filter(player => player.chestID === i);
+}
+
+const getGameStats = function(roomID){
+    return allGameStats.find(x => x.room === roomID).stats;
+}
+
 const randomRole = function(randomID, i) {
     if (randomID[i] === 0) {
         return role[0];
     }
-    else if (randomID[i] <= gameStats[0]) {
+    else if (randomID[i] <= allGameStats[0]) {
         return role[1];
     }
-    else if (randomID[i] === gameStats[0] + 1){
+    else if (randomID[i] === allGameStats[0] + 1){
         return role[2];
     }
     else return role[3];
@@ -67,45 +75,48 @@ const randomRole = function(randomID, i) {
 let players = [];
 let leavePlayers = [];
 let playingRooms = [];
-let gameStats = [2, 5, 30, 90];
+let allGameStats = [];
 const role = ["Captain", "Killer", "Blacksmith", "Pirate"];
 // Socket events
 
 io.on("connection", function(socket) {
-    socket.on("joinRoom", function(username, roomID) {
+    socket.on("room:join", function(isHost, username, roomID) {
         const player = playerJoin(socket.id, username, roomID);
         socket.join(player.room);
-        io.emit("allUsers", players, leavePlayers, playingRooms);
-        io.to(roomID).emit("updateUsers", getRoomUsers(player.room));
-        io.to(roomID).emit("updateColors", getRoomUsers(player.room));
-        io.to(roomID).emit("customize", gameStats);
+        if (isHost){
+            allGameStats.push({'room': roomID, 'stats': [2, 5, 30, 90]});
+        }
+        io.emit("state:allUsers", players, leavePlayers, playingRooms);
+        io.to(roomID).emit("room:listing", getRoomUsers(player.room));
+        io.to(roomID).emit("room:coloring", getRoomUsers(player.room));
+        io.to(roomID).emit("room:customize", getGameStats(player.room));
     });
 
-    socket.on("leaveRoom", function(leaveIndex){
+    socket.on("room:leave", function(leaveIndex){
         const player = playerLeave(leaveIndex);
         socket.leave(player.room);
-        io.emit("allUsers", players, leavePlayers, playingRooms);
-        io.to(player.room).emit("updateUsers", getRoomUsers(player.room));
-        io.to(player.room).emit("updateColors", getRoomUsers(player.room));
+        io.emit("state:allUsers", players, leavePlayers, playingRooms);
+        io.to(player.room).emit("room:listing", getRoomUsers(player.room));
+        io.to(player.room).emit("room:coloring", getRoomUsers(player.room));
     });
     
-    socket.on("allUsers", function() {
-        socket.emit("allUsers", players, leavePlayers, playingRooms);
+    socket.on("state:allUsers", function() {
+        socket.emit("state:allUsers", players, leavePlayers, playingRooms);
     });
 
-    socket.on("customize", function(roomID, stats) {
-        gameStats = stats;
-        io.to(roomID).emit("customize", gameStats);
+    socket.on("room:customize", function(roomID, stats) {
+        allGameStats.find(x => x.room === roomID).stats = stats;
+        io.to(roomID).emit("room:customize", getGameStats(roomID));
     });
 
-    socket.on("selected", function(roomID, index) {
+    socket.on("room:chooseColor", function(roomID, index) {
         let player = getCurrentPlayer(socket.id);
         player.colorID = index;
-        io.emit("allUsers", players, leavePlayers, playingRooms);
-        io.to(roomID).emit("updateColors", getRoomUsers(player.room));
+        io.emit("state:allUsers", players, leavePlayers, playingRooms);
+        io.to(roomID).emit("room:coloring", getRoomUsers(player.room));
     });
 
-    socket.on("startGame", function(roomID, room_size) {
+    socket.on("game:start", function(roomID, room_size) {
         // Generate random permutation from 0 to n - 1
         let temp = [...Array(room_size).keys()];
         for (let i = room_size - 1; i >= 0; i--){
@@ -117,13 +128,14 @@ io.on("connection", function(socket) {
             roomUsers[i].role = randomRole(temp, i);
         }
         playingRooms.push(roomID);
-        io.emit("allUsers", players, leavePlayers, playingRooms);
-        let timer = 30;
-        setInterval(function(){          
-            io.to(roomID).emit('inGamePlay', timer);
+        io.emit("state:allUsers", players, leavePlayers, playingRooms);
+        let timer = getGameStats(roomID)[2] + 8;
+        setInterval(function(){    
+            io.to(roomID).emit("game:timing", timer);
             if (timer > 0) timer--;
-        }, 1000)  
-        io.to(roomID).emit("startGame", temp, roomUsers);
+        }, 1000);
+        io.to(roomID).emit("game:start", temp, roomUsers);
+        chestRooms = new Array(room_size).fill([]);
     });
     
     socket.on("disconnect", function(){
@@ -133,16 +145,24 @@ io.on("connection", function(socket) {
             player =  players.splice(index, 1)[0];
             let roomID = player.room;
             socket.leave(roomID);     
-            io.to(roomID).emit("updateUsers", getRoomUsers(roomID));
-            io.to(roomID).emit("updateColors", getRoomUsers(roomID));
+            io.to(roomID).emit("room:listing", getRoomUsers(roomID));
+            io.to(roomID).emit("room:coloring", getRoomUsers(roomID));
         }
         else {
             index = leavePlayers.indexOf(getLeavePlayer(socket.id));
             player = leavePlayers.splice(index, 1)[0];
         }
-        io.emit("allUsers", players, leavePlayers);
+        io.emit("state:allUsers", players, leavePlayers);
+    });
+
+    socket.on("game:huntChest", function(roomID, id){
+        const currentPlayer = getCurrentPlayer(socket.id);
+        currentPlayer.chestID = id;
+        io.emit("state:allUsers", players, leavePlayers, playingRooms);
+        io.to(roomID).emit("game:huntChest", getChestHunters(roomID, id), id);
     });
 })
+
 server.listen(5500, function() {
     console.log("listen 5500");
 });
