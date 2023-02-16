@@ -863,6 +863,10 @@ button:hover{
     font-weight: bold;
 }
 
+/*
+* CAVE SCREEN
+*/
+
 .cave{
    /* Displaying & Box Model */
    display: none;
@@ -877,25 +881,34 @@ button:hover{
    background-size: cover; 
 }
 
+.cave .character{
+    /* Displaying & Box Model */
+   display: flex;
+   justify-content: center;
+   margin-top: auto;
+   width: 100%;
+   height: 220px;
+}
+
+.cave .character .sprite{
+    /* Displaying & Box Model */
+    width: 140px;
+    height: 180px;
+    margin: 20px;
+}
+
 /*
 * ROLE SCREEN
 */
 
 .role_screen{
-    /* Position */
-    position: absolute;
-
     /* Displaying & Box Model */
     display: none;
-    width: 900px;
-    height: 600px;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
+    min-width: 100%;
+    min-height: 100vh;
     
     /* Color */
     background-image: url("/Textures/Background/treasure-scroll.jpg");
@@ -920,7 +933,7 @@ button:hover{
     justify-content: center;
 }
 
-.character .sprite{
+.role_screen .character .sprite{
     /* Displaying & Box Model */
     width: 140px;
     height: 180px;
