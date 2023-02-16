@@ -522,9 +522,6 @@ for (let i = 0; i < chests.length; i++) {
     });
 }
 
-
-
-
 // Socket events
 
 socket.on("allUsers", function(activeUsers, leaveUsers, playRooms){
@@ -554,7 +551,7 @@ socket.on("updateUsers", function(roomUsers) {
     playerBoxes = $(".player_list #show_player_list .box");
 });
 
-socket.on("startGame", function(temp, roomUsers) {
+socket.on("startGame", function(temp, roomUsers, roomData) {
     randomID = temp;
     gameScr.css('display', "grid");
     createChestLists(roomUsers.length);
@@ -566,6 +563,27 @@ socket.on("startGame", function(temp, roomUsers) {
     roleName.text("Role: " + roleMes.text());
     restroomScr.css('display', "none");
     roleScr.css('display', "flex");
+    
+    roomData.chestList.forEach(chest => {
+        treasureScr.append('<div id="'+chest.id +'" class="chest"></div>');
+        const chestDiv = $('#'+chest.id);
+        chestDiv.css('top', String(chest.position[0])+"em");
+        chestDiv.css('left', String(chest.position[1])+"em");
+        switch (chest.value) {
+            case 120:
+                chestDiv.addClass('c120')
+                break;
+            case 80:
+                chestDiv.addClass('c80')
+                break;
+            case 60:
+                chestDiv.addClass('c60')
+                break;
+            case 40:
+                chestDiv.addClass('c40')
+                break;
+        }
+    });
 });
 
 socket.on('inGamePlay', function(timer){

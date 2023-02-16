@@ -69,6 +69,44 @@ let leavePlayers = [];
 let playingRooms = [];
 let gameStats = [2, 5, 30, 90];
 const role = ["Captain", "Killer", "Blacksmith", "Pirate"];
+
+//Room management
+let roomList = []
+class RoomData {
+    constructor(roomID, roomSize){
+        this.id = roomID;
+        this.size = roomSize;
+        this.chestList = [];
+        this.createChestList();
+    }
+    createChestList(){
+        const n120 = Math.floor((this.size+2)/7);
+        const n80 = Math.floor((this.size-1-n120)/2);
+        const n60 = Math.floor((this.size-2-n120)/2);
+        const nList = [n120, n80, n60, 1];
+        const posList = [[[12,30.5],[33,76.5]],[[23,77],[18.5,57],[12,17],[29,27]],[[8,28],[15,37],[23,55],[10,47]],[[33, 41]]];
+        const valueList = [120,80,60,40];
+        const idList = ['c120', 'c080', 'c060', 'c040'];
+        for (let i=0; i<4;i++){
+            for (let j=0; j<nList[i]; j++){
+                this.chestList.push({
+                    id : idList[i] + String(j),
+                    value: valueList[i],
+                    position: posList[i][j],
+                    whoChoosen: []
+                });
+            }
+        }
+    }
+    getChestById(id){
+        this.chestList.forEach(chest => {
+            if (chest.id = id) {
+                return chest
+            }
+        });
+    }
+}
+
 // Socket events
 
 io.on("connection", function(socket) {
@@ -117,13 +155,19 @@ io.on("connection", function(socket) {
             roomUsers[i].role = randomRole(temp, i);
         }
         playingRooms.push(roomID);
+
+        let roomData = new RoomData(roomID, room_size);
+        roomList.push(roomData);
+
         io.emit("allUsers", players, leavePlayers, playingRooms);
         let timer = 30;
         setInterval(function(){          
             io.to(roomID).emit('inGamePlay', timer);
             if (timer > 0) timer--;
         }, 1000)  
-        io.to(roomID).emit("startGame", temp, roomUsers);
+        io.to(roomID).emit("startGame", temp, roomUsers, roomData);
+        
+
     });
     
     socket.on("disconnect", function(){
