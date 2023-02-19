@@ -70,10 +70,18 @@ button:hover{
     font-family: "Carribean Caps";
 }
 
+.ssi_bar.on_screen {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    z-index: 5;
+}
+
 .ssi_list {
-    position: absolute;
+    position: fixed;
     right: 20px;
-    top: 20px;
+    top: 5px;
+    z-index: 10;
 }
 
 .ssi_btn {
@@ -122,9 +130,10 @@ button:hover{
     background-image: url("/Textures/InfoBt.png");
 }
 
-.initial_screen .ssi_screen {
+.ssi_bar .ssi_screen {
     /* Position */
-    position: absolute;
+    position: fixed;
+    z-index: 10;
 
     /* Displaying & Box Model */
     display: none;
@@ -801,16 +810,16 @@ button:hover{
 }
 
 .chest.c120{
-    background-image: url("/Textures/chest_c120.webp");
+    background-image: url("/Textures/chest_c120.jpg");
 }
 .chest.c80{
-    background-image: url("/Textures/chest_c80.webp");
+    background-image: url("/Textures/chest_c80.jpg");
 }
 .chest.c60{
-    background-image: url("/Textures/chest_c60.webp");
+    background-image: url("/Textures/chest_c60.jpg");
 }
 .chest.c40{
-    background-image: url("/Textures/chest_c40.webp");
+    background-image: url("/Textures/chest_c40.jpg");
 }
 
 .treasure .chest:hover {
@@ -976,7 +985,7 @@ button:hover{
     /* Displaying & Box Model */
     display: none;
     grid-template-rows: 80px 3fr 2fr;
-    grid-template-columns: 5px 2fr 5fr 5px;
+    grid-template-columns: 5px 2fr minmax(0, 5fr) 5px;
     text-align: center;
     min-width: 100%;
     min-height: 100vh;
@@ -1007,6 +1016,8 @@ button:hover{
     /* Displaying & Box Model */
     grid-column: 2;
     grid-row: 2 / 4;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     border: none;
     border-radius: 10px;
@@ -1018,16 +1029,12 @@ button:hover{
 }
 
 .chat input {
-    /* Positioning */
-    position: absolute;
-    
+
     /* Displaying & Box Model */
-    display: flex;
-    justify-self: center;
     width: 280px;
     height: 30px;
     margin: auto;
-    bottom: 15px;
+    padding: 0px 5px;
 }
 
 .vote_screen .player_list{
@@ -1167,8 +1174,13 @@ button:hover{
 .leaderboard #show_leaderboard{
     /* Displaying & Box Model */
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     margin: 5px 20px;
+}
+
+.leaderboard .scroll_board{
+    overflow-x: scroll;
+    margin: 0px 5px;
 }
 
 #show_leaderboard .poster{
@@ -1207,6 +1219,14 @@ button:hover{
     height: 42px;
     margin: 8px auto;
 }
+
+.content_show{
+    overflow-y: scroll;
+    margin: 10px;
+    height: 75vh;
+}
+
+
 
 /* Positioning */
 /* Displaying & Box Model */

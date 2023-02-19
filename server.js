@@ -91,8 +91,8 @@ class RoomData {
         const n120 = Math.floor((this.size+2)/7);
         const n80 = Math.floor((this.size-1-n120)/2);
         const n60 = Math.floor((this.size-2-n120)/2);
-        const nList = [n120, n80, n60, 1];
-        const posList = [[[12,30.5],[33,76.5]],[[23,77],[18.5,57],[12,17],[29,27]],[[8,28],[15,37],[23,55],[10,47]],[[33, 41]]];
+        const nList = [n120, n80, n60, 2];
+        const posList = [[[12,30.5],[33,76.5]],[[23,77],[18.5,57],[12,17],[29,27]],[[8,28],[15,37],[23,55],[10,47]],[[33, 41],[23,21]]];
         const valueList = [120,80,60,40];
         const idList = ['c120', 'c080', 'c060', 'c040'];
         for (let i=0; i<4;i++){

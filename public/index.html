@@ -11,7 +11,7 @@
 
 <body>
     <div class="container">
-        <div class="initial_screen">
+        <div class="ssi_bar">
             <div class="ssi_list">                            
                 <div class = "ssi_btn" id="settingBtn">
                     <div class = "note_bubble">Cài đặt</div>
@@ -21,10 +21,8 @@
                 </div>
                 <div class = "ssi_btn" id="infoBtn">
                     <div class = "note_bubble">Thông tin trò chơi</div>
-                </div>  
-                          
+                </div>                          
             </div>
-            <h1>TREASURE CONQUER</h1>
             <div class="ssi_screen" id="settingScreen">
                 <div class="setting_list">
                     <div>Âm thanh</div>
@@ -96,6 +94,10 @@
                     <div class = "down"></div>
                 </div>
             </div>
+        </div>
+        <div class="initial_screen">
+
+            <h1>TREASURE CONQUER</h1>
             
             <div id = "usernameInputDiv">
                 <input type="text" placeholder="Enter username" id="usernameInput"/>
@@ -193,11 +195,15 @@
             <div class="character"></div>
         </div>
         <div class="activate_screen"></div>
+        
         <div class="vote_screen">
             <h4 id="role">Role: </h4>
             <h4 id="time">Time: </h4>
             <div class="chat">
                 <h4>CHAT</h4>
+                <div class="content_show">
+                    <div class="chat_content"></div>
+                </div>
                 <input type="text">
             </div>
             <div class="player_list">
@@ -209,7 +215,9 @@
             </div>
             <div class="leaderboard">
                 <h4>LEADERBOARD</h4>
-                <div id="show_leaderboard"></div>
+                <div class="scroll_board">
+                    <div id="show_leaderboard"></div>
+                </div>
             </div>
         </div>
     </div>

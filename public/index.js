@@ -8,13 +8,18 @@ socket.emit("state:allUsers");
 
 // User constants
 
+const ssiBar = $('.ssi_bar');
+const storyBtn = $('.ssi_bar #storyBtn');
+const storyScr = $('.ssi_bar #storyScreen');
+const settingBtn = $('.ssi_bar #settingBtn');
+const settingScr = $('.ssi_bar #settingScreen');
+const settingContent = $('.ssi_bar #settingScreen .setting_content');
+const storyText = $('.ssi_bar #storyScreen .text');
+const NavUpBtn = $('.navigate .up');
+const NavPageBtn = $('.navigate .page-mark');
+const NavDownBtn = $('.navigate .down');
+
 const initialScr = $('.initial_screen');
-const storyBtn = $('.initial_screen #storyBtn');
-const storyScr = $('.initial_screen #storyScreen');
-const settingBtn = $('.initial_screen #settingBtn');
-const settingScr = $('.initial_screen #settingScreen');
-const settingContent = $('.initial_screen #settingScreen .setting_content');
-const storyText = $('.initial_screen #storyScreen .text');
 const settingList = $('.initial_screen .setting_list div');
 let usernameInputDiv = $('.initial_screen #usernameInputDiv');
 let usernameInput = $('.initial_screen #usernameInput');
@@ -22,9 +27,6 @@ let newRoomBtnDiv = $('.initial_screen #newRoomBtnDiv');
 const newRoomBtn = $('.initial_screen #newRoomBtn');
 let roomIDInput = $('.initial_screen #roomCodeInput');
 const joinRoomBtn = $('.initial_screen #joinRoomBtn');
-const NavUpBtn = $('.navigate .up');
-const NavPageBtn = $('.navigate .page-mark');
-const NavDownBtn = $('.navigate .down');
 
 const restroomScr = $('.restroom_screen');
 const roomIDMessage = $('.restroom_screen h3');
@@ -280,6 +282,9 @@ const updateVolBtn = function(vol, volBtn) {
 
 $(window).on('mouseup', function(e) {
     const container = $('.activate_screen, #storyScreen, #settingScreen');
+    if (ssiBar.hasClass('on_screen')){ 
+        ssiBar.removeClass('on_screen');
+    }
     if (!container.is(e.target) && container.has(e.target).length === 0){
         container.fadeOut();
     }
@@ -291,6 +296,7 @@ $(window).on('mouseup', function(e) {
 
 settingBtn.on('click', function() {
     settingScr.css('display', 'block');
+    ssiBar.addClass('on_screen');
     for (let j = 0; j < settingList.length; j++){
         settingList.eq(j).removeClass('choosen');
         settingContent.eq(j).css('display', 'none');
@@ -304,7 +310,13 @@ storyBtn.on('click', function() {
     currentPage = 0;
     updateNav(currentPage);
     storyScr.css('display', 'block');
+    ssiBar.addClass('on_screen');
 });
+
+// ssiBar.on('click', function(){
+//     ssiBar.removeClass('on_screen');
+// });
+
 
 newRoomBtn.on("click", function() {
     const activeUsernames = getActiveNames(players);
@@ -711,3 +723,7 @@ $('.slide_sound').on('input', function(){
 $('.click_sound').on('click', function () {
     cloneAndPlay(interactionSound2);
 })
+
+//Test 
+// voteScr.css('display', 'grid');
+// initialScr.css('display', 'none');
