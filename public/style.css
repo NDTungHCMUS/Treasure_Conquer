@@ -1,42 +1,42 @@
 @font-face {
     font-family: "Brubeck AH";
-    src: url(/Textures/brubeck.ttf);
+    src: url(/Textures/Font-SVG/brubeck.ttf);
 }
 
 @font-face {
     font-family: "Carribean Caps";
-    src: url(/Textures/caric.ttf);
+    src: url(/Textures/Font-SVG/caric.ttf);
 }
 
 @font-face {
     font-family: "Rapscallion";
-    src: url(/Textures/rapscall.ttf);
+    src: url(/Textures/Font-SVG/rapscall.ttf);
 }
 
-*{
+* {
     /* Displaying & Box Model */
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 
     /* Text */
-    font-family: 'Segoe UI';
+    font-family: "Segoe UI";
 }
 
-body{
+body {
     /* Displaying & Box Model */
     display: flex;
     height: 100%;
 }
 
-.container{
+.container {
     /* Displaying & Box Model */
     gap: 10px;
     width: 100%;
     height: 100%;
 }
 
-button:hover{
+button:hover {
     /* Color */
     color: brown;
 
@@ -48,7 +48,7 @@ button:hover{
 * INITIAL SCREEN
 */
 
-.initial_screen{
+.initial_screen {
     /* Displaying & Box Model */
     display: flex;
     flex-direction: column;
@@ -57,12 +57,12 @@ button:hover{
     min-height: 100vh;
 
     /* Color */
-    background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)), 
-    url("/Textures/pirate_background.jpg");
+    background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)),
+        url("/Textures/Background/pirate_background.jpg");
     background-size: cover;
 }
 
-.initial_screen h1{
+.initial_screen h1 {
     /* Displaying & Box Model */
     margin: 50px 0 70px 0;
 
@@ -70,19 +70,220 @@ button:hover{
     font-family: "Carribean Caps";
 }
 
+.ssi_bar.on_screen {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    z-index: 5;
+}
+
+.ssi_list {
+    position: fixed;
+    right: 20px;
+    top: 5px;
+    z-index: 10;
+}
+
+.ssi_btn {
+    position: relative;
+    width: 35px;
+    height: 35px;
+    margin: 7px;
+    border-radius: 10px;
+    background-size: cover;
+    float: left;
+}
+
+.ssi_btn:hover {
+    transform: scale(1.05);
+}
+
+.note_bubble {
+    display: none;
+    position: absolute;
+
+    width: 100px;
+    top: 50px;
+    right: 0px;
+    padding: 20% 18% 5% 8%;
+    background-image: url("/Textures/Bubble_note.png");
+    background-size: 100% 100%;
+    text-anchor: middle;
+    text-align: center;
+    float: left;
+    box-sizing: border-box;
+}
+
+.ssi_list #storyBtn {
+    background-image: url("/Textures/StoryBt.png");
+}
+
+.ssi_list .ssi_btn:hover > .note_bubble {
+    display: block;
+}
+
+.ssi_list #settingBtn {
+    background-image: url("/Textures/MusicBt.png");
+}
+
+.ssi_list #infoBtn {
+    background-image: url("/Textures/InfoBt.png");
+}
+
+.ssi_bar .ssi_screen {
+    /* Position */
+    position: fixed;
+    z-index: 10;
+
+    /* Displaying & Box Model */
+    display: none;
+    width: 900px;
+    height: 500px;
+    text-align: left;
+    padding-top: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
+
+    /* Color */
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
+    background-size: cover;
+}
+
+#storyScreen .text {
+    width: 800px;
+    height: 500px;
+    flex-direction: column;
+    align-content: center;
+}
+
+#storyScreen .text:nth-child(1) {
+    display: block;
+}
+
+#storyScreen .text:nth-child(2) {
+    display: none;
+}
+
+#storyScreen .text:nth-child(3) {
+    display: none;
+}
+
+#storyScreen .text:nth-child(4) {
+    display: none;
+}
+
+#storyScreen .navigate {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    display: flex;
+    width: 100px;
+    height: 500px;
+    padding-top: 80px;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.navigate .up {
+    background-image: url("/Textures/Navigate/Up.png");
+    width: 75px;
+    height: 60px;
+    margin: 5px;
+    background-size: 100% 100%;
+    cursor: pointer;
+}
+
+.navigate .page-mark {
+    background-image: url("Textures/Navigate/Normal.png");
+    width: 60px;
+    height: 40px;
+    margin: 5px;
+    background-size: 100% 100%;
+    cursor: pointer;
+}
+
+.navigate .page-mark:hover {
+    background-image: url("Textures/Navigate/Active.png");
+}
+
+.navigate .page-mark:nth-child(2) {
+    background-image: url("Textures/Navigate/Active.png");
+}
+
+.navigate .down {
+    background-image: url("Textures/Navigate/Down.png");
+    width: 75px;
+    height: 60px;
+    margin: 5px;
+    background-size: 100% 100%;
+    cursor: pointer;
+}
+
+.navigate .up:hover {
+    transform: scale(1.05);
+}
+
+.navigate .down:hover {
+    transform: scale(1.05);
+}
+
+#storyScreen p {
+    /* Text */
+    margin: 15px 60px;
+    text-align: justify;
+    text-indent: 5%;
+}
+
+#storyScreen .page1 p {
+    /* Text */
+    font-size: 20px;
+}
+
+#storyScreen .page2 p {
+    /* Text */
+    font-size: 16px;
+}
+
+#storyScreen .page3 p {
+    /* Text */
+    font-size: 20px;
+}
+
+#storyScreen .page4 p {
+    /* Text */
+    font-size: 19px;
+}
+
+#storyScreen .page4 li {
+    /* Text */
+    text-align: justify;
+    margin: 5px 120px;
+    font-size: 19px;
+}
+
+#storyScreen strong {
+    /* Text */
+    margin: 20px;
+    font-size: 22px;
+}
+
 .initial_screen input {
     /* Displaying & Box Model */
     width: 200px;
     height: 40px;
     margin: 10px;
+    padding: 0px 5px;
 }
 
-.initial_screen #usernameInput{
+.initial_screen #usernameInput {
     /* Displaying & Box Model */
     margin: 50px;
 }
 
-.initial_screen button{
+.initial_screen button {
     /* Displaying & Box Model */
     width: 100px;
     height: 50px;
@@ -94,11 +295,99 @@ button:hover{
     background-color: aliceblue;
 }
 
+#settingScreen .setting_list {
+    position: absolute;
+
+    top: 0px;
+    left: 0px;
+    width: 250px;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+#settingScreen .setting_list div {
+    height: 50px;
+    width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    font-size: 20px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border: 2px solid black;
+    border-radius: 15px;
+}
+
+#settingScreen .setting_list div:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 5px groove;
+    border-style: double;
+}
+
+#settingScreen .setting_list .choosen {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 5px groove;
+    border-style: double;
+    pointer-events: none;
+}
+
+#settingScreen .setting_content {
+    position: absolute;
+
+    display: none;
+    width: 650px;
+    height: 100%;
+    top: 0;
+    right: 0;
+    align-items: center;
+    padding: 20px;
+}
+
+.setting_object {
+    display: flex;
+    align-items: center;
+    border: 2px solid black;
+    margin: 10px;
+
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.setting_object label {
+    width: 175px;
+    padding-left: 40px;
+}
+
+.setting_object input {
+    width: 300px;
+}
+
+.setting_object span {
+    width: 15px;
+    margin: 0px 15px;
+}
+
+.setting_object div {
+    width: 50px;
+    height: 40px;
+    background-size: cover;
+}
+
+.setting_object div:hover {
+    transform: scale(1.05);
+}
+
 /*
 * RESTROOM SCREEN
 */
 
-.restroom_screen{
+.restroom_screen {
     /* Positioning */
     position: absolute;
 
@@ -112,14 +401,14 @@ button:hover{
 
     /* Color */
     background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)), 
-    url("/Textures/pirate_background.jpg");
+        url("/Textures/Background/pirate_background.jpg");
     background-size: cover;
 
     /* Text */
     font-size: 18px;
 }
 
-.restroom_screen h3{
+.restroom_screen h3 {
     /* Displaying & Box Model */
     grid-column: 2 / 4;
     grid-row: 1;
@@ -127,12 +416,12 @@ button:hover{
     left: 10px;
 }
 
-.restroom_screen h4{
+.restroom_screen h4 {
     /* Displaying & Box Model */
     margin: 10px auto;
 }
 
-.player_list{
+.player_list {
     /* Displaying & Box Model */
     grid-column: 2;
     grid-row: 2;
@@ -141,18 +430,21 @@ button:hover{
     margin: 5px;
 
     /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
     background-size: cover;
 }
 
-.player_list #show_player_list{
+.player_list #show_player_list {
     /* Displaying & Box Model */
     display: flex;
     flex-flow: row wrap;
     margin: 5px;
 }
 
-.player_list #show_player_list .box{
+.player_list #show_player_list .box {
+    /* Position */
+    position: relative;
+
     /* Displaying & Box Model */
     display: flex;
     width: calc(33.2% - 10px);
@@ -165,22 +457,36 @@ button:hover{
     margin: 5px;
 
     /* Color */
-    background: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 250, 240, 0.5);
 }
 
-#show_player_list .box .color{
+#show_player_list .box .color {
+    /* Position */
+    position: absolute;
+
     /* Displaying & Box Model */
-    width: 30px;
-    height: 30px;
-    justify-self: flex-start;
-    border-radius: 50%;
+    width: 72px;
+    height: 42px;
     margin: 10px;
+    right: 70%;
 
     /* Color */
-    background-color: black;
+    /* background: url(/Textures/pirate_hat.svg);
+    background-size: cover; */
 }
 
-.update{
+#show_player_list .box p {
+    /* Displaying & Box Model */
+    text-align: center;
+    margin-left: 50px;
+}
+
+#show_player_list .box.current p {
+    /* Text */
+    font-weight: 650;
+}
+
+.update {
     /* Displaying & Box Model */
     grid-column: 3;
     grid-row: 2 / 4;
@@ -189,16 +495,16 @@ button:hover{
     margin: 5px;
 
     /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
     background-size: cover;
 }
 
-.update .color_options{
+.update .color_options {
     /* Displaying & Box Model */
     margin: 0 auto;
 }
 
-.color_options .option{
+.color_options .option {
     /* Positioning */
     position: relative;
 
@@ -214,71 +520,71 @@ button:hover{
     cursor: pointer;
 }
 
-#row1 .option:nth-child(1){
+#row1 .option:nth-child(1) {
     background-color: darkgray;
 }
 
-#row1 .option:nth-child(2){
+#row1 .option:nth-child(2) {
     background-color: aliceblue;
 }
 
-#row1 .option:nth-child(3){
+#row1 .option:nth-child(3) {
     background-color: burlywood;
 }
 
-#row1 .option:nth-child(4){
-    background-color: gold;
+#row1 .option:nth-child(4) {
+    background-color: rgb(250, 222, 64);
 }
 
-#row2 .option:nth-child(1){
-    background-color: chocolate;
+#row2 .option:nth-child(1) {
+    background-color: rgb(194, 109, 48);
 }
 
-#row2 .option:nth-child(2){
-    background-color: mediumblue;
+#row2 .option:nth-child(2) {
+    background-color: rgb(43, 97, 199);
 }
 
-#row2 .option:nth-child(3){
-    background-color: forestgreen;
+#row2 .option:nth-child(3) {
+    background-color: rgb(64, 158, 64);
 }
 
-#row2 .option:nth-child(4){
-    background-color: darkgoldenrod;
+#row2 .option:nth-child(4) {
+    background-color: rgb(49, 159, 173);
 }
 
-#row3 .option:nth-child(1){
+#row3 .option:nth-child(1) {
     background-color: mediumseagreen;
 }
 
-#row3 .option:nth-child(2){
+#row3 .option:nth-child(2) {
     background-color: mediumturquoise;
 }
 
-#row3 .option:nth-child(3){
-    background-color: darkmagenta;
+#row3 .option:nth-child(3) {
+    background-color: rgb(155, 39, 155);
 }
 
-#row3 .option:nth-child(4){
-    background-color: fuchsia;
+#row3 .option:nth-child(4) {
+    background-color: rgb(238, 108, 238);
 }
 
-#row4 .option:nth-child(1){
-    background-color: crimson;
+#row4 .option:nth-child(1) {
+    background-color: rgb(240, 52, 90);
 }
 
-#row4 .option:nth-child(2){
+#row4 .option:nth-child(2) {
     background-color: tomato;
 }
 
-#row4 .option:nth-child(3){
+#row4 .option:nth-child(3) {
     background-color: darkorange;
 }
 
-#row4 .option:nth-child(4){
+#row4 .option:nth-child(4) {
     background-color: darkslategray;
 }
 
-.color_options .option:is(:hover, .selected)::before{
+.color_options .option:is(:hover, .selected)::before {
     /* Positioning */
     position: absolute;
 
@@ -300,18 +606,40 @@ button:hover{
     filter: brightness(100%) contrast(90%);
 }
 
-.restroom_screen .character{
-    /* Displaying & Box Model */
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    margin: 40px auto;
-
-    /* Color */
-    background-color: white;
+.color_options .option.chosen {
+    /* Transitions & Animations */
+    cursor: default;
+    pointer-events: none;
 }
 
-.customize{
+.color_options .option.chosen::before {
+    /* Positioning */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    top: 50%;
+    left: 50%;
+    width: 26px;
+    height: 26px;
+    background: inherit;
+    border-radius: inherit;
+    content: "";
+
+    /* Colors */
+    background: rgba(0, 0, 0, 0.7);
+
+    /* Transitions & Animations */
+    transform: translate(-50%, -50%);
+}
+
+.restroom_screen .character {
+    /* Displaying & Box Model */
+    width: 140px;
+    height: 180px;
+    margin: 20px auto;
+}
+
+.customize {
     /* Displaying & Box Model */
     grid-column: 2;
     grid-row: 3 / 5;
@@ -320,40 +648,40 @@ button:hover{
     margin: 5px;
 
     /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
     background-size: cover;
 }
 
-.customize div{
+.customize div {
     /* Displaying & Box Model */
     display: flex;
     margin: 30px 0 0 50px;
 }
 
-.customize label{
+.customize label {
     /* Displaying & Box Model */
     width: 420px;
     text-align: left;
 }
 
-.customize input{
+.customize input {
     /* Displaying & Box Model */
     width: 250px;
     margin: 0 10px 0 0;
 }
 
-.customize span{
+.customize span {
     /* Text */
     font-weight: bold;
 }
 
-.restroom_screen .button{
+.restroom_screen .button {
     /* Displaying & Box Model */
     grid-column: 3;
     grid-row: 4;
 }
 
-#leaveRoomBtn{
+#leaveRoomBtn {
     /* Displaying & Box Model */
     width: 100px;
     height: 50px;
@@ -365,7 +693,7 @@ button:hover{
     background-color: indianred;
 }
 
-#startGameBtn{
+#startGameBtn {
     /* Displaying & Box Model */
     width: 150px;
     height: 50px;
@@ -381,223 +709,211 @@ button:hover{
 * GAME SCREEN
 */
 
-.game_screen{
+.game_screen {
     /* Positioning */
     position: absolute;
 
     /* Displaying & Box Model */
     display: none;
-    grid-template-rows: 50px 50px 3fr 2fr;
-    grid-template-columns: 5px 2fr 5fr 5px;
+    grid-template-rows: 35px 40px 1fr;
+    grid-template-columns: 1fr 1fr;
     text-align: center;
     min-width: 100%;
     min-height: 100vh;
 
     /* Color */
     background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)), 
-    url("/Textures/pirate_background.jpg");
+        url("/Textures/Background/pirate_background.jpg");
     background-size: cover;
 }
 
-#role{
+.game_screen #role {
+    /* Displaying & Box Model */
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: flex-start;
+    margin: 5px;
+}
+
+.game_screen #time {
     /* Displaying & Box Model */
     grid-column: 2;
     grid-row: 1;
-    justify-self: flex-start;
-    margin: 10px;
-}
-
-#time{
-    /* Displaying & Box Model */
-    grid-column: 3;
-    grid-row: 1;
     justify-self: center;
-    margin: 10px;
+    margin: 5px;
 }
 
-.game_screen .button{
+.game_screen .button {
     /* Displaying & Box Model */
-    grid-column: 2 / 4;
+    grid-column: 1 / 3;
     grid-row: 2;
     justify-self: flex-start;
 }
 
-#activateBtn{
+#activateBtn {
     /* Displaying & Box Model */
     width: 100px;
     height: 40px;
     border: none;
     border-radius: 10px;
-    margin: 5px;
 
     /* Color */
     background-color: indianred;
 }
 
-#voteBtn{
+#voteBtn {
     /* Displaying & Box Model */
     width: 100px;
     height: 40px;
     border: none;
     border-radius: 10px;
-    margin: 5px;
 
     /* Color */
     background-color: lightgreen;
 }
 
-.game_screen .chat{
-    /* Displaying & Box Model */
-    grid-column: 2;
-    grid-row: 3 / 5;
-    justify-content: center;
-    border: none;
-    border-radius: 10px;
-    margin: 5px;
-
-    /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
-    background-size: cover;
-}
-
-.chat input {
+.treasure {
     /* Positioning */
-    position: absolute;
-    
-    /* Displaying & Box Model */
-    display: flex;
-    justify-self: center;
-    width: 280px;
-    height: 30px;
-    left: 25px;
-    bottom: 15px;
-}
+    position: relative;
 
-.treasure{
     /* Displaying & Box Model */
-    grid-column: 3;
+    grid-column: 1 / 3;
     grid-row: 3;
     border: none;
     border-radius: 10px;
-    margin: 5px;
+    margin: 5px 15px;
 
     /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/Background/treasure_map.png");
     background-size: cover;
 }
 
-.treasure .chests{
-    /* Displaying & Box Model */
-    display: flex;
-    text-align: center;
-    justify-content: space-around;
-    margin: 80px 0 0 0;
-}
+.treasure .chest {
+    /* Postioning */
+    position: absolute;
 
-.chests .chest_list{
-    /* Displaying & Box Model */
-    display: flex;
-    justify-content: space-around;
-    list-style: none;
+    /* Display */
+    width: 43px;
+    height: 43px;
+    background-size: 100% 100%;
+    border-radius: 50%;
 
     /* Transitions & Animations */
+    transform: translate(-50%, -50%);
     cursor: pointer;
 }
 
-.chest_list .option{
-    /* Displaying & Box Model */
-    width: 20%;
-    border-radius: 3px;
-
-    /* Color */
-    background-image: url("/Textures/closed_chest.svg");
-    background-size: cover;
-    color: aliceblue;
-
-    /* Text */
-    font-weight: bold;
+.chest.c120 {
+    background-image: url("/Textures/Font-SVG/diamond_chest.svg");
+}
+.chest.c80 {
+    background-image: url("/Textures/Font-SVG/gold_chest.svg");
+}
+.chest.c60 {
+    background-image: url("/Textures/Font-SVG/silver_chest.svg");
+}
+.chest.c40 {
+    background-image: url("/Textures/Font-SVG/iron_chest.svg");
 }
 
-.chests .option:is(:hover, .selected){
-    /* Color */
-    color: aqua;
-
+.treasure .chest:hover {
     /* Transitions & Animations */
-    filter: brightness(120%) contrast(90%);
+    transform: scale(1.2) translate(-50%, -50%);
 }
 
-.treasure img{
+.treasure img {
     /* Displaying & Box Model */
     width: 150px;
     height: 120px;
 }
 
-.treasure p{
+.treasure p {
     /* Text */
     font-weight: bold;
 }
 
-.leaderboard{
+/*
+* CAVE SCREEN
+*/
+
+.cave {
     /* Displaying & Box Model */
-    grid-column: 3;
-    grid-row: 4;
+    display: none;
+    grid-column: 1 / 3;
+    grid-row: 3;
     border: none;
     border-radius: 10px;
-    margin: 5px;
+    margin: 5px 15px;
 
     /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/Background/cave_background.jpg");
     background-size: cover;
+}
+
+.cave .character {
+    /* Displaying & Box Model */
+    display: flex;
+    justify-content: center;
+    margin-top: auto;
+    width: 100%;
+    height: 220px;
+}
+
+.cave .character .sprite {
+    /* Displaying & Box Model */
+    width: 140px;
+    height: 180px;
+    margin: 20px;
 }
 
 /*
 * ROLE SCREEN
 */
 
-.role_screen{
-    /* Position */
-    position: absolute;
-
+.role_screen {
     /* Displaying & Box Model */
     display: none;
-    width: 800px;
-    height: 500px;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
-    
+    min-width: 100%;
+    min-height: 100vh;
+
     /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
     background-size: cover;
 }
 
-.role_screen p{
+.role_screen p {
     /* Displaying & Box Model */
-    margin: 40px;
+    margin: 15px 50px;
+    font-size: 25px;
 }
 
-.role_screen #role_mes{
+.role_screen #role_mes {
     /* Text */
-    font-size: 35px;
+    font-size: 40px;
     font-weight: bold;
 }
 
-.role_screen .character{
+.role_screen .character {
     /* Displaying & Box Model */
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+}
+
+.role_screen .character .sprite {
+    /* Displaying & Box Model */
+    width: 140px;
+    height: 180px;
+    margin: 20px auto;
 }
 
 /*
 * ACTIVATE SCREEN
 */
 
-.activate_screen{
+.activate_screen {
     /* Position */
     position: absolute;
 
@@ -612,9 +928,9 @@ button:hover{
     left: 50%;
     transform: translate(-50%, -50%);
     box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
-    
+
     /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
     background-size: cover;
 }
 
@@ -622,41 +938,180 @@ button:hover{
 * VOTE SCREEN
 */
 
-.vote_screen{
-    /* Position */
+.vote_screen {
+    /* Positioning */
     position: absolute;
 
     /* Displaying & Box Model */
     display: none;
-    width: 800px;
-    height: 500px;
-    flex-direction: column;
-    align-items: center;
+    grid-template-rows: 80px 3fr 2fr;
+    grid-template-columns: 5px 2fr 5fr 5px;
     text-align: center;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
-    
+    min-width: 100%;
+    min-height: 100vh;
+
     /* Color */
-    background-image: url("/Textures/treasure-scroll.jpg");
+    background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)), 
+        url("/Textures/Background/pirate_background.jpg");
     background-size: cover;
 }
 
-.vote_screen .player_list{
+.vote_screen #role {
     /* Displaying & Box Model */
-    width: 790px;
-    height: 400px;
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: flex-start;
+    margin: 10px;
+}
+
+.vote_screen #time {
+    /* Displaying & Box Model */
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: center;
+    margin: 10px;
+}
+
+.vote_screen .chat {
+    /* Displaying & Box Model */
+    grid-column: 2;
+    grid-row: 2 / 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+
+    /* Color */
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
+    background-size: cover;
+}
+
+.chat .content_show{
+    overflow-y: scroll;
+    margin: 10px;
+    height: 75vh;
+}
+
+.chat input {
+    /* Displaying & Box Model */
+    width: 280px;
+    height: 30px;
+    margin: auto;
+    padding: 0px 5px;
+}
+
+.vote_screen .player_list {
+    /* Displaying & Box Model */
+    grid-column: 3;
+    grid-row: 2;
+    display: flex;
+    flex-direction: column;
     text-align: center;
     border: none;
     border-radius: 10px;
     margin: 5px;
 
     /* Color */
-    background: rgba(240, 248, 255, 0.4);
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
+    background-size: cover;
 }
 
-#skipVoteBtn{
+.player_list #show_vote_list {
+    /* Displaying & Box Model */
+    display: flex;
+    flex-flow: row wrap;
+    margin: 5px;
+}
+
+.player_list #show_vote_list .box {
+    /* Position */
+    position: relative;
+
+    /* Displaying & Box Model */
+    display: flex;
+    width: calc(33.2% - 10px);
+    height: 50px;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+
+    /* Color */
+    background-color: rgba(255, 250, 240, 0.5);
+
+    /* Transitions & Animations */
+    cursor: pointer;
+}
+
+#show_vote_list .box.current {
+    /* Transitions & Animations */
+    cursor: default;
+    pointer-events: none;
+}
+
+#show_vote_list .box:is(:hover, .selected) {
+    /* Displaying & Box Model */
+    border: 1px solid black;
+}
+
+#show_vote_list .box.selected::before {
+    /* Positioning */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    top: 50%;
+    left: 85%;
+    width: 50px;
+    height: 25px;
+    border-radius: 5px;
+    content: "Vote";
+
+    /* Colors */
+    background-color: lightgreen;
+
+    /* Transitions & Animations */
+    transform: translate(-50%, -50%);
+    filter: brightness(100%) contrast(90%);
+}
+
+#show_vote_list .box .color {
+    /* Position */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    width: 72px;
+    height: 42px;
+    margin: 10px;
+    right: 70%;
+
+    /* Color */
+    /* background: url(/Textures/pirate_hat.svg);
+    background-size: cover; */
+}
+
+#show_vote_list .box p {
+    /* Displaying & Box Model */
+    text-align: center;
+    margin-left: 50px;
+}
+
+#show_vote_list .box.current p {
+    /* Text */
+    font-weight: 650;
+}
+
+.player_list .btn {
+    /* Displaying & Box Model */
+    display: flex;
+    margin-top: auto;
+    justify-content: center;
+}
+
+#skipVoteBtn {
     /* Displaying & Box Model */
     width: 100px;
     height: 50px;
@@ -666,6 +1121,68 @@ button:hover{
 
     /* Color */
     background-color: lightgreen;
+}
+
+.leaderboard {
+    /* Displaying & Box Model */
+    grid-column: 3;
+    grid-row: 3;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+
+    /* Color */
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
+    background-size: cover;
+}
+
+.leaderboard #show_leaderboard{
+    /* Displaying & Box Model */
+    display: flex;
+    flex-wrap: nowrap;
+    margin: 5px 20px;
+}
+
+.leaderboard .scroll_board{
+    overflow-x: scroll;
+    margin: 0px 5px;
+    width: 70vw;
+}
+
+#show_leaderboard .poster {
+    /* Displaying & Box Model */
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 120px;
+    height: 160px;
+    border-radius: 3px;
+    margin: 5px;
+
+    /* Color */
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
+    background-size: cover;
+
+    /* Transitions & Animations */
+    filter: brightness(110%) hue-rotate(10deg);
+}
+
+#show_leaderboard .poster.current {
+    /* Transitions & Animations */
+    filter: brightness(120%) hue-rotate(15deg);
+}
+
+#show_leaderboard .poster span {
+    /* Displaying & Box Model */
+    margin: 5px 0;
+    margin-top: auto;
+}
+
+#show_leaderboard .poster .color {
+    /* Displaying & Box Model */
+    width: 72px;
+    height: 42px;
+    margin: 8px auto;
 }
 
 /* Positioning */
