@@ -985,7 +985,7 @@ button:hover{
     /* Displaying & Box Model */
     display: none;
     grid-template-rows: 80px 3fr 2fr;
-    grid-template-columns: 5px 2fr minmax(0, 5fr) 5px;
+    grid-template-columns: 5px 2fr 5fr 5px;
     text-align: center;
     min-width: 100%;
     min-height: 100vh;
@@ -1181,6 +1181,7 @@ button:hover{
 .leaderboard .scroll_board{
     overflow-x: scroll;
     margin: 0px 5px;
+    width: 70vw;
 }
 
 #show_leaderboard .poster{
