@@ -17,6 +17,8 @@ app.get("/", function (req, res) {
 * USERS HANDLING FUNCTION
 */
 
+// User structure = {id, username, roomID, colorID, role, chestID, familiarity, gold}
+
 const playerJoin = function (id, username, room) {
     const player = { id, username, room };
     players.push(player);
@@ -76,10 +78,6 @@ const getPlayingRooms = function() {
     return rooms.filter((room) => room.hasOwnProperty('chestList'));
 }
 
-const getChestHunters = function (roomID, i) {
-    return getRoomUsers(roomID).filter((player) => player.chestID === i);
-};
-
 const getCurrentRoom = function (roomID) {
     return rooms.find((x) => x.id === roomID);
 }
@@ -94,6 +92,14 @@ const randomRole = function (randomID, roomID, i) {
     } else return role[3];
 };
 
+/*
+* GAME HANDLING FUNCTION
+*/
+
+const getChestHunters = function (roomID, i) {
+    return getRoomUsers(roomID).filter((player) => player.chestID === i);
+};
+
 const createChestList = function(room) {
     const room_size = getRoomUsers(room.id).length;
     const n120 = Math.floor((room_size + 2) / 7);
@@ -105,9 +111,26 @@ const createChestList = function(room) {
     const idList = ["c120", "c080", "c060", "c040"];
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < nList[i]; j++) {
-            room.chestList.push({id: idList[i] + j.toString(), value: valueList[i], position: posList[i][j], hunters: []});
+            room.chestList.push({id: idList[i] + j.toString(), value: valueList[i], position: posList[i][j]});
         }
     }
+};
+
+const updateState = function(roomID, chestHunters, chestID) {
+    const hunterNum = chestHunters.length
+    const pirates = chestHunters.filter(player => player.role === 'Pirate');
+    const killers = chestHunters.filter(player => player.role === 'Killer');
+    const chests = getCurrentRoom(roomID).chestList;
+    if (killers.length > 0 && pirates.length === 1){
+        io.to(pirates[0].id).emit("game:killed");
+        killers.forEach(killer => {
+            io.to(killer.id).emit("game:kill");
+        });
+        return;
+    }
+    pirates.forEach(pirate => pirate.familiarity += hunterNum - 1);
+    chestHunters.forEach(player => player.gold += Math.floor(chests[chestID].value / hunterNum));
+    chestHunters[0].gold += chests[chestID].value % hunterNum;
 };
 
 let players = [];
@@ -184,16 +207,23 @@ io.on("connection", function (socket) {
         let roomUsers = getRoomUsers(roomID);
         for (let i = 0; i < room_size; i++) {
             roomUsers[i].role = randomRole(temp, roomID, i);
+            roomUsers[i].gold = 0;
         }
-        const room =  getCurrentRoom(roomID);
+        const room = getCurrentRoom(roomID);
         room.chestList = [];
         createChestList(room);
 
         io.emit("state:allUsers", players, leavePlayers, getPlayingRooms());
         let timer = getCurrentRoom(roomID).stats[2] + 7;
-        setInterval(function () {
+        const chestTiming = setInterval(function () {
             io.to(roomID).emit("game:timing", timer);
-            if (timer > 0) timer--;
+            if (timer > 0){
+                timer--;
+            }
+            else {
+                clearInterval(chestTiming);
+                //io.to(roomID).emit("game:updateState", roomUsers);
+            }
         }, 1000);
         io.to(roomID).emit("game:start", temp, roomUsers, room);
     });
