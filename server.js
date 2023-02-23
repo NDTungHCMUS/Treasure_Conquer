@@ -51,6 +51,8 @@ const getLeavePlayer = function (id) {
 * ROOM HANDLING FUNCTION
 */
 
+// Room structure = {id, stats, chestList}
+
 const addRoom = function (roomID) {
     const room = {'id': roomID, 'stats': [2, 5, 30, 90]};
     rooms.push(room);
@@ -96,19 +98,21 @@ const randomRole = function (randomID, roomID, i) {
 * GAME HANDLING FUNCTION
 */
 
+// Gamephase structure = {huntPhs, votePhs}
+
 const getChestHunters = function (roomID, i) {
     return getRoomUsers(roomID).filter((player) => player.chestID === i);
 };
 
 const createChestList = function(room) {
     const room_size = getRoomUsers(room.id).length;
-    const n120 = Math.floor((room_size + 2) / 7);
-    const n80 = Math.floor((room_size - 2 - n120) / 2);
-    const n60 = Math.floor((room_size - 1 - n120) / 2);
-    const nList = [n120, n80, n60, 2];
+    const n100 = Math.floor((room_size + 2) / 7);
+    const n75 = Math.floor((room_size - 2 - n100) / 2);
+    const n50 = Math.floor((room_size - 1 - n100) / 2);
+    const nList = [n100, n75, n50, 2];
     const posList = [[[7.5, 40.2], [31, 68]], [[23, 62], [17, 8], [12, 17], [28, 27]], [[4, 26], [15, 37], [22, 55], [6, 53]], [[33, 41], [23, 21]]];
-    const valueList = [120, 80, 60, 40];
-    const idList = ["c120", "c080", "c060", "c040"];
+    const valueList = [100, 75, 50, 35];
+    const idList = ["c100", "c075", "c050", "c035"];
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < nList[i]; j++) {
             room.chestList.push({id: idList[i] + j.toString(), value: valueList[i], position: posList[i][j]});
@@ -116,21 +120,33 @@ const createChestList = function(room) {
     }
 };
 
-const updateState = function(roomID, chestHunters, chestID) {
-    const hunterNum = chestHunters.length
-    const pirates = chestHunters.filter(player => player.role === 'Pirate');
-    const killers = chestHunters.filter(player => player.role === 'Killer');
-    const chests = getCurrentRoom(roomID).chestList;
-    if (killers.length > 0 && pirates.length === 1){
-        io.to(pirates[0].id).emit("game:killed");
-        killers.forEach(killer => {
-            io.to(killer.id).emit("game:kill");
-        });
-        return;
+const updateState = function(roomID, player) {
+    const chestHunters = getChestHunters(roomID, player.chestID);
+    let hunterNum = chestHunters.length;
+    if (hunterNum === 0){
     }
-    pirates.forEach(pirate => pirate.familiarity += hunterNum - 1);
-    chestHunters.forEach(player => player.gold += Math.floor(chests[chestID].value / hunterNum));
-    chestHunters[0].gold += chests[chestID].value % hunterNum;
+    else {
+        const pirates = chestHunters.filter(player => player.role !== 'Killer');
+        const killers = chestHunters.filter(player => player.role === 'Killer');
+        const chests = getCurrentRoom(roomID).chestList;
+        if (killers.length > 0 && pirates.length === 1){
+            if (player.role === 'Killer'){
+                io.to(player.id).emit("game:kill");
+            }
+            else {
+                io.to(player.id).emit("game:killed"); 
+                return;
+            }
+            const index = chestHunters.indexOf(pirates[0]);
+            chestHunters.splice(index, 1);
+            hunterNum = chestHunters.length;
+        }
+        else {
+            player.role === 'Pirate' ? player.familiarity += (hunterNum - 1) : true;
+        }
+        player.gold += Math.floor(chests[player.chestID].value / hunterNum);
+        if (player === chestHunters[0]) player.gold += chests[player.chestID].value % hunterNum;
+    }
 };
 
 let players = [];
@@ -208,24 +224,29 @@ io.on("connection", function (socket) {
         for (let i = 0; i < room_size; i++) {
             roomUsers[i].role = randomRole(temp, roomID, i);
             roomUsers[i].gold = 0;
+            roomUsers[i].familiarity = 0;
         }
         const room = getCurrentRoom(roomID);
         room.chestList = [];
         createChestList(room);
-
         io.emit("state:allUsers", players, leavePlayers, getPlayingRooms());
-        let timer = getCurrentRoom(roomID).stats[2] + 7;
+        io.to(roomID).emit("game:start", temp, roomUsers, room);
+    });
+
+    socket.on("game:timing", function (roomID){
+        let roomUsers = getRoomUsers(roomID);
+        let timer = getCurrentRoom(roomID).stats[2];
         const chestTiming = setInterval(function () {
             io.to(roomID).emit("game:timing", timer);
             if (timer > 0){
                 timer--;
             }
             else {
+                updateState(roomID, getCurrentPlayer(socket.id));
+                console.log(roomUsers);
                 clearInterval(chestTiming);
-                //io.to(roomID).emit("game:updateState", roomUsers);
             }
         }, 1000);
-        io.to(roomID).emit("game:start", temp, roomUsers, room);
     });
 
     socket.on("game:huntChest", function (roomID, id) {
