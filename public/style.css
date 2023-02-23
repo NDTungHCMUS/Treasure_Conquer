@@ -79,19 +79,18 @@ button:hover {
 
 .ssi_list {
     position: fixed;
+    display: flex;
     right: 20px;
     top: 5px;
     z-index: 10;
 }
 
 .ssi_btn {
-    position: relative;
     width: 35px;
     height: 35px;
     margin: 7px;
     border-radius: 10px;
     background-size: cover;
-    float: left;
 }
 
 .ssi_btn:hover {
@@ -103,7 +102,7 @@ button:hover {
     position: absolute;
 
     width: 100px;
-    top: 50px;
+    top: 40px;
     right: 0px;
     padding: 20% 18% 5% 8%;
     background-image: url("/Textures/Bubble_note.png");
@@ -1154,7 +1153,7 @@ button:hover {
     display: flex;
     justify-content: center;
     flex-direction: column;
-    width: 120px;
+    min-width: 120px;
     height: 160px;
     border-radius: 3px;
     margin: 5px;
