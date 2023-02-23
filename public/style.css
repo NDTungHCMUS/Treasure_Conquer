@@ -231,7 +231,7 @@ button:hover {
 
 #storyScreen p {
     /* Text */
-    margin: 15px 60px;
+    margin: 15px 55px;
     text-align: justify;
     text-indent: 5%;
 }
@@ -248,7 +248,21 @@ button:hover {
 
 #storyScreen .page3 p {
     /* Text */
-    font-size: 20px;
+    font-size: 18px;
+}
+
+#storyScreen .page3 img{
+    /* Positioning */
+    position: relative;
+
+    /* Displaying & Box Model */
+    width: 25px;
+    height: 25px;
+    margin: 2px;
+    top: 5px;
+
+    /* Color */
+    background-size: cover;
 }
 
 #storyScreen .page4 p {
@@ -802,16 +816,16 @@ button:hover {
     cursor: pointer;
 }
 
-.chest.c120 {
+.chest.c100 {
     background-image: url("/Textures/Font-SVG/diamond_chest.svg");
 }
-.chest.c80 {
+.chest.c75 {
     background-image: url("/Textures/Font-SVG/gold_chest.svg");
 }
-.chest.c60 {
+.chest.c50 {
     background-image: url("/Textures/Font-SVG/silver_chest.svg");
 }
-.chest.c40 {
+.chest.c35 {
     background-image: url("/Textures/Font-SVG/iron_chest.svg");
 }
 

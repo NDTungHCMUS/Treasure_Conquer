@@ -83,29 +83,6 @@ const randomRoomID = function() {
     return Math.floor(Math.random() * 90000) + 10000;
 }
 
-const createChestLists = function(room) {
-    room.chestList.forEach(chest => {
-        treasureScr.append(`<div id="${chest.id}" class="chest"></div>`);
-        const chestDiv = $('#' + chest.id);
-        chestDiv.css('top', String(chest.position[0]) + "em");
-        chestDiv.css('left', String(chest.position[1]) + "em");
-        switch (chest.value) {
-            case 120:
-                chestDiv.addClass('c120');
-                break;
-            case 80:
-                chestDiv.addClass('c80');
-                break;
-            case 60:
-                chestDiv.addClass('c60');
-                break;
-            case 40:
-                chestDiv.addClass('c40');
-                break;
-        }
-    });
-}
-
 // A player base on id (in players)
 const getCurrentPlayer = function(id) {
     return players.find(player => player.id === id);
@@ -296,6 +273,29 @@ const drawSprite_roleScr = function(roomUsers) {
         }
     }
 };
+
+const createChestLists = function(room) {
+    room.chestList.forEach(chest => {
+        treasureScr.append(`<div id="${chest.id}" class="chest"></div>`);
+        const chestDiv = $('#' + chest.id);
+        chestDiv.css('top', String(chest.position[0]) + "em");
+        chestDiv.css('left', String(chest.position[1]) + "em");
+        switch (chest.value) {
+            case 100:
+                chestDiv.addClass('c100');
+                break;
+            case 75:
+                chestDiv.addClass('c75');
+                break;
+            case 50:
+                chestDiv.addClass('c50');
+                break;
+            case 35:
+                chestDiv.addClass('c35');
+                break;
+        }
+    });
+}
 
 // Update navigate mark in tutorial
 const updateNav = function(currentPage){ 
@@ -547,7 +547,7 @@ voteBtn.on('click', function() {
         if (playerBoxes.eq(i).hasClass('current')) poster.addClass('current');
         poster.append(`<p>WANTED</p>`);
         poster.append(voteBoxes.eq(i).html());
-        poster.append(`<span>0$</span>`);
+        poster.append(`<span class="gold">0$</span>`);
         leaderboard.append(poster);
 
         // Add event
@@ -574,12 +574,13 @@ socket.on("state:allUsers", function(activeUsers, leaveUsers, playRooms){
 
 socket.on("room:listing", function(roomUsers) {
     let currentPlayer = getCurrentPlayer(socket.id);
-    if (roomUsers.length){
-        if (roomUsers[0].username == currentPlayer.username){
-            ranges.show();
-            startGameBtn.show();
+    if (roomUsers[0].username == currentPlayer.username){
+        ranges.show();
+        for (let i = 0; i < ranges.length; i++) {
+            ranges.eq(i).val(gameStats[i]);
         }
-    } 
+        startGameBtn.show();
+    }
     player_list.html(``);
     roomUsers.forEach(player => {
         const playerDiv = $('<div>').addClass('box');
@@ -622,7 +623,6 @@ socket.on("game:start", function(temp, roomUsers, room) {
     createChestLists(room);
     chests = $('.game_screen .treasure .chest');
     chestEvent_updateByServer(chests);
-    console.log(chests.length);
     drawRoleScr();
     drawSprite_roleScr(roomUsers);
     roleName.text("Role: " + roleMes.text());
@@ -630,6 +630,7 @@ socket.on("game:start", function(temp, roomUsers, room) {
     roleScr.css('display', "flex");
     setTimeout(function() {
         roleScr.fadeOut();
+        socket.emit("game:timing", room.id);
         gameScr.css('display', "grid");
     }, 8000);
 });
@@ -642,6 +643,17 @@ socket.on("game:huntChest", function(chestHunters, id){
     if (getCurrentPlayer(socket.id).chestID !== id) return;
     caveChr.html(``);
     caveEvent_updateByServer(chestHunters);
+});
+
+socket.on("game:updateState", function(){
+});
+
+socket.on("game:killed", function(){
+    alert("You died");
+});
+
+socket.on("game:kill", function(){
+    alert("You kill a pirate");
 });
 
 /*
