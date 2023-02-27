@@ -46,7 +46,6 @@ const caveChr = $('.cave .character');
 const roleName = $('.game_screen #role');
 const timeDisplay = $('.game_screen #time');
 const activateBtn = $('.game_screen #activateBtn');
-const voteBtn = $('.game_screen #voteBtn');
 let chests = $('.game_screen .treasure .chest');
 const roleScr = $('.role_screen');
 const roleMes = $('#role_mes');
@@ -56,8 +55,11 @@ const activateScr = $('.activate_screen');
 
 const voteScr = $('.vote_screen');
 const voteList = $('.vote_screen #show_vote_list');
+let voteBtn;
 const skipBtn = $('.vote_screen #skipVoteBtn');
 const leaderboard = $('.leaderboard #show_leaderboard');
+let posters;
+let goldValue;
 
 let currentPage = 0;
 const role = ["Captain", "Killer", "Blacksmith", "Pirate"];
@@ -229,6 +231,39 @@ const drawSprite_restroomScr = function(boxID, colorID){
     selectedColor = colorOptns.eq(colorID).css('background-color');
     playerBoxes.eq(boxID).find('.color').find('.hatcls-2').css('fill', selectedColor);
     characterSVG.find('.cls-8').css('fill', selectedColor);
+}
+
+// Write script in role screen
+const drawVoteScr = function() {
+    voteList.html(player_list.html());
+    voteBoxes = $('#show_vote_list .box');
+    for (let i = 0; i < voteBoxes.length; i++) {
+        // Add leaderboard
+        const poster = $('<div>').addClass('poster');
+        if (playerBoxes.eq(i).hasClass('current')) poster.addClass('current');
+        poster.append(`<p>WANTED</p>`);
+        poster.append(voteBoxes.eq(i).html());
+        poster.append(`<span class="gold">0$</span>`);
+        leaderboard.append(poster);
+
+        // Add vote button
+        voteBoxes.eq(i).append(`<span class="vote">Vote</span>`);
+
+        // Add event
+        voteBoxes.eq(i).on('click', function() {
+            const elem = $('#show_vote_list .selected');
+            if (elem != null) elem.removeClass('selected');
+            voteBoxes.eq(i).addClass('selected');
+            voteBtn = voteBoxes.eq(i).find('.vote');
+            voteBtn.on('click', function(e) {
+                e.stopPropagation();
+                voteBoxes.off();
+                skipBtn.off();
+                $('.vote_screen .player_list').css('opacity', 0.9);
+            });
+        });
+    }
+    posters = $('.leaderboard #show_leaderboard .poster');
 }
 
 // Write script in role screen
@@ -507,6 +542,9 @@ startGameBtn.on('click', function() {
         return;
     }
     socket.emit("game:start", getCurrentPlayer(socket.id).room, room_size);
+    setTimeout(function() {
+        socket.emit("game:timing", getCurrentPlayer(socket.id).room);
+    }, 8000);
 });
 
 for (let i = 0; i < sliders.length; i++) {
@@ -537,32 +575,20 @@ activateBtn.on('click', function() {
     activateScr.css('display', 'flex');
 });
 
-voteBtn.on('click', function() {
-    voteScr.css('display', 'grid');
-    voteList.html(player_list.html());
-    voteBoxes = $('#show_vote_list .box');
-    for (let i = 0; i < voteBoxes.length; i++) {
-        // Add leaderboard
-        const poster = $('<div>').addClass('poster');
-        if (playerBoxes.eq(i).hasClass('current')) poster.addClass('current');
-        poster.append(`<p>WANTED</p>`);
-        poster.append(voteBoxes.eq(i).html());
-        poster.append(`<span class="gold">0$</span>`);
-        leaderboard.append(poster);
-
-        // Add event
-        voteBoxes.eq(i).on('click', function() {
-            const elem = $('#show_vote_list .selected');
-            if (elem != null) elem.removeClass('selected');
-            voteBoxes.eq(i).addClass('selected');
-        });
-    }
-});
+/*
+* VOTE SCREEN
+*/
 
 skipBtn.on('click', function(){
+    voteBoxes = $('#show_vote_list .box');
     const elem = $('#show_vote_list .selected');
     if (elem != null) elem.removeClass('selected');
+    voteBoxes.off();
+    skipBtn.off();
+    $('.vote_screen .player_list').css('opacity', 0.9);
 });
+
+
 
 // Socket events
 
@@ -630,13 +656,19 @@ socket.on("game:start", function(temp, roomUsers, room) {
     roleScr.css('display', "flex");
     setTimeout(function() {
         roleScr.fadeOut();
-        socket.emit("game:timing", room.id);
         gameScr.css('display', "grid");
     }, 8000);
 });
 
 socket.on("game:timing", function(timer){
     timeDisplay.text("Time: " + timer.toString() + ' s');
+    if (timer === 0){
+        setTimeout(function() {
+            drawVoteScr();
+            gameScr.fadeOut();
+            voteScr.css('display', "grid");
+        }, 5000);
+    }
 });
 
 socket.on("game:huntChest", function(chestHunters, id){
@@ -645,15 +677,16 @@ socket.on("game:huntChest", function(chestHunters, id){
     caveEvent_updateByServer(chestHunters);
 });
 
-socket.on("game:updateState", function(){
-});
-
 socket.on("game:killed", function(){
     alert("You died");
 });
 
 socket.on("game:kill", function(){
     alert("You kill a pirate");
+});
+
+socket.on("game:getGold", function(gold, index){
+    posters.eq(index).find('.gold').text(gold.toString() + '$');
 });
 
 /*
