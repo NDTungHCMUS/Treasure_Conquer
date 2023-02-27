@@ -121,6 +121,9 @@ const createChestList = function(room) {
 };
 
 const updateState = function(roomID, player) {
+    if (player.chestID === -1){
+        return;
+    }
     const chestHunters = getChestHunters(roomID, player.chestID);
     let hunterNum = chestHunters.length;
     if (hunterNum === 0){
@@ -145,8 +148,9 @@ const updateState = function(roomID, player) {
             player.role === 'Pirate' ? player.familiarity += (hunterNum - 1) : true;
         }
         player.gold += Math.floor(chests[player.chestID].value / hunterNum);
-        if (player === chestHunters[0]) player.gold += chests[player.chestID].value % hunterNum;
+        if (player === chestHunters[0]) player.gold += (chests[player.chestID].value % hunterNum);
     }
+    
 };
 
 let players = [];
@@ -225,6 +229,7 @@ io.on("connection", function (socket) {
             roomUsers[i].role = randomRole(temp, roomID, i);
             roomUsers[i].gold = 0;
             roomUsers[i].familiarity = 0;
+            roomUsers[i].chestID = -1;
         }
         const room = getCurrentRoom(roomID);
         room.chestList = [];
@@ -242,7 +247,14 @@ io.on("connection", function (socket) {
                 timer--;
             }
             else {
-                updateState(roomID, getCurrentPlayer(socket.id));
+                for (let i = 0; i < roomUsers.length; i++){
+                    updateState(roomID, roomUsers[i]);
+                }
+                setTimeout(function() {
+                    for (let i = 0; i < roomUsers.length; i++){
+                        io.to(roomID).emit("game:getGold", roomUsers[i].gold, i);
+                    }
+                }, 6000);
                 console.log(roomUsers);
                 clearInterval(chestTiming);
             }
