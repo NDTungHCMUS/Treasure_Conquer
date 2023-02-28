@@ -118,7 +118,7 @@ const checkValidName = function(activeUsernames, leaveUsernames){
 
 // Check if room exists and hasn't played yet
 const checkValidRoom = function(rooms, roomID){
-    if (!roomIDInput.val()){
+    if (!roomID){
         alert("Forgot to enter room ID!!!");
         return false;
     }
