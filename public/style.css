@@ -774,17 +774,6 @@ button:hover {
     background-color: indianred;
 }
 
-#voteBtn {
-    /* Displaying & Box Model */
-    width: 100px;
-    height: 40px;
-    border: none;
-    border-radius: 10px;
-
-    /* Color */
-    background-color: lightgreen;
-}
-
 .treasure {
     /* Positioning */
     position: relative;
@@ -1055,9 +1044,6 @@ button:hover {
 
     /* Color */
     background-color: rgba(255, 250, 240, 0.5);
-
-    /* Transitions & Animations */
-    cursor: pointer;
 }
 
 #show_vote_list .box.current {
@@ -1071,24 +1057,29 @@ button:hover {
     border: 1px solid black;
 }
 
-#show_vote_list .box.selected::before {
+#show_vote_list .box .vote{
     /* Positioning */
     position: absolute;
 
     /* Displaying & Box Model */
+    display: none;
     top: 50%;
     left: 85%;
     width: 50px;
     height: 25px;
     border-radius: 5px;
-    content: "Vote";
 
     /* Colors */
     background-color: lightgreen;
 
     /* Transitions & Animations */
+    cursor: pointer;
     transform: translate(-50%, -50%);
-    filter: brightness(100%) contrast(90%);
+}
+
+#show_vote_list .box.selected .vote {
+    /* Displaying & Box Model */
+    display: block;
 }
 
 #show_vote_list .box .color {
@@ -1134,6 +1125,9 @@ button:hover {
 
     /* Color */
     background-color: lightgreen;
+
+    /* Transitions & Animations */
+    cursor: pointer;
 }
 
 .leaderboard {
