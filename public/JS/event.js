@@ -55,8 +55,6 @@ socket.on("room:coloring", function(roomUsers) {
 socket.on("game:start", function(temp, roomUsers, room) {
     randomID = temp;
     createChestLists(room);
-    chests = $('.game_screen .treasure .chest');
-    chestEvent_updateByServer(chests);
     drawRoleScr();
     drawSprite_roleScr(roomUsers);
     roleName.text("Role: " + roleMes.text());
@@ -73,6 +71,8 @@ socket.on("game:chooseChestDuration", function(chestTimer){
     gameTime.text("Time: " + chestTimer.toString() + ' s');
     voteScr.css('display', 'none');
     gameScr.css('display', 'grid');
+    chests = $('.game_screen .treasure .chest');
+    chestEvent_updateByServer(chests);
 })
 
 socket.on("game:captainDuration", function(captainTimer){
@@ -84,7 +84,8 @@ socket.on("game:captainDuration", function(captainTimer){
 socket.on("game:waitDuration", function(waitTimer){
     gameTime.text("Time: " + waitTimer.toString() + ' s');
     voteScr.css('display', 'none');
-    gameScr.css('display', 'grid');
+    gameScr.css('display', 'grid'); 
+    chests.off();
 });
 
 socket.on("game:voteDuration", function(voteTimer) {

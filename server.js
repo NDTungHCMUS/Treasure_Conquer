@@ -238,55 +238,10 @@ io.on("connection", function (socket) {
         io.to(roomID).emit("game:start", temp, roomUsers, room);
     });
 
-    socket.on("game:timing", function (roomID){
-        let roomUsers = getRoomUsers(roomID);
-        let numsOfTurn = getCurrentRoom(roomID).stats[1];
-        let timer = getCurrentRoom(roomID).stats[2] / 6;
-        let temp, temp2, count = 1, counter = 0;
-        var gameLoop = setInterval(function() {
-            console.log("nums: ", count);
-            temp = timer;
-            temp2 = 3;
-            const chestTiming = setInterval(function () {
-                io.to(roomID).emit("game:timing", temp, temp2);
-                if (temp > 0){
-                    console.log("time 1:", temp);
-                    temp--;
-                }
-                else {
-                    for (let i = 0; i < roomUsers.length; i++){
-                        updateState(roomID, roomUsers[i]);
-                    }
-                    // setTimeout(function() {
-                    //     for (let i = 0; i < roomUsers.length; i++){
-                    //         io.to(roomID).emit("game:getGold", roomUsers[i].gold, i);
-                    //     }
-                    // }, 6000);
-                    //console.log(roomUsers);
-                    const voteTimeCover = setTimeout(function(){
-                        const voteTime = setInterval(function () {
-                            io.to(roomID).emit("game:timing", temp, temp2);
-                            if (temp2 > 0) {
-                                console.log("time 2:", temp2);
-                                temp2--;      
-                            }
-                            else {
-                                clearInterval(voteTime);
-                            }
-                        }, 1000);
-                    }, 5000 + 3000);
-                }
-            }, 1000);
-            count++;
-            counter++;
-            if (counter == numsOfTurn) clearInterval(gameLoop);
-        }, 5000 + 3000 + 3000);
-    });
-
     socket.on("game:timing", function(roomID){
-        let roomUsers = getRoomUsers(roomID);
+        let roomUsers = getRoomUsers(roomID), updated = false;
         let numsOfTurn = getCurrentRoom(roomID).stats[1];
-        let chooseChestDuration = getCurrentRoom(roomID).stats[2] / 6;
+        let chooseChestDuration = getCurrentRoom(roomID).stats[2] / 3;
         let voteDuration = getCurrentRoom(roomID).stats[3]/ 30;
 
         let counter = 0, captainDuration = 4, waitDuration = 5;
@@ -322,37 +277,51 @@ io.on("connection", function (socket) {
                     timeAccumulate < timer[0].end + i * eachDuration){
                     io.to(roomID).emit("game:chooseChestDuration", chestDown);
                     chestDown--;
+                    break;
                 }
                 if (timeAccumulate == timer[0].end + i * eachDuration){
                     io.to(roomID).emit("game:chooseChestDuration", chestDown);
                     chestDown = chooseChestDuration;
+                    break;
                 }
                 if (timeAccumulate >= timer[1].start + i * eachDuration &&
                     timeAccumulate < timer[1].end + i * eachDuration){
                     io.to(roomID).emit("game:captainDuration", captainDown);
                     captainDown--;
+                    break;
                 }
                 if (timeAccumulate == timer[1].end + i * eachDuration){
                     io.to(roomID).emit("game:captainDuration", captainDown);
                     captainDown = captainDuration;
+                    break;
                 }
                 if (timeAccumulate >= timer[2].start + i * eachDuration &&
                     timeAccumulate < timer[2].end + i * eachDuration){
                     io.to(roomID).emit("game:waitDuration", waitDown);
+                    if (!updated) {
+                        for (let i = 0; i < roomUsers.length; i++){
+                            updateState(roomID, roomUsers[i]);
+                        }
+                        updated = true;
+                    }
                     waitDown--;
+                    break;
                 }
                 if (timeAccumulate == timer[2].end + i * eachDuration){
                     io.to(roomID).emit("game:waitDuration", waitDown);
                     waitDown = waitDuration;
+                    break;
                 }
                 if (timeAccumulate >= timer[3].start + i * eachDuration &&
                     timeAccumulate < timer[3].end + i * eachDuration){
                     io.to(roomID).emit("game:voteDuration", voteDown);
                     voteDown--;
+                    break;
                 }
                 if (timeAccumulate == timer[3].end + i * eachDuration) {
                     io.to(roomID).emit("game:voteDuration", voteDown);
                     voteDown = voteDuration;
+                    updated = false;
                 }
             }       
             if (counter == totalTime) {
