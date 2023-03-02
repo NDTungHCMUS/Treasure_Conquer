@@ -44,17 +44,18 @@ const treasureScr = $('.game_screen .treasure');
 const caveScr = $('.game_screen .cave');
 const caveChr = $('.cave .character');
 const roleName = $('.game_screen #role');
-const timeDisplay = $('.game_screen #time');
+const gameTime = $('.game_screen #time');
 const activateBtn = $('.game_screen #activateBtn');
 let chests = $('.game_screen .treasure .chest');
 const roleScr = $('.role_screen');
-const roleMes = $('#role_mes');
+const roleMes = $('.role_screen #role_mes');
 const roleDesc = $('#role_desc');
 const roleChr = $('.role_screen .character');
 const activateScr = $('.activate_screen');
 
 const voteScr = $('.vote_screen');
 const voteList = $('.vote_screen #show_vote_list');
+const voteTime = $('.vote_screen #time');
 let voteBtn;
 const skipBtn = $('.vote_screen #skipVoteBtn');
 const leaderboard = $('.leaderboard #show_leaderboard');
@@ -544,7 +545,7 @@ startGameBtn.on('click', function() {
     socket.emit("game:start", getCurrentPlayer(socket.id).room, room_size);
     setTimeout(function() {
         socket.emit("game:timing", getCurrentPlayer(socket.id).room);
-    }, 8000);
+    }, 3000);
 });
 
 for (let i = 0; i < sliders.length; i++) {
@@ -657,20 +658,33 @@ socket.on("game:start", function(temp, roomUsers, room) {
     setTimeout(function() {
         roleScr.fadeOut();
         gameScr.css('display', "grid");
-    }, 8000);
+    }, 3000);
 });
 
-socket.on("game:timing", function(timer){
-    timeDisplay.text("Time: " + timer.toString() + ' s');
-    if (timer === 0){
-        setTimeout(function() {
-            drawVoteScr();
-            gameScr.fadeOut();
-            voteScr.css('display', "grid");
-        }, 5000);
-    }
+// Game Loop
+socket.on("game:chooseChestDuration", function(chestTimer){
+    gameTime.text("Time: " + chestTimer.toString() + ' s');
+    voteScr.css('display', 'none');
+    gameScr.css('display', 'grid');
+})
+socket.on("game:captainDuration", function(captainTimer){
+    gameTime.text("Time: " + captainTimer.toString() + ' s');
+    voteScr.css('display', 'none');
+    gameScr.css('display', 'grid');
 });
+socket.on("game:waitDuration", function(waitTimer){
+    gameTime.text("Time: " + waitTimer.toString() + ' s');
+    voteScr.css('display', 'none');
+    gameScr.css('display', 'grid');
+});
+socket.on("game:voteDuration", function(voteTimer) {
+    voteTime.text("Time: " + voteTimer.toString() + " s");
+    drawVoteScr();
+    gameScr.fadeOut();
+    voteScr.css('display', "grid");   
+})
 
+// Handle into the cave
 socket.on("game:huntChest", function(chestHunters, id){
     if (getCurrentPlayer(socket.id).chestID !== id) return;
     caveChr.html(``);

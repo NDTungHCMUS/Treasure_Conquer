@@ -240,26 +240,126 @@ io.on("connection", function (socket) {
 
     socket.on("game:timing", function (roomID){
         let roomUsers = getRoomUsers(roomID);
-        let timer = getCurrentRoom(roomID).stats[2];
-        const chestTiming = setInterval(function () {
-            io.to(roomID).emit("game:timing", timer);
-            if (timer > 0){
-                timer--;
-            }
-            else {
-                for (let i = 0; i < roomUsers.length; i++){
-                    updateState(roomID, roomUsers[i]);
+        let numsOfTurn = getCurrentRoom(roomID).stats[1];
+        let timer = getCurrentRoom(roomID).stats[2] / 6;
+        let temp, temp2, count = 1, counter = 0;
+        var gameLoop = setInterval(function() {
+            console.log("nums: ", count);
+            temp = timer;
+            temp2 = 3;
+            const chestTiming = setInterval(function () {
+                io.to(roomID).emit("game:timing", temp, temp2);
+                if (temp > 0){
+                    console.log("time 1:", temp);
+                    temp--;
                 }
-                setTimeout(function() {
+                else {
                     for (let i = 0; i < roomUsers.length; i++){
-                        io.to(roomID).emit("game:getGold", roomUsers[i].gold, i);
+                        updateState(roomID, roomUsers[i]);
                     }
-                }, 6000);
-                console.log(roomUsers);
-                clearInterval(chestTiming);
+                    // setTimeout(function() {
+                    //     for (let i = 0; i < roomUsers.length; i++){
+                    //         io.to(roomID).emit("game:getGold", roomUsers[i].gold, i);
+                    //     }
+                    // }, 6000);
+                    //console.log(roomUsers);
+                    const voteTimeCover = setTimeout(function(){
+                        const voteTime = setInterval(function () {
+                            io.to(roomID).emit("game:timing", temp, temp2);
+                            if (temp2 > 0) {
+                                console.log("time 2:", temp2);
+                                temp2--;      
+                            }
+                            else {
+                                clearInterval(voteTime);
+                            }
+                        }, 1000);
+                    }, 5000 + 3000);
+                }
+            }, 1000);
+            count++;
+            counter++;
+            if (counter == numsOfTurn) clearInterval(gameLoop);
+        }, 5000 + 3000 + 3000);
+    });
+
+    socket.on("game:timing", function(roomID){
+        let roomUsers = getRoomUsers(roomID);
+        let numsOfTurn = getCurrentRoom(roomID).stats[1];
+        let chooseChestDuration = getCurrentRoom(roomID).stats[2] / 6;
+        let voteDuration = getCurrentRoom(roomID).stats[3]/ 30;
+
+        let counter = 0, captainDuration = 4, waitDuration = 5;
+        let eachDuration = chooseChestDuration + captainDuration + waitDuration + voteDuration + 4;
+        let totalTime = numsOfTurn * eachDuration, timeAccumulate = 0;
+        let chestDown = chooseChestDuration, captainDown = captainDuration,
+            waitDown = waitDuration, voteDown = voteDuration;
+        let timer = [
+            {
+                start: 1, 
+                end: 1 + chooseChestDuration
+            },
+            {
+                start: 2 + chooseChestDuration,
+                end: 2 + chooseChestDuration + captainDuration
+            },
+            {
+                start: 3 + chooseChestDuration + captainDuration, 
+                end: 3 + chooseChestDuration + captainDuration + waitDuration
+            },
+            {
+                start: 4 + chooseChestDuration + captainDuration + waitDuration, 
+                end: eachDuration
+            }
+        ]
+        const gameLoop = setInterval(function(){
+            counter++;
+            if (timeAccumulate < totalTime) {
+                timeAccumulate++;
+            }
+            for (let i = 0; i < numsOfTurn; i++){
+                if (timeAccumulate >= timer[0].start + i * eachDuration &&
+                    timeAccumulate < timer[0].end + i * eachDuration){
+                    io.to(roomID).emit("game:chooseChestDuration", chestDown);
+                    chestDown--;
+                }
+                if (timeAccumulate == timer[0].end + i * eachDuration){
+                    io.to(roomID).emit("game:chooseChestDuration", chestDown);
+                    chestDown = chooseChestDuration;
+                }
+                if (timeAccumulate >= timer[1].start + i * eachDuration &&
+                    timeAccumulate < timer[1].end + i * eachDuration){
+                    io.to(roomID).emit("game:captainDuration", captainDown);
+                    captainDown--;
+                }
+                if (timeAccumulate == timer[1].end + i * eachDuration){
+                    io.to(roomID).emit("game:captainDuration", captainDown);
+                    captainDown = captainDuration;
+                }
+                if (timeAccumulate >= timer[2].start + i * eachDuration &&
+                    timeAccumulate < timer[2].end + i * eachDuration){
+                    io.to(roomID).emit("game:waitDuration", waitDown);
+                    waitDown--;
+                }
+                if (timeAccumulate == timer[2].end + i * eachDuration){
+                    io.to(roomID).emit("game:waitDuration", waitDown);
+                    waitDown = waitDuration;
+                }
+                if (timeAccumulate >= timer[3].start + i * eachDuration &&
+                    timeAccumulate < timer[3].end + i * eachDuration){
+                    io.to(roomID).emit("game:voteDuration", voteDown);
+                    voteDown--;
+                }
+                if (timeAccumulate == timer[3].end + i * eachDuration) {
+                    io.to(roomID).emit("game:voteDuration", voteDown);
+                    voteDown = voteDuration;
+                }
+            }       
+            if (counter == totalTime) {
+                clearInterval(gameLoop);
             }
         }, 1000);
-    });
+    })
 
     socket.on("game:huntChest", function (roomID, id) {
         const currentPlayer = getCurrentPlayer(socket.id);
