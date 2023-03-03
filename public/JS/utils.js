@@ -47,10 +47,12 @@ const activateScr = $('.activate_screen');
 
 const voteScr = $('.vote_screen');
 const voteList = $('.vote_screen #show_vote_list');
+const roleInVote = $('.vote_screen #role');
 const voteTime = $('.vote_screen #time');
-let voteBtn;
 const skipBtn = $('.vote_screen #skipVoteBtn');
 const leaderboard = $('.leaderboard #show_leaderboard');
+let voteCircles;
+let voteBtn;
 let posters;
 let goldValue;
 
@@ -63,7 +65,9 @@ let room_size = playerBoxes.length;
 let players = [];
 let leavePlayers = [];
 let inLeaveState = false;
+let inDeadState = false;
 let playingRooms = [];
+let roomUsers = [];
 
 // Clone HTML code
 characterSVG.html($('.textures .spriteDiv').html());
@@ -81,6 +85,11 @@ const randomRoomID = function() {
 // A player base on id (in players)
 const getCurrentPlayer = function(id) {
     return players.find(player => player.id === id);
+}
+
+// A player base on id (in roomUsers)
+const getPlayerInRoom = function(id) {
+    return roomUsers.find(player => player.id === id);
 }
 
 // A player base on id (in leavePlayers)
@@ -149,10 +158,10 @@ const getBoxIndex = function() {
 }
 
 // Box base on username
-const getBoxByName = function(username) {
-    for (let i = 0; i < playerBoxes.length; i++) {
-        if (playerBoxes.eq(i).find('p').text() === username){
-            return playerBoxes.eq(i);
+const getBoxByName = function(boxes, username) {
+    for (let i = 0; i < boxes.length; i++) {
+        if (boxes.eq(i).find('.username').text() === username){
+            return boxes.eq(i);
         }
     }
     return null;
@@ -213,7 +222,7 @@ const chestEvent_updateByServer = function(chests){
 // Handle event for cave room from server
 const caveEvent_updateByServer = function(chestHunters){
     for (let i = 0; i < chestHunters.length; i++){
-        let chosenColor = getBoxByName(chestHunters[i].username).find('.color').find('.hatcls-2').css('fill');
+        let chosenColor = getBoxByName(playerBoxes, chestHunters[i].username).find('.color').find('.hatcls-2').css('fill');
         caveChr.append($('.textures .spriteDiv').html());
         $('.character .sprite:last-child').find('.cls-8').css('fill', chosenColor);
     }
@@ -226,8 +235,19 @@ const drawSprite_restroomScr = function(boxID, colorID){
     characterSVG.find('.cls-8').css('fill', selectedColor);
 }
 
+// Draw circle lists based on votedPlayers
+const drawVotedPlayers_voteScr = function(votedPlayers, id){
+    votedPlayers.forEach(playerID => {
+        let player = getCurrentPlayer(playerID);
+        let color = colorOptns.eq(player.colorID).css('background-color');
+        let circle = $('<div class="circle"></div>').css('background-color', color);
+        voteCircles.eq(id).append(circle);
+    });
+}
+
 // Write script in role screen
 const drawVoteScr = function() {
+    roleInVote.text("Role: " + roleMes.text());
     voteList.html(player_list.html());
     voteBoxes = $('#show_vote_list .box');
     for (let i = 0; i < voteBoxes.length; i++) {
@@ -239,8 +259,9 @@ const drawVoteScr = function() {
         poster.append(`<span class="gold">0$</span>`);
         leaderboard.append(poster);
 
-        // Add vote button
+        // Add vote button and votedPlayers (who vote currentPlayer)
         voteBoxes.eq(i).append(`<span class="vote">Vote</span>`);
+        voteBoxes.eq(i).append(`<div class="votedCircles"></div>`);
 
         // Add event
         voteBoxes.eq(i).on('click', function() {
@@ -252,7 +273,8 @@ const drawVoteScr = function() {
                 e.stopPropagation();
                 voteBoxes.off();
                 skipBtn.off();
-                $('.vote_screen .player_list').css('opacity', 0.9);
+                $('.vote_screen .player_list').css('opacity', 0.8);
+                socket.emit("game:vote", getCurrentPlayer(socket.id).room, i);
             });
         });
     }
@@ -300,8 +322,9 @@ const drawSprite_roleScr = function(roomUsers) {
             $('.character .sprite:last-child').find('.cls-8').css('fill', chosenColor);
         }
     }
-};
+}
 
+// Create chests in treasure map
 const createChestLists = function(room) {
     room.chestList.forEach(chest => {
         treasureScr.append(`<div id="${chest.id}" class="chest"></div>`);
@@ -328,12 +351,11 @@ const createChestLists = function(room) {
 // Update navigate mark in tutorial
 const updateNav = function(currentPage){ 
     for (let i = 0; i < NavPageBtn.length; i++){
-    storyText.eq(i).css("display", "none");
-    NavPageBtn.eq(i).css("background-image", "url('Textures/Navigate/Normal.png')");
-    if (i == currentPage) {
-        storyText.eq(i).css("display", "block");
-        NavPageBtn.eq(i).css("background-image","url('Textures/Navigate/Active.png')");
-
+        storyText.eq(i).css("display", "none");
+        NavPageBtn.eq(i).css("background-image", "url('Textures/Navigate/Normal.png')");
+        if (i == currentPage) {
+            storyText.eq(i).css("display", "block");
+            NavPageBtn.eq(i).css("background-image","url('Textures/Navigate/Active.png')");
+        }
     }
-}}
-
+}

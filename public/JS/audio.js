@@ -87,6 +87,7 @@ musicVol.on('input', function() {
     setMusicVol(musicVol.val()/100);
     updateVolBtn(musicVol, musicVolBtn);
 })
+
 soundVol.on('input', function() {
     soundVolSpan.text(soundVol.val());
     setSoundVol(soundVol.val()/100);

@@ -21,10 +21,14 @@ startGameBtn.on('click', function() {
         alert("Game should be started with around 5-12 players!!!");
         return;
     }
+    if (room_size / gameStats[0] <= 2){
+        alert("Game should be started with killer numbers lower than pirate numbers!!!");
+        return;
+    }
     socket.emit("game:start", getCurrentPlayer(socket.id).room, room_size);
     setTimeout(function() {
         socket.emit("game:timing", getCurrentPlayer(socket.id).room);
-    }, 3000);
+    }, 5000);
 });
 
 for (let i = 0; i < sliders.length; i++) {

@@ -1046,7 +1046,16 @@ button:hover {
     background-color: rgba(255, 250, 240, 0.5);
 }
 
-#show_vote_list .box.current {
+#show_vote_list .box.current{
+    /* Transitions & Animations */
+    cursor: default;
+    pointer-events: none;
+}
+
+#show_vote_list .box.dead{
+    /* Color */
+    background-color: rgba(209, 136, 136, 0.6);
+
     /* Transitions & Animations */
     cursor: default;
     pointer-events: none;
@@ -1106,6 +1115,28 @@ button:hover {
 #show_vote_list .box.current p {
     /* Text */
     font-weight: 650;
+}
+
+#show_vote_list .box .votedCircles {
+    /* Positioning */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    display: flex;
+    left: 30%;
+    bottom: 0%;
+}
+
+#show_vote_list .votedCircles .circle{
+    /* Displaying & Box Model */
+    width: 17px;
+    height: 17px;
+    margin: 3px;
+    border-radius: 50%;
+    border: 1px solid;
+
+    /* Color */
+    border-color: black;
 }
 
 .player_list .btn {
@@ -1177,6 +1208,15 @@ button:hover {
 #show_leaderboard .poster.current {
     /* Transitions & Animations */
     filter: brightness(120%) hue-rotate(15deg);
+}
+
+#show_leaderboard .poster.dead {
+    /* Color */
+    background-image: linear-gradient(rgba(241, 146, 146, 0.4), rgba(238, 155, 155, 0.4)), url("/Textures/Background/treasure-scroll.jpg");
+    background-size: cover;
+
+    /* Transitions & Animations */
+    filter: brightness(100%) hue-rotate(0deg);
 }
 
 #show_leaderboard .poster span {
