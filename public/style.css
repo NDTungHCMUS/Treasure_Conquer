@@ -1129,8 +1129,8 @@ button:hover {
 
 #show_vote_list .votedCircles .circle{
     /* Displaying & Box Model */
-    width: 17px;
-    height: 17px;
+    width: 15px;
+    height: 15px;
     margin: 3px;
     border-radius: 50%;
     border: 1px solid;

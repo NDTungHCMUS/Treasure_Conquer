@@ -60,9 +60,9 @@ socket.on("game:start", function(temp, room) {
     randomID = temp;
     createChestLists(room);
     chests = $('.game_screen .treasure .chest');
+    drawSprite_roleScr(roomUsers);
     drawRoleScr();
     drawVoteScr();
-    drawSprite_roleScr(roomUsers);
     roleName.text("Role: " + roleMes.text());
     restroomScr.css('display', "none");
     roleScr.css('display', "flex");
@@ -76,22 +76,26 @@ socket.on("game:start", function(temp, room) {
 
 socket.on("game:chooseChestDuration", function(chestTimer){
     gameTime.text("Time: " + chestTimer.toString() + ' s');
-
-    // Set variables for new turn
-    voteScr.css('display', 'none');
-    gameScr.css('display', 'grid');
-    const elem = $('#show_vote_list .selected');
-    if (elem != null) {
-        elem.removeClass('selected');
-        voteBoxes.on();
-        skipBtn.on();
-        $('.vote_screen .player_list').css('opacity', 1);
+    if (chestTimer === gameStats[2] / 3) {
+        // Set variables for new turn
+        voteScr.css('display', 'none');
+        gameScr.css('display', 'grid');
+        if (!inDeadState){
+            chestEvent_updateByServer(chests);
+        }
     }
-    if (!inDeadState){
-        chestEvent_updateByServer(chests);
+    if (chestTimer === 0) {
+        // Set variables for vote phase
+        const elem = $('#show_vote_list .selected');
+        if (elem != null) {
+            elem.removeClass('selected');
+        }
+        voteBoxes.prop('disabled', false);
+        skipBtn.prop('disabled', false);
+        voteCircles = $('.vote_screen .votedCircles');
+        voteCircles.empty();
+        voteCircles.css('display', 'none');
     }
-    voteCircles = $('.vote_screen .votedCircles');
-    voteCircles.empty();
 })
 
 socket.on("game:captainDuration", function(captainTimer){
@@ -108,12 +112,19 @@ socket.on("game:waitDuration", function(waitTimer){
 
 socket.on("game:voteDuration", function(voteTimer) {
     voteTime.text("Time: " + voteTimer.toString() + " s");
-    gameScr.fadeOut();
-    treasureScr.fadeIn();
-
-    // Set game screen for new turn
-    caveScr.css('display', 'none');
-    voteScr.css('display', "grid");   
+    if (voteTimer === gameStats[3] / 10) {
+        caveScr.css('display', 'none');
+        voteScr.css('display', "grid");   
+    }
+    if (voteTimer === 0){
+        // Set game screen for new turn
+        voteCircles.css('display', 'flex');
+        $('.vote_screen .player_list').css('opacity', 1);
+        gameScr.fadeOut();
+        treasureScr.fadeIn();
+        voteBoxes.prop('disabled', true);
+        skipBtn.prop('disabled', true);
+    }
 })
 
 // Handle into the cave
@@ -152,10 +163,39 @@ socket.on("game:disabled", function(){
 });
 
 socket.on("game:getGold", function(gold, index){
-    posters.eq(index).find('.gold').text(gold.toString() + '$');
+    posters.eq(goldRank(roomUsers, index)).find('.gold').text(gold.toString() + '$');
+    if (index === roomUsers.length - 1){
+        sortLeaderboard();
+    }
 });
 
 socket.on("game:vote", function(votedPlayers, id){
     voteCircles = $('.vote_screen .votedCircles');
     drawVotedPlayers_voteScr(votedPlayers, id);
+});
+
+// Handle end game
+
+socket.on("game:killersWin", function() {
+    if (getPlayerInRoom(socket.id).role !== 'Killer') {
+        alert("Defeat");
+    }
+    else {
+        alert("Victory");
+    }
+});
+
+socket.on("game:piratesWin", function() {
+    if (getPlayerInRoom(socket.id).role === 'Killer') {
+        alert("Defeat");
+    }
+    else {
+        alert("Victory");
+    }
+});
+
+socket.on("game:end", function() {
+    gameScr.css('display', 'none');
+    voteScr.css('display', 'none');
+    restroomScr.css('display', 'grid');
 });

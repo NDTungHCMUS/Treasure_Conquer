@@ -17,7 +17,7 @@ app.get("/", function (req, res) {
 * USERS HANDLING FUNCTION
 */
 
-// User structure = {id, username, roomID, colorID, role, chestID, familiarity, gold}
+// User structure = {id, username, roomID, colorID, role, chestID, familiarity, gold, votedPlayers}
 
 const playerJoin = function (id, username, room) {
     const player = { id, username, room };
@@ -122,7 +122,7 @@ const createChestList = function(room) {
     }
 };
 
-const updateState = function(roomID, player) {
+const updateState_chestPhase = function(roomID, player) {
     if (player.chestID === -1){
         return;
     }
@@ -156,29 +156,74 @@ const updateState = function(roomID, player) {
     }
 };
 
+const updateState_votePhase = function(roomID) {
+    sorted = getRoomUsers(roomID);
+    sorted.sort((a, b) => b.votedPlayers.length - a.votedPlayers.length);
+    if (sorted[0].votedPlayers.length <= 1){
+        return;
+    }
+    let secondIndex = sorted.findIndex(player => player.votedPlayers.length < sorted[0].votedPlayers.length);
+    if (secondIndex > 1){
+        return;
+    }
+    let player = sorted[0];
+    player.deadState = true;
+    io.to(roomID).emit("game:deadMessage", player.username);
+    io.to(player.id).emit("game:disabled");
+};
+
 // Check immediate condition to end game
 const checkImmediateEndGame = function(roomID) {
     const roomUsers = getRoomUsers(roomID);
     const alivePlayers = roomUsers.filter(player => player.deadState === false);
     const aliveKillers = alivePlayers.filter(player => player.role === 'Killer');
     const deadPlayers = roomUsers.filter(player => player.deadState === true);
-    if (deadPlayers.findIndex(getCaptain(roomID)) !== -1 || 
+    if (deadPlayers.includes(getCaptain(roomID)) || 
     aliveKillers.length >= alivePlayers.length / 2) {
         io.to(roomID).emit("game:killersWin");
+        isEndGame = true;
+        return;
     }
     if (aliveKillers.length === 0) {
         io.to(roomID).emit("game:piratesWin");
+        isEndGame = true;
+        return;
     }
 }
 
 // Check last-turn condition to end game
 const checkLastTurnEndGame = function(roomID) {
+    sorted = getRoomUsers(roomID);
+    sorted.sort((a, b) => b.gold - a.gold);
+    let secondIndex = sorted.findIndex(player => player.gold < sorted[0].gold);
+    for (let i = 0; i < secondIndex; i++) {
+        if (sorted[i].role !== 'Killer'){
+            io.to(roomID).emit("game:piratesWin");
+            isEndGame = true;
+            return;
+        } 
+    }
+    io.to(roomID).emit("game:killersWin");
+    isEndGame = true;
+}
 
+const removeGameProperty = function(roomID){
+    let room = getCurrentRoom(roomID);
+    let roomUsers = getRoomUsers(roomID);
+    delete room.chestList;
+    roomUsers.forEach(player => {
+        delete player.role;
+        delete player.gold;
+        delete player.familiarity;
+        delete player.chestID;
+        delete player.votedPlayers;
+    });
 }
 
 let players = [];
 let leavePlayers = [];
 let rooms = [];
+let isEndGame = false;
 const role = ["Captain", "Killer", "Blacksmith", "Pirate"];
 
 
@@ -269,9 +314,10 @@ io.on("connection", function (socket) {
         let numsOfTurn = getCurrentRoom(roomID).stats[1];
         let chooseChestDuration = getCurrentRoom(roomID).stats[2] / 3;
         let voteDuration = getCurrentRoom(roomID).stats[3] / 10;
+        let endVoteDuration = 5; // Them 5s cap nhat so vote, thong bao co ai chet khi vote
 
         let counter = 0, captainDuration = 4, waitDuration = 5;
-        let eachDuration = chooseChestDuration + captainDuration + waitDuration + voteDuration + 4;
+        let eachDuration = chooseChestDuration + captainDuration + waitDuration + voteDuration + endVoteDuration + 4;
         let totalTime = numsOfTurn * eachDuration, timeAccumulate = 0;
         let chestDown = chooseChestDuration, captainDown = captainDuration,
             waitDown = waitDuration, voteDown = voteDuration;
@@ -326,7 +372,10 @@ io.on("connection", function (socket) {
                     io.to(roomID).emit("game:waitDuration", waitDown);
                     if (!updated) {
                         for (let i = 0; i < roomUsers.length; i++){
-                            updateState(roomID, roomUsers[i]);
+                            updateState_chestPhase(roomID, roomUsers[i]);
+                        }
+                        for (let i = 0; i < roomUsers.length; i++){
+                            io.to(roomID).emit("game:getGold", roomUsers[i].gold, i);
                         }
                         updated = true;
                     }
@@ -335,20 +384,20 @@ io.on("connection", function (socket) {
                 }
                 if (timeAccumulate == timer[2].end + i * eachDuration){
                     io.to(roomID).emit("game:waitDuration", waitDown);
+                    checkImmediateEndGame(roomID);
                     waitDown = waitDuration;
                     break;
                 }
                 if (timeAccumulate >= timer[3].start + i * eachDuration &&
                     timeAccumulate < timer[3].end + i * eachDuration){
                     io.to(roomID).emit("game:voteDuration", voteDown);
-                    for (let i = 0; i < roomUsers.length; i++){
-                        io.to(roomID).emit("game:getGold", roomUsers[i].gold, i);
-                    }
-                    voteDown--;
+                    if (voteDown) voteDown--;
                     break;
                 }
                 if (timeAccumulate == timer[3].end + i * eachDuration) {
                     io.to(roomID).emit("game:voteDuration", voteDown);
+                    updateState_votePhase(roomID);
+                    checkImmediateEndGame(roomID, isEndGame);
                     for (let i = 0; i < roomUsers.length; i++) {
                         roomUsers[i].chestID = -1;
                         roomUsers[i].votedPlayers = [];
@@ -356,9 +405,18 @@ io.on("connection", function (socket) {
                     voteDown = voteDuration;
                     updated = false;
                 }
-            }       
+            }
             if (counter == totalTime) {
                 clearInterval(gameLoop);
+                checkLastTurnEndGame(roomID, isEndGame);
+            }
+            if (isEndGame){
+                clearInterval(gameLoop);
+                io.to(roomID).emit("game:end");
+                removeGameProperty(roomID);
+                io.to(roomID).emit("room:listing", roomUsers);
+                io.to(roomID).emit("room:coloring", roomUsers);
+                io.to(roomID).emit("room:customize", getCurrentRoom(roomID).stats);
             }
         }, 1000);
     })

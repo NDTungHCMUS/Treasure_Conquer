@@ -237,12 +237,31 @@ const drawSprite_restroomScr = function(boxID, colorID){
 
 // Draw circle lists based on votedPlayers
 const drawVotedPlayers_voteScr = function(votedPlayers, id){
+    voteCircles.html(``);
     votedPlayers.forEach(playerID => {
         let player = getCurrentPlayer(playerID);
         let color = colorOptns.eq(player.colorID).css('background-color');
         let circle = $('<div class="circle"></div>').css('background-color', color);
         voteCircles.eq(id).append(circle);
     });
+}
+
+const goldRank = function(roomUsers, id){
+    let name = roomUsers[id].username;
+    for (let i = 0; i < roomUsers.length; i++){
+        if (posters.eq(i).find('.username').text() === name){
+            return i;
+        }
+    }
+    return -1;
+}
+
+const sortLeaderboard = function() {
+    posters.sort(function(a, b) {
+        let val1 = parseInt($(a).find('.gold').text().replace('$', ''), 10);
+        let val2 = parseInt($(b).find('.gold').text().replace('$', ''), 10);
+        return (val2 - val1);
+    }).appendTo(leaderboard);
 }
 
 // Write script in role screen
@@ -271,8 +290,8 @@ const drawVoteScr = function() {
             voteBtn = voteBoxes.eq(i).find('.vote');
             voteBtn.on('click', function(e) {
                 e.stopPropagation();
-                voteBoxes.off();
-                skipBtn.off();
+                voteBoxes.prop('disabled', true);
+                skipBtn.prop('disabled', true);
                 $('.vote_screen .player_list').css('opacity', 0.8);
                 socket.emit("game:vote", getCurrentPlayer(socket.id).room, i);
             });
@@ -309,7 +328,7 @@ const drawRoleScr = function() {
 
 // Draw sprite in role screen
 const drawSprite_roleScr = function(roomUsers) {
-    let currentPlayer = getCurrentPlayer(socket.id);
+    let currentPlayer = getPlayerInRoom(socket.id);
     if (currentPlayer.role !== "Killer"){
         roleChr.html($('.textures .spriteDiv').html());
         roleChr.find('.cls-8').css('fill', selectedColor);
