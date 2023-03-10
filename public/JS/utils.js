@@ -211,7 +211,7 @@ const chestEvent_updateByServer = function(chests){
             const elem = $('.treasure .chest.selected');
             if (elem != null) elem.removeClass('selected');
             chests.eq(i).addClass('selected');
-            socket.emit("game:huntChest", getCurrentPlayer(socket.id).room, i);
+            socket.emit("game:huntChest", getCurrentPlayer(socket.id).room, i, socket.id);
             treasureScr.fadeOut();
             caveScr.fadeIn();
             caveScr.css('display', 'flex');
@@ -219,12 +219,81 @@ const chestEvent_updateByServer = function(chests){
     }
 }
 
+const fillColorForCharacter = function(invisible, color) {
+    caveChr.append($('.textures .spriteDiv').html());
+    if (invisible) {
+        $('.character .sprite:last-child').find('.cls-8').css('fill', color); 
+    }
+    else {
+        $('.character .sprite:last-child').find('.cls-24').css('fill', color); 
+        $('.character .sprite:last-child').find('.cls-23').css('fill', color);  
+        $('.character .sprite:last-child').find('.cls-22').css('fill', color);  
+        $('.character .sprite:last-child').find('.cls-21').css('fill', color);  
+        $('.character .sprite:last-child').find('.cls-20').css('fill', color); 
+        $('.character .sprite:last-child').find('.cls-19').css('fill', color);  
+        $('.character .sprite:last-child').find('.cls-18').css('fill', color); 
+        $('.character .sprite:last-child').find('.cls-17').css('fill', color);
+        $('.character .sprite:last-child').find('.cls-16').css('fill', color);  
+        $('.character .sprite:last-child').find('.cls-15').css('fill', color);  
+        $('.character .sprite:last-child').find('.cls-14').css('fill', color);  
+        $('.character .sprite:last-child').find('.cls-13').css('fill', color); 
+        $('.character .sprite:last-child').find('.cls-12').css('fill', color);  
+        $('.character .sprite:last-child').find('.cls-11').css('fill', color); 
+        $('.character .sprite:last-child').find('.cls-10').css('fill', color); 
+        $('.character .sprite:last-child').find('.cls-9').css('fill', color); 
+        $('.character .sprite:last-child').find('.cls-8').css('fill', color);  
+        $('.character .sprite:last-child').find('.cls-7').css('fill', color);  
+        $('.character .sprite:last-child').find('.cls-6').css('fill', color);  
+        $('.character .sprite:last-child').find('.cls-5').css('fill', color); 
+        $('.character .sprite:last-child').find('.cls-4').css('fill', color);  
+        $('.character .sprite:last-child').find('.cls-3').css('fill', color); 
+        $('.character .sprite:last-child').find('.cls-2').css('fill', color); 
+        $('.character .sprite:last-child').find('.cls-1').css('fill', color);
+    }
+}
+
 // Handle event for cave room from server
 const caveEvent_updateByServer = function(chestHunters){
-    for (let i = 0; i < chestHunters.length; i++){
-        let chosenColor = getBoxByName(playerBoxes, chestHunters[i].username).find('.color').find('.hatcls-2').css('fill');
-        caveChr.append($('.textures .spriteDiv').html());
-        $('.character .sprite:last-child').find('.cls-8').css('fill', chosenColor);
+    const currentPlayer = getPlayerInRoom(socket.id);
+    if (currentPlayer.role == 'Captain'){
+        for (let i = 0; i < chestHunters.length; i++){
+            let chosenColor = getBoxByName(playerBoxes, chestHunters[i].username).find('.color').find('.hatcls-2').css('fill');       
+            fillColorForCharacter(true, chosenColor);       
+        }
+        return;
+    }
+    if (currentPlayer.role == 'Pirate') {
+        for (let i = 0; i < chestHunters.length; i++){
+            if (chestHunters[i].id == socket.id){
+                let chosenColor = getBoxByName(playerBoxes, chestHunters[i].username).find('.color').find('.hatcls-2').css('fill');
+                fillColorForCharacter(true, chosenColor);      
+            }
+            else {
+                fillColorForCharacter(false, '#556269');
+            }   
+        }
+        return;
+    }
+    if (currentPlayer.role == 'Killer') {
+        for (let i = 0; i < chestHunters.length; i++){
+            if (chestHunters[i].id == socket.id){
+                let chosenColor = getBoxByName(playerBoxes, chestHunters[i].username).find('.color').find('.hatcls-2').css('fill');
+                fillColorForCharacter(true, chosenColor);      
+            }
+        }
+        return;
+    }
+    if (currentPlayer.role == 'Blacksmith') {
+        for (let i = 0; i < chestHunters.length; i++){
+            if (chestHunters[i].id == socket.id || chestHunters[i].role == 'Captain'){
+                let chosenColor = getBoxByName(playerBoxes, chestHunters[i].username).find('.color').find('.hatcls-2').css('fill');
+                fillColorForCharacter(true, chosenColor);         
+            }
+            else {
+                let chosenColor = getBoxByName(playerBoxes, chestHunters[i].username).find('.color').find('.hatcls-2').css('fill');
+                fillColorForCharacter(false, '#556269');       
+            }   
+        }
     }
 }
 
@@ -291,6 +360,7 @@ const drawVoteScr = function() {
             voteBtn.on('click', function(e) {
                 e.stopPropagation();
                 voteBoxes.prop('disabled', true);
+                voteBoxes.off('click');
                 skipBtn.prop('disabled', true);
                 $('.vote_screen .player_list').css('opacity', 0.8);
                 socket.emit("game:vote", getCurrentPlayer(socket.id).room, i);

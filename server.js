@@ -72,6 +72,11 @@ const getRoomUsers = function (room) {
     return players.filter((player) => player.room === room);
 };
 
+const getPlayerInRoom = function(room, id) {
+    let roomUsers = getRoomUsers(room);
+    return roomUsers.find(player => player.id === id);
+}
+
 const getActiveRooms = function () {
     return new Set(players.map((player) => player.room));
 };
@@ -316,7 +321,7 @@ io.on("connection", function (socket) {
         let voteDuration = getCurrentRoom(roomID).stats[3] / 10;
         let endVoteDuration = 5; // Them 5s cap nhat so vote, thong bao co ai chet khi vote
 
-        let counter = 0, captainDuration = 4, waitDuration = 5;
+        let counter = 0, captainDuration = 1, waitDuration = 1;
         let eachDuration = chooseChestDuration + captainDuration + waitDuration + voteDuration + endVoteDuration + 4;
         let totalTime = numsOfTurn * eachDuration, timeAccumulate = 0;
         let chestDown = chooseChestDuration, captainDown = captainDuration,
@@ -421,11 +426,13 @@ io.on("connection", function (socket) {
         }, 1000);
     })
 
-    socket.on("game:huntChest", function (roomID, id) {
-        const currentPlayer = getCurrentPlayer(socket.id);
-        currentPlayer.chestID = id;
+    socket.on("game:huntChest", function (roomID, chestID, id) {
+        // const currentPlayer = getCurrentPlayer(socket.id);
+        // currentPlayer.chestID = id;
+        const currentPlayer = getPlayerInRoom(roomID, id);
+        currentPlayer.chestID = chestID;
         io.to(roomID).emit("room:roomUsers", getRoomUsers(roomID));
-        io.to(roomID).emit("game:huntChest", getChestHunters(roomID, id), id);
+        io.to(roomID).emit("game:huntChest", getChestHunters(roomID, chestID), chestID);
     });
 
     socket.on("game:vote", function (roomID, id) {
