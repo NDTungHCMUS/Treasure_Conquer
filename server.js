@@ -434,6 +434,11 @@ io.on("connection", function (socket) {
         io.to(roomID).emit("room:roomUsers", roomUsers);
         io.to(roomID).emit("game:vote", roomUsers[id].votedPlayers, id);
     });
+
+    // Chat
+    socket.on("player-send-messages", (roomID, color, text) => {
+    io.to(roomID).emit("socket-send-messages", {us: getCurrentPlayer(socket.id).username, c: color, t: text})
+})
 });
 
 server.listen(5500, function () {

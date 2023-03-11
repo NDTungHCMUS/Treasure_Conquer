@@ -378,3 +378,26 @@ const updateNav = function(currentPage){
         }
     }
 }
+
+// Chat
+$(".text_chat").keypress((e) => {
+    var t = $(".text_chat").val()
+    if(e.which == 13 && t != "") {
+        let currentPlayer = getCurrentPlayer(socket.id)
+        let color = colorOptns.eq(currentPlayer.colorID).css('background-color')
+        socket.emit("player-send-messages", getCurrentPlayer(socket.id).room, color, t)
+    }
+})
+
+let i = 0
+socket.on("socket-send-messages", (data) => {
+    $(".text_chat").val("")
+    $(".content_show").append(`<div class="chat_line"><span class="username">${data.us}:</span> <span class='text_content'>${data.t}</span></div>`);
+    if(data.t.indexOf(" ") == -1) {
+        $(".chat_line .text_content").eq(i).css('word-break','break-all');
+    } else {
+        $(".chat_line .text_content").eq(i).css('word-break','break-word');
+    }
+    $(".chat_line .username").css("font-weight", "bold")  
+    $(".chat_line .username").eq(i++).css('color', data.c)
+})

@@ -1004,6 +1004,11 @@ button:hover {
     padding: 0px 5px;
 }
 
+.content_show .chat_line {
+    text-align: left;
+    font-size: 15px;
+}
+
 .vote_screen .player_list {
     /* Displaying & Box Model */
     grid-column: 3;
