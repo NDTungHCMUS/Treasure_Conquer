@@ -91,6 +91,7 @@ socket.on("game:chooseChestDuration", function(chestTimer){
             elem.removeClass('selected');
         }
         voteBoxes.prop('disabled', false);
+        voteBoxes.on('click');
         skipBtn.prop('disabled', false);
         voteCircles = $('.vote_screen .votedCircles');
         voteCircles.empty();
@@ -129,8 +130,8 @@ socket.on("game:voteDuration", function(voteTimer) {
 
 // Handle into the cave
 
-socket.on("game:huntChest", function(chestHunters, id){
-    if (getPlayerInRoom(socket.id).chestID !== id) return;
+socket.on("game:huntChest", function(chestHunters, chestID){
+    if (getPlayerInRoom(socket.id).chestID !== chestID) return;
     caveChr.html(``);
     caveEvent_updateByServer(chestHunters);
 });
