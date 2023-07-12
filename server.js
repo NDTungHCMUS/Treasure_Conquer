@@ -17,7 +17,7 @@ app.get("/", function (req, res) {
 * USERS HANDLING FUNCTION
 */
 
-// User structure = {id, username, roomID, colorID, role, chestID, familiarity, gold, votedPlayers}
+// User structure = {id, username, roomID, colorID, role, chestID, familiarity, gold, votedPlayers, deadState}
 
 const playerJoin = function (id, username, room) {
     const player = { id, username, room };
@@ -51,7 +51,7 @@ const getLeavePlayer = function (id) {
 * ROOM HANDLING FUNCTION
 */
 
-// Room structure = {id, stats, chestList}
+// Room structure = {id, stats, chestList, isPlaying}
 
 const addRoom = function (roomID) {
     const room = {'id': roomID, 'stats': [2, 5, 30, 90]};
@@ -71,11 +71,6 @@ const removeRoom = function (roomID) {
 const getRoomUsers = function (room) {
     return players.filter((player) => player.room === room);
 };
-
-const getPlayerInRoom = function(room, id) {
-    let roomUsers = getRoomUsers(room);
-    return roomUsers.find(player => player.id === id);
-}
 
 const getActiveRooms = function () {
     return new Set(players.map((player) => player.room));
@@ -108,7 +103,7 @@ const getCaptain = function(roomID) {
 }
 
 const getChestHunters = function (roomID, i) {
-    return getRoomUsers(roomID).filter((player) => player.chestID === i);
+    return getCurrentRoom(roomID).chestList[i].hunters.map(id => getCurrentPlayer(id));
 };
 
 const createChestList = function(room) {
@@ -122,7 +117,7 @@ const createChestList = function(room) {
     const idList = ["c100", "c075", "c050", "c035"];
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < nList[i]; j++) {
-            room.chestList.push({id: idList[i] + j.toString(), value: valueList[i], position: posList[i][j]});
+            room.chestList.push({id: idList[i] + j.toString(), value: valueList[i], position: posList[i][j], hunters: []});
         }
     }
 };
@@ -137,7 +132,7 @@ const updateState_chestPhase = function(roomID, player) {
     }
     else {
         const pirates = chestHunters.filter(player => player.role !== 'Killer');
-        const killers = chestHunters.filter(player => player.role === 'Killer');
+        const killers = chestHunters.filter(player => player.role === 'Killer').filter(player => player.killState === true);
         const chests = getCurrentRoom(roomID).chestList;
         if (killers.length > 0 && pirates.length === 1){
             if (player.role === 'Killer'){
@@ -155,6 +150,7 @@ const updateState_chestPhase = function(roomID, player) {
         }
         else {
             player.role === 'Pirate' ? player.familiarity += (hunterNum - 1) : true;
+            io.to(player.id).emit("game:familiarity", player.familiarity);
         }
         player.gold += Math.floor(chests[player.chestID].value / hunterNum);
         if (player === chestHunters[0]) player.gold += (chests[player.chestID].value % hunterNum);
@@ -163,11 +159,11 @@ const updateState_chestPhase = function(roomID, player) {
 
 const updateState_votePhase = function(roomID) {
     sorted = getRoomUsers(roomID);
-    sorted.sort((a, b) => b.votedPlayers.length - a.votedPlayers.length);
-    if (sorted[0].votedPlayers.length <= 1){
+    sorted.sort((a, b) => b.votedPlayers.size - a.votedPlayers.size);
+    if (sorted[0].votedPlayers.size <= 1){
         return;
     }
-    let secondIndex = sorted.findIndex(player => player.votedPlayers.length < sorted[0].votedPlayers.length);
+    let secondIndex = sorted.findIndex(player => player.votedPlayers.size < sorted[0].votedPlayers.size);
     if (secondIndex > 1){
         return;
     }
@@ -180,18 +176,19 @@ const updateState_votePhase = function(roomID) {
 // Check immediate condition to end game
 const checkImmediateEndGame = function(roomID) {
     const roomUsers = getRoomUsers(roomID);
+    const room = getCurrentRoom(roomID);
     const alivePlayers = roomUsers.filter(player => player.deadState === false);
     const aliveKillers = alivePlayers.filter(player => player.role === 'Killer');
     const deadPlayers = roomUsers.filter(player => player.deadState === true);
     if (deadPlayers.includes(getCaptain(roomID)) || 
     aliveKillers.length >= alivePlayers.length / 2) {
         io.to(roomID).emit("game:killersWin");
-        isEndGame = true;
+        room.isPlaying = false;
         return;
     }
     if (aliveKillers.length === 0) {
         io.to(roomID).emit("game:piratesWin");
-        isEndGame = true;
+        room.isPlaying = false;
         return;
     }
 }
@@ -199,36 +196,54 @@ const checkImmediateEndGame = function(roomID) {
 // Check last-turn condition to end game
 const checkLastTurnEndGame = function(roomID) {
     sorted = getRoomUsers(roomID);
+    roomUsers = sorted;
+    const room = getCurrentRoom(roomID);
     sorted.sort((a, b) => b.gold - a.gold);
     let secondIndex = sorted.findIndex(player => player.gold < sorted[0].gold);
+    if (secondIndex === -1){
+        room.lastChance = true;
+    }
     for (let i = 0; i < secondIndex; i++) {
         if (sorted[i].role !== 'Killer'){
-            io.to(roomID).emit("game:piratesWin");
-            isEndGame = true;
-            return;
+            room.lastChance = true;
+            break;
         } 
     }
+    if (room.lastChance){
+        const aliveKillers = roomUsers.filter(player => player.deadState === false && player.role === 'Killer');
+        const targetSet = [...new Set(room.lastKillTarget)];
+        if (room.lastKillTarget.length !== aliveKillers.length || targetSet.length !== 1 || 
+            roomUsers[targetSet[0]].role !== 'Captain'){
+                io.to(roomID).emit("game:piratesWin");
+                room.isPlaying = false;
+                return;
+        }
+    }
     io.to(roomID).emit("game:killersWin");
-    isEndGame = true;
+    room.isPlaying = false;
 }
 
 const removeGameProperty = function(roomID){
     let room = getCurrentRoom(roomID);
     let roomUsers = getRoomUsers(roomID);
     delete room.chestList;
+    delete room.isPlaying;
+    delete room.lastChance;
+    delete room.lastKillTarget;
     roomUsers.forEach(player => {
         delete player.role;
         delete player.gold;
         delete player.familiarity;
         delete player.chestID;
         delete player.votedPlayers;
+        delete player.deadState;
+        delete player.killState;
     });
 }
 
 let players = [];
 let leavePlayers = [];
 let rooms = [];
-let isEndGame = false;
 const role = ["Captain", "Killer", "Blacksmith", "Pirate"];
 
 
@@ -300,6 +315,9 @@ io.on("connection", function (socket) {
         let roomUsers = getRoomUsers(roomID);
         const room = getCurrentRoom(roomID);
         room.chestList = [];
+        room.isPlaying = true;
+        room.lastChance = false;
+        room.lastKillTarget = [];
         createChestList(room);
         io.emit("state:allUsers", players, leavePlayers, getPlayingRooms());
         for (let i = 0; i < room_size; i++) {
@@ -307,9 +325,13 @@ io.on("connection", function (socket) {
             roomUsers[i].gold = 0;
             roomUsers[i].familiarity = 0;
             roomUsers[i].chestID = -1;
-            roomUsers[i].votedPlayers = [];
+            roomUsers[i].votedPlayers = new Set();
             roomUsers[i].deadState = false;
         }
+        const killers = roomUsers.filter(player => player.role === 'Killer');
+        killers.forEach(function(killer) {
+            killer.killState = true;
+        });
         io.to(roomID).emit("room:roomUsers", roomUsers);
         io.to(roomID).emit("game:start", temp, room);
     });
@@ -321,7 +343,7 @@ io.on("connection", function (socket) {
         let voteDuration = getCurrentRoom(roomID).stats[3] / 10;
         let endVoteDuration = 5; // Them 5s cap nhat so vote, thong bao co ai chet khi vote
 
-        let counter = 0, captainDuration = 1, waitDuration = 1;
+        let counter = 0, captainDuration = 4, waitDuration = 5;
         let eachDuration = chooseChestDuration + captainDuration + waitDuration + voteDuration + endVoteDuration + 4;
         let totalTime = numsOfTurn * eachDuration, timeAccumulate = 0;
         let chestDown = chooseChestDuration, captainDown = captainDuration,
@@ -402,20 +424,25 @@ io.on("connection", function (socket) {
                 if (timeAccumulate == timer[3].end + i * eachDuration) {
                     io.to(roomID).emit("game:voteDuration", voteDown);
                     updateState_votePhase(roomID);
-                    checkImmediateEndGame(roomID, isEndGame);
+                    checkImmediateEndGame(roomID);
                     for (let i = 0; i < roomUsers.length; i++) {
+                        getCurrentRoom(roomID).chestList[i].hunters = [];
                         roomUsers[i].chestID = -1;
-                        roomUsers[i].votedPlayers = [];
+                        roomUsers[i].votedPlayers = new Set();
                     }
+                    const killers = roomUsers.filter(player => player.role === 'Killer');
+                    killers.forEach(function(killer) {
+                        killer.killState = true;
+                    });
                     voteDown = voteDuration;
                     updated = false;
                 }
             }
             if (counter == totalTime) {
                 clearInterval(gameLoop);
-                checkLastTurnEndGame(roomID, isEndGame);
+                checkLastTurnEndGame(roomID);
             }
-            if (isEndGame){
+            if (getCurrentRoom(roomID).isPlaying === false){
                 clearInterval(gameLoop);
                 io.to(roomID).emit("game:end");
                 removeGameProperty(roomID);
@@ -426,26 +453,40 @@ io.on("connection", function (socket) {
         }, 1000);
     })
 
-    socket.on("game:huntChest", function (roomID, chestID, id) {
-        // const currentPlayer = getCurrentPlayer(socket.id);
-        // currentPlayer.chestID = id;
-        const currentPlayer = getPlayerInRoom(roomID, id);
-        currentPlayer.chestID = chestID;
+    socket.on("game:huntChest", function (roomID, id) {
+        getCurrentPlayer(socket.id).chestID = id;
+        getCurrentRoom(roomID).chestList[id].hunters.push(socket.id);
         io.to(roomID).emit("room:roomUsers", getRoomUsers(roomID));
-        io.to(roomID).emit("game:huntChest", getChestHunters(roomID, chestID), chestID);
+        io.to(roomID).emit("game:huntChest", getChestHunters(roomID, id), id);
+    });
+
+    socket.on("game:outChest", function(player) {
+        let roomID = player.room;
+        let id = player.chestID;
+        let chestHunters = getCurrentRoom(roomID).chestList[id].hunters;
+        chestHunters.splice(chestHunters.findIndex(x => x === socket.id), 1);
+        getCurrentPlayer(socket.id).chestID = -1;
+    });
+
+    socket.on("game:killState", function(kill_state) {
+        getCurrentPlayer(socket.id).killState = kill_state;
     });
 
     socket.on("game:vote", function (roomID, id) {
         const roomUsers = getRoomUsers(roomID);
-        roomUsers[id].votedPlayers.push(socket.id);
+        roomUsers[id].votedPlayers.add(socket.id);
         io.to(roomID).emit("room:roomUsers", roomUsers);
-        io.to(roomID).emit("game:vote", roomUsers[id].votedPlayers, id);
+        io.to(roomID).emit("game:vote", [...roomUsers[id].votedPlayers], id);
     });
 
+    socket.on("game:lastKill", function (roomID, id) {
+        const room = getCurrentRoom(roomID);
+        room.lastKillTarget.push(id);
+    });
     // Chat
-    socket.on("player-send-messages", (roomID, color, text) => {
-    io.to(roomID).emit("socket-send-messages", {us: getCurrentPlayer(socket.id).username, c: color, t: text})
-})
+    socket.on("game:sendMessages", (roomID, color, text) => {
+        io.to(roomID).emit("game:recvMessages", {us: getCurrentPlayer(socket.id).username, c: color, t: text});
+    });
 });
 
 server.listen(5500, function () {
