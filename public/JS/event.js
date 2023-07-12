@@ -58,6 +58,7 @@ socket.on("room:coloring", function(roomUsers) {
 
 socket.on("game:start", function(temp, room) {
     randomID = temp;
+    day = 0;
     createChestLists(room);
     chests = $('.game_screen .treasure .chest');
     drawSprite_roleScr(roomUsers);
@@ -78,6 +79,8 @@ socket.on("game:chooseChestDuration", function(chestTimer){
     gameTime.text("Time: " + chestTimer.toString() + ' s');
     if (chestTimer === gameStats[2] / 3) {
         // Set variables for new turn
+        day++;
+        gameDay.text('DAY ' + day.toString());
         voteScr.css('display', 'none');
         gameScr.css('display', 'grid');
         if (!inDeadState){
@@ -90,11 +93,11 @@ socket.on("game:chooseChestDuration", function(chestTimer){
         if (elem != null) {
             elem.removeClass('selected');
         }
-        voteBoxes.prop('disabled', false);
-        voteBoxes.on('click');
+        voteBoxes.css('pointer-events', 'fill');
+        voteList.find('.current').css('pointer-events', 'none');
         skipBtn.prop('disabled', false);
         voteCircles = $('.vote_screen .votedCircles');
-        voteCircles.empty();
+        voteCircles.html(``);
         voteCircles.css('display', 'none');
     }
 })
@@ -108,30 +111,39 @@ socket.on("game:captainDuration", function(captainTimer){
 
 socket.on("game:waitDuration", function(waitTimer){
     gameTime.text("Time: " + waitTimer.toString() + ' s');
-    chests.off();
+    if (waitTimer === 5){
+        chests.off();
+        killBtn.css('display', 'none');
+        offkillBtn.css('display', 'none');
+        chatBtn.css('display', 'none');
+        offscoutBtn.css('display', 'none');
+    }
 });
 
 socket.on("game:voteDuration", function(voteTimer) {
     voteTime.text("Time: " + voteTimer.toString() + " s");
     if (voteTimer === gameStats[3] / 10) {
+        voteDay.text('DAY ' + day.toString());
         caveScr.css('display', 'none');
-        voteScr.css('display', "grid");   
+        voteScr.css('display', "grid");
     }
     if (voteTimer === 0){
         // Set game screen for new turn
-        voteCircles.css('display', 'flex');
         $('.vote_screen .player_list').css('opacity', 1);
+        voteCircles.css('display', 'flex');
         gameScr.fadeOut();
         treasureScr.fadeIn();
-        voteBoxes.prop('disabled', true);
+        voteBoxes.css('pointer-events', 'none');
         skipBtn.prop('disabled', true);
+        scouted = false;
+        drawActivateDiv(getPlayerInRoom(socket.id).role);
     }
 })
 
 // Handle into the cave
 
-socket.on("game:huntChest", function(chestHunters, chestID){
-    if (getPlayerInRoom(socket.id).chestID !== chestID) return;
+socket.on("game:huntChest", function(chestHunters, id){
+    if (getPlayerInRoom(socket.id).chestID !== id) return;
     caveChr.html(``);
     caveEvent_updateByServer(chestHunters);
 });
@@ -162,6 +174,12 @@ socket.on("game:disabled", function(){
     skipBtn.off();
     inDeadState = true;
 });
+
+socket.on("game:familiarity", function(familiarity){
+    if (familiarity === 0) return;
+    let frontBarWidth = Math.min(Math.floor(200 * familiarity / maxFame), 200);
+    familiarityPer.css('width', frontBarWidth + 'px');
+})
 
 socket.on("game:getGold", function(gold, index){
     posters.eq(goldRank(roomUsers, index)).find('.gold').text(gold.toString() + '$');
@@ -200,3 +218,16 @@ socket.on("game:end", function() {
     voteScr.css('display', 'none');
     restroomScr.css('display', 'grid');
 });
+
+socket.on("game:recvMessages", function(data) {
+    let i = 0;
+    $(".text_chat").val("");
+    $(".content_show").append(`<div class="chat_line"><span class="username">${data.us}:</span> <span class='text_content'>${data.t}</span></div>`);
+    if(data.t.indexOf(" ") == -1) {
+        $(".chat_line .text_content").eq(i).css('word-break','break-all');
+    } else {
+        $(".chat_line .text_content").eq(i).css('word-break','break-word');
+    }
+    $(".chat_line .username").css("font-weight", "bold")  
+    $(".chat_line .username").eq(i++).css('color', data.c)
+})
