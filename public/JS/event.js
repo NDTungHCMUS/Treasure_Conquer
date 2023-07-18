@@ -6,13 +6,16 @@ socket.on("state:allUsers", function(activeUsers, leaveUsers, playRooms){
     playingRooms = playRooms;
 });
 
+socket.on("state:alert", function(mes){
+    serverAlert(mes);
+});
+
 socket.on("room:roomUsers", function(users){
     roomUsers = users;
 });
 
 socket.on("room:listing", function(roomUsers) {
-    let currentPlayer = getCurrentPlayer(socket.id);
-    if (roomUsers[0].username == currentPlayer.username){
+    if (roomUsers[0].id === socket.id){
         ranges.show();
         for (let i = 0; i < ranges.length; i++) {
             ranges.eq(i).val(gameStats[i]);
@@ -61,16 +64,17 @@ socket.on("game:start", function(temp, room) {
     day = 0;
     createChestLists(room);
     chests = $('.game_screen .treasure .chest');
+    restroomScr.css('display', "none");
+    transition(1500, 'Land to new island...');
+    roleScr.fadeIn(3500);
+    roleScr.css('display', "flex");
     drawSprite_roleScr(roomUsers);
     drawRoleScr();
     drawVoteScr();
     roleName.text("Role: " + roleMes.text());
-    restroomScr.css('display', "none");
-    roleScr.css('display', "flex");
     setTimeout(function() {
-        roleScr.fadeOut();
-        gameScr.css('display', "grid");
-    }, 5000);
+        roleScr.fadeOut('fast');
+    }, 9000);
 });
 
 // Game Loop
@@ -82,6 +86,8 @@ socket.on("game:chooseChestDuration", function(chestTimer){
         day++;
         gameDay.text('DAY ' + day.toString());
         voteScr.css('display', 'none');
+        transition(1500, 'Hunting!!!');
+        gameScr.fadeIn(3000);
         gameScr.css('display', 'grid');
         if (!inDeadState){
             chestEvent_updateByServer(chests);
@@ -104,8 +110,10 @@ socket.on("game:chooseChestDuration", function(chestTimer){
 
 socket.on("game:captainDuration", function(captainTimer){
     gameTime.text("Time: " + captainTimer.toString() + ' s');
-    if (getPlayerInRoom(socket.id).role !== 'Captain'){
-        chests.off();
+    if (captainTimer === 5){
+        if (getPlayerInRoom(socket.id).role !== 'Captain'){
+            chests.off();
+        }
     }
 });
 
@@ -117,6 +125,7 @@ socket.on("game:waitDuration", function(waitTimer){
         offkillBtn.css('display', 'none');
         chatBtn.css('display', 'none');
         offscoutBtn.css('display', 'none');
+        klchatScr.css('display', 'none');
     }
 });
 
@@ -124,7 +133,9 @@ socket.on("game:voteDuration", function(voteTimer) {
     voteTime.text("Time: " + voteTimer.toString() + " s");
     if (voteTimer === gameStats[3] / 10) {
         voteDay.text('DAY ' + day.toString());
-        caveScr.css('display', 'none');
+        gameScr.css('display', 'none');
+        transition(1500, 'Gathering!!!');
+        voteScr.fadeIn(3000);
         voteScr.css('display', "grid");
     }
     if (voteTimer === 0){
@@ -132,7 +143,7 @@ socket.on("game:voteDuration", function(voteTimer) {
         $('.vote_screen .player_list').css('opacity', 1);
         voteCircles.css('display', 'flex');
         gameScr.fadeOut();
-        treasureScr.fadeIn();
+        treasureScr.fadeIn('slow');
         voteBoxes.css('pointer-events', 'none');
         skipBtn.prop('disabled', true);
         scouted = false;
@@ -149,7 +160,7 @@ socket.on("game:huntChest", function(chestHunters, id){
 });
 
 socket.on("game:deadMessage", function(name){
-    //alert(name + " died");
+    serverAlert(name + " died");
     voteBoxes = $('#show_vote_list .box');
     posters = $('.leaderboard #show_leaderboard .poster');
     getBoxByName(voteBoxes, name).addClass('dead');
@@ -158,14 +169,14 @@ socket.on("game:deadMessage", function(name){
 
 socket.on("game:hint", function(captain, chests){
     if (captain.chestID === -1){
-        alert("Captain didn't chose chest in last turn");
+        serverAlert("Hint: Captain didn't chose chest in last turn");
         return;
     }
-    if (chests[captain.chestID].value % 2 === 1) {
-        alert("Captain chose chest 75$ or 35$ in last turn");
-        return;
+    let rand = Math.floor(Math.random() * 4);
+    while (chests[captain.chestID].value === chestValue[rand]) {
+        rand = Math.floor(Math.random() * 4);
     }
-    alert("Captain chose chest 50$ or 100$ in last turn");
+    serverAlert("Hint: Captain didn't chose chest " +  chestValue[rand] + "$ in last turn");
 });
 
 socket.on("game:disabled", function(){
@@ -197,37 +208,62 @@ socket.on("game:vote", function(votedPlayers, id){
 
 socket.on("game:killersWin", function() {
     if (getPlayerInRoom(socket.id).role !== 'Killer') {
-        alert("Defeat");
+        isVictory = false;
     }
     else {
-        alert("Victory");
+        isVictory = true;
     }
 });
 
 socket.on("game:piratesWin", function() {
     if (getPlayerInRoom(socket.id).role === 'Killer') {
-        alert("Defeat");
+        isVictory = false;
     }
     else {
-        alert("Victory");
+        isVictory = true;
     }
 });
 
 socket.on("game:end", function() {
     gameScr.css('display', 'none');
     voteScr.css('display', 'none');
-    restroomScr.css('display', 'grid');
+    if (!isVictory) {
+        ship.css('background-image', 'url("/Textures/Font-SVG/burnedship.svg")');
+        transition(3500, "Defeat", false);
+    }
+    else {
+        transition(3500, "Victory", false);
+    }
+    setTimeout(() => {
+        ship.css('background-image', 'url("/Textures/Font-SVG/ship.svg")');
+        restroomScr.fadeIn(1000);
+        restroomScr.css('display', 'grid');
+    }, 3000);
+    
 });
 
 socket.on("game:recvMessages", function(data) {
-    let i = 0;
     $(".text_chat").val("");
-    $(".content_show").append(`<div class="chat_line"><span class="username">${data.us}:</span> <span class='text_content'>${data.t}</span></div>`);
-    if(data.t.indexOf(" ") == -1) {
-        $(".chat_line .text_content").eq(i).css('word-break','break-all');
-    } else {
-        $(".chat_line .text_content").eq(i).css('word-break','break-word');
+    let lastLine;
+    if (voteScr.css('display') == 'none'){
+        klchatDiv.append(`<div class="chat_line"><span class="username">${data.us}:</span> <span class="text_content">${data.t}</span></div>`);
+        lastLine = $(".klchat .chat_line:last-child");
     }
-    $(".chat_line .username").css("font-weight", "bold")  
-    $(".chat_line .username").eq(i++).css('color', data.c)
+    else {
+        votechatDiv.append(`<div class="chat_line"><span class="username">${data.us}:</span> <span class="text_content">${data.t}</span></div>`);
+        lastLine = $(".chat .chat_line:last-child");
+    }
+    if(data.t.indexOf(" ") == -1) {
+        lastLine.find('.text_content').css('word-break','break-all');
+    } 
+    else {
+        lastLine.find('.text_content').css('word-break','break-word');
+    }
+    lastLine.find('.username').css('font-weight', 'bold');
+    if (data.us == getCurrentPlayer(socket.id).username){
+        lastLine.css('background-image', 'linear-gradient(to right, rgba(247, 207, 225, 0.6), rgba(186, 237, 245, 0.6))');
+        lastLine.css('border-radius', '15vh 15vh 0 15vh');
+        lastLine.find('.text_content').css('color', 'brown');
+        lastLine.find('.username').css('color', 'brown');
+    }
 })

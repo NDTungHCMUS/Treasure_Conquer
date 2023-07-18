@@ -14,16 +14,16 @@ let soundMute = false;
 const updateVolBtn = function(vol, volBtn) {
     switch (true) {
         case (vol.val() == 0):
-            volBtn.css('background-image', "url('Textures/sound_vol_level0.png')"); 
+            volBtn.css('background-image', "url('Textures/Audio/sound_vol_level0.png')"); 
             break;
         case (vol.val() <= 33):
-            volBtn.css('background-image', "url('Textures/sound_vol_level1.png')"); 
+            volBtn.css('background-image', "url('Textures/Audio/sound_vol_level1.png')"); 
             break;
         case (vol.val() <= 66):
-            volBtn.css('background-image', "url('Textures/sound_vol_level2.png')"); 
+            volBtn.css('background-image', "url('Textures/Audio/sound_vol_level2.png')"); 
             break;
         case (vol.val() <= 100):
-            volBtn.css('background-image', "url('Textures/sound_vol_level3.png')"); 
+            volBtn.css('background-image', "url('Textures/Audio/sound_vol_level3.png')"); 
             break;
     }
 }
@@ -64,7 +64,7 @@ musicVolBtn.on('click', function() {
         setMusicVol(musicVol.val()/100);
     }
     else {
-        musicVolBtn.css('background-image', "url('Textures/sound_vol_mute.png')");
+        musicVolBtn.css('background-image', "url('Textures/Audio/sound_vol_mute.png')");
         setMusicVol(0);
     }
     musicMute = !musicMute;
@@ -76,7 +76,7 @@ soundVolBtn.on('click', function() {
         setSoundVol(soundVol.val()/100);
     }
     else {
-        soundVolBtn.css('background-image', "url('Textures/sound_vol_mute.png')");
+        soundVolBtn.css('background-image', "url('Textures/Audio/sound_vol_mute.png')");
         setSoundVol(0);
     }
     soundMute = !soundMute;

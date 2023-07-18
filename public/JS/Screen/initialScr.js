@@ -3,12 +3,12 @@
 */
 
 settingBtn.on('click', function() {
+    settingScr.slideToggle('slow');
     settingScr.css('display', 'block');
     ssiBar.addClass('on_screen');
     for (let j = 0; j < settingList.length; j++){
         settingList.eq(j).removeClass('chosen');
         settingContent.eq(j).css('display', 'none');
-        
     }
     settingList.eq(0).addClass('chosen');
     settingContent.eq(0).css('display', 'block');
@@ -17,6 +17,7 @@ settingBtn.on('click', function() {
 storyBtn.on('click', function() {
     currentPage = 0;
     updateNav(currentPage);
+    storyScr.slideToggle('slow');
     storyScr.css('display', 'block');
     ssiBar.addClass('on_screen');
 });
@@ -61,8 +62,10 @@ newRoomBtn.on("click", function() {
     // Handle swap room
     usernameInput.val('');
     roomIDInput.val('');
+    initialScr.css('display', 'none');
+    transition(1500, 'Create new room');
+    restroomScr.fadeIn(3500);
     restroomScr.css('display', "grid");
-    initialScr.css('display', "none");
 });
 
 joinRoomBtn.on('click', function() {
@@ -105,8 +108,10 @@ joinRoomBtn.on('click', function() {
     startGameBtn.hide();
     usernameInput.val('');
     roomIDInput.val('');
+    initialScr.css('display', 'none');
+    transition(1500, 'Join room ' + roomID);
+    restroomScr.fadeIn(3500);
     restroomScr.css('display', "grid");
-    initialScr.css('display', "none");
 });
 
 for (let i = 0; i < settingList.length; i++){

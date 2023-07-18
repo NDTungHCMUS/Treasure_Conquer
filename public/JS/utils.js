@@ -11,6 +11,12 @@ const NavUpBtn = $('.navigate .up');
 const NavPageBtn = $('.navigate .page-mark');
 const NavDownBtn = $('.navigate .down');
 
+const transScr = $('.trans_screen');
+const ship = $('.trans_screen #ship_trans');
+const mesTrans = $('.trans_screen #mes_trans');
+const alertBubble = $('.alert_bubble');
+const alertMes = $('.alert_bubble #mes_alert');
+
 const initialScr = $('.initial_screen');
 const settingList = $('.initial_screen .setting_list div');
 let usernameInputDiv = $('.initial_screen #usernameInputDiv');
@@ -39,24 +45,26 @@ const roleName = $('.game_screen #role');
 const gameDay = $('.game_screen #day');
 const gameTime = $('.game_screen #time');
 const activateDiv = $('.game_screen .activateRole');
+let chests = $('.game_screen .treasure .chest');
 const killBtn = $('.activateRole #killBtn');
 const offkillBtn = $('.activateRole #offkillBtn');
 const chatBtn = $('.activateRole #chatBtn');
 const offscoutBtn = $('.activateRole #offscoutBtn');
 const familiarityBar = $('.activateRole #familiarityBar');
 const familiarityPer = $('#familiarityBar .bar_front');
-let chests = $('.game_screen .treasure .chest');
 const roleScr = $('.role_screen');
 const roleMes = $('.role_screen #role_mes');
 const roleDesc = $('#role_desc');
 const roleChr = $('.role_screen .character');
-const activateScr = $('.activate_screen');
+const klchatScr = $('.klchat');
+const klchatDiv = $('.klchat .content_show');
 
 const voteScr = $('.vote_screen');
 const voteList = $('.vote_screen #show_vote_list');
 const roleInVote = $('.vote_screen #role');
 const voteDay = $('.vote_screen #day');
 const voteTime = $('.vote_screen #time');
+const votechatDiv = $('.vote_screen .chat .content_show');
 const skipBtn = $('.vote_screen #skipVoteBtn');
 const leaderboard = $('.leaderboard #show_leaderboard');
 let voteCircles;
@@ -67,6 +75,7 @@ let goldValue;
 let currentPage = 0;
 const role = ["Captain", "Killer", "Blacksmith", "Pirate"];
 let gameStats = [2, 5, 30, 90];
+let chestValue = [100, 85, 65, 50];
 let selectedColor;
 let randomID = [];
 let room_size = playerBoxes.length;
@@ -79,6 +88,7 @@ let playingRooms = [];
 let roomUsers = [];
 let scouted = false;
 let day;
+let isVictory = false;
 
 // Clone HTML code
 characterSVG.html($('.textures .spriteDiv').html());
@@ -215,6 +225,54 @@ const getUsedColors = function() {
 * GRAPHIC FUNCTION
 */
 
+// Room screen transition
+const transition = function(time, mes, endScr = true){
+    // Reset ship position
+    ship.css('top', '55%');
+    ship.css('left', '0%');
+    ship.css('width', '100px');
+    ship.css('height', '100px');
+
+    let _left = '91%';
+    let _width = '120px';
+    transScr.fadeIn(100);
+    transScr.css('display', 'flex');
+    ship.fadeIn(100);
+    mesTrans.text(mes);
+    if (!endScr){
+        _left = '40%';
+        _width = '220px';
+    }
+    
+    // Animating
+    ship.animate({
+        left: _left,
+        top: '65%',
+        width: _width,
+        height: _width
+    }, time - 300);
+    setTimeout(() => {
+        transScr.fadeOut(300);
+        ship.css('display', 'none');
+    }, time);
+}
+
+// Server alert message to all roomUsers
+const serverAlert = function(mes, time = 5000){
+    alertMes.text(mes);
+    alertBubble.fadeIn(200);
+    alertBubble.css('display', 'flex');
+    alertBubble.animate({
+        left: '70%'
+    }, 700);
+    setTimeout(() => {
+        alertBubble.animate({
+            left: '100%'
+        }, 500);
+        alertBubble.fadeOut(500);
+    }, time);
+}
+
 // Handle event for chest list from server
 const chestEvent_updateByServer = function(chests, scouted){
     for (let i = 0; i < chests.length; i++) {
@@ -223,8 +281,8 @@ const chestEvent_updateByServer = function(chests, scouted){
             if (elem != null) elem.removeClass('selected');
             chests.eq(i).addClass('selected');
             socket.emit("game:huntChest", getPlayerInRoom(socket.id).room, i);
-            treasureScr.fadeOut();
-            caveScr.fadeIn();
+            treasureScr.fadeOut('slow');
+            caveScr.fadeIn('slow');
             caveScr.css('display', 'flex');
             if (getPlayerInRoom(socket.id).role === 'Captain' && !scouted) {
                 offscoutBtn.show();
@@ -240,30 +298,30 @@ const fillColorForCharacter = function(visible, color) {
         $('.cave .character .sprite:last-child').find('.cls-8').css('fill', color); 
     }
     else {
-        $('.cave .character .sprite:last-child').find('.cls-24').css('fill', color); 
-        $('.cave .character .sprite:last-child').find('.cls-23').css('fill', color);  
-        $('.cave .character .sprite:last-child').find('.cls-22').css('fill', color);  
-        $('.cave .character .sprite:last-child').find('.cls-21').css('fill', color);  
-        $('.cave .character .sprite:last-child').find('.cls-20').css('fill', color); 
-        $('.cave .character .sprite:last-child').find('.cls-19').css('fill', color);  
-        $('.cave .character .sprite:last-child').find('.cls-18').css('fill', color); 
-        $('.cave .character .sprite:last-child').find('.cls-17').css('fill', color);
-        $('.cave .character .sprite:last-child').find('.cls-16').css('fill', color);  
-        $('.cave .character .sprite:last-child').find('.cls-15').css('fill', color);  
-        $('.cave .character .sprite:last-child').find('.cls-14').css('fill', color);  
-        $('.cave .character .sprite:last-child').find('.cls-13').css('fill', color); 
-        $('.cave .character .sprite:last-child').find('.cls-12').css('fill', color);  
-        $('.cave .character .sprite:last-child').find('.cls-11').css('fill', color); 
-        $('.cave .character .sprite:last-child').find('.cls-10').css('fill', color); 
-        $('.cave .character .sprite:last-child').find('.cls-9').css('fill', color); 
-        $('.cave .character .sprite:last-child').find('.cls-8').css('fill', color);  
-        $('.cave .character .sprite:last-child').find('.cls-7').css('fill', color);  
-        $('.cave .character .sprite:last-child').find('.cls-6').css('fill', color);  
-        $('.cave .character .sprite:last-child').find('.cls-5').css('fill', color); 
-        $('.cave .character .sprite:last-child').find('.cls-4').css('fill', color);  
-        $('.cave .character .sprite:last-child').find('.cls-3').css('fill', color); 
-        $('.cave .character .sprite:last-child').find('.cls-2').css('fill', color); 
-        $('.cave .character .sprite:last-child').find('.cls-1').css('fill', color);
+        $('.cave .character .sprite:last-child').find('[class^="cls-"]').css('fill', color); 
+        // $('.cave .character .sprite:last-child').find('.cls-23').css('fill', color);  
+        // $('.cave .character .sprite:last-child').find('.cls-22').css('fill', color);  
+        // $('.cave .character .sprite:last-child').find('.cls-21').css('fill', color);  
+        // $('.cave .character .sprite:last-child').find('.cls-20').css('fill', color); 
+        // $('.cave .character .sprite:last-child').find('.cls-19').css('fill', color);  
+        // $('.cave .character .sprite:last-child').find('.cls-18').css('fill', color); 
+        // $('.cave .character .sprite:last-child').find('.cls-17').css('fill', color);
+        // $('.cave .character .sprite:last-child').find('.cls-16').css('fill', color);  
+        // $('.cave .character .sprite:last-child').find('.cls-15').css('fill', color);  
+        // $('.cave .character .sprite:last-child').find('.cls-14').css('fill', color);  
+        // $('.cave .character .sprite:last-child').find('.cls-13').css('fill', color); 
+        // $('.cave .character .sprite:last-child').find('.cls-12').css('fill', color);  
+        // $('.cave .character .sprite:last-child').find('.cls-11').css('fill', color); 
+        // $('.cave .character .sprite:last-child').find('.cls-10').css('fill', color); 
+        // $('.cave .character .sprite:last-child').find('.cls-9').css('fill', color); 
+        // $('.cave .character .sprite:last-child').find('.cls-8').css('fill', color);  
+        // $('.cave .character .sprite:last-child').find('.cls-7').css('fill', color);  
+        // $('.cave .character .sprite:last-child').find('.cls-6').css('fill', color);  
+        // $('.cave .character .sprite:last-child').find('.cls-5').css('fill', color); 
+        // $('.cave .character .sprite:last-child').find('.cls-4').css('fill', color);  
+        // $('.cave .character .sprite:last-child').find('.cls-3').css('fill', color); 
+        // $('.cave .character .sprite:last-child').find('.cls-2').css('fill', color); 
+        // $('.cave .character .sprite:last-child').find('.cls-1').css('fill', color);
     }
 }
 
@@ -299,7 +357,7 @@ const caveEvent_updateByServer = function(chestHunters){
     }
     if (currentPlayer.role == 'Killer') {
         for (let i = 0; i < chestHunters.length; i++){
-            if (chestHunters[i].id == socket.id){
+            if (chestHunters[i].role == 'Killer'){
                 chosenColor = getBoxByName(playerBoxes, chestHunters[i].username).find('.color').find('.hatcls-2').css('fill');
                 fillColorForCharacter(true, chosenColor);      
             }
@@ -457,6 +515,7 @@ const drawSprite_roleScr = function(roomUsers) {
         roleChr.find('.cls-8').css('fill', selectedColor);
         return;
     }
+    roleChr.html(``);
     for (let i = 0; i < roomUsers.length; i++){
         if (roomUsers[i].role === "Killer"){
             let chosenColor = playerBoxes.eq(i).find('.color').find('.hatcls-2').css('fill');
@@ -477,14 +536,14 @@ const createChestLists = function(room) {
             case 100:
                 chestDiv.addClass('c100');
                 break;
-            case 75:
-                chestDiv.addClass('c75');
+            case 85:
+                chestDiv.addClass('c85');
+                break;
+            case 65:
+                chestDiv.addClass('c65');
                 break;
             case 50:
                 chestDiv.addClass('c50');
-                break;
-            case 35:
-                chestDiv.addClass('c35');
                 break;
         }
     });
@@ -501,13 +560,3 @@ const updateNav = function(currentPage){
         }
     }
 }
-
-// Chat
-$(".text_chat").keypress((e) => {
-    var t = $(".text_chat").val()
-    if(e.which == 13 && t != "") {
-        let currentPlayer = getCurrentPlayer(socket.id)
-        let color = colorOptns.eq(currentPlayer.colorID).css('background-color')
-        socket.emit("game:sendMessages", getCurrentPlayer(socket.id).room, color, t)
-    }
-})

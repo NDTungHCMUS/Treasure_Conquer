@@ -15,7 +15,13 @@ offkillBtn.on('click', function() {
 });
 
 chatBtn.on('click', function() {
-    activateScr.css('display', 'flex');
+    if (klchatScr.css('display') == 'none'){
+        klchatScr.slideToggle("slow");
+        klchatScr.css('display', 'flex');
+    }
+    else {
+        klchatScr.slideToggle("slow");
+    }
 });
 
 offscoutBtn.on('click', function() {
@@ -23,4 +29,14 @@ offscoutBtn.on('click', function() {
     caveScr.fadeOut();
     offscoutBtn.css('display', 'none');
     socket.emit("game:outChest", getPlayerInRoom(socket.id));
+});
+
+// Chat in gameScr
+$(".klchat .text_chat").keypress((e) => {
+    var t = $(".klchat .text_chat").val()
+    if(e.which == 13 && t != "") {
+        let currentPlayer = getCurrentPlayer(socket.id);
+        let color = colorOptns.eq(currentPlayer.colorID).css('background-color');
+        socket.emit("game:sendMessages", getCurrentPlayer(socket.id).room, color, t);
+    }
 });

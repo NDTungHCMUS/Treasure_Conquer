@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="x-icon" href="/Textures/Font-SVG/diamond_chest.svg">
     <link rel="stylesheet" type="text/css" href="style.css">
     <title>Treasure Conquer</title>
 </head>
@@ -14,13 +15,13 @@
         <div class="ssi_bar">
             <div class="ssi_list">                            
                 <div class = "ssi_btn" id="settingBtn">
-                    <div class = "note_bubble">Cài đặt</div>
+                    <div class = "note_bubble">Setting</div>
                 </div>
                 <div class = "ssi_btn" id="storyBtn">
-                    <div class = "note_bubble">Hướng dẫn</div>
+                    <div class = "note_bubble">Tutorial</div>
                 </div>
                 <div class = "ssi_btn" id="infoBtn">
-                    <div class = "note_bubble">Thông tin trò chơi</div>
+                    <div class = "note_bubble">Info</div>
                 </div>                          
             </div>
             <div class="ssi_screen" id="settingScreen">
@@ -64,7 +65,7 @@
                 </div>
                 <div class="text page3">
                     <strong>HƯỚNG DẪN CHƠI</strong>
-                    <p>Trên bản đồ có số kho báu tương đương với số người chơi, kho báu có các loại giá trị 100$<img src="/Textures/Font-SVG/diamond_chest.svg"></img>, 75$<img src="/Textures/Font-SVG/gold_chest.svg"></img>, 50$<img src="/Textures/Font-SVG/silver_chest.svg"></img>, 35$<img src="/Textures/Font-SVG/iron_chest.svg"></img>.</p>
+                    <p>Trên bản đồ có số kho báu tương đương với số người chơi, kho báu có các loại giá trị 100$<img src="/Textures/Font-SVG/diamond_chest.svg"></img>, 85$<img src="/Textures/Font-SVG/gold_chest.svg"></img>, 65$<img src="/Textures/Font-SVG/silver_chest.svg"></img>, 50$<img src="/Textures/Font-SVG/iron_chest.svg"></img>.</p>
                     <p>Ở mỗi lượt, bạn sẽ có quyền chọn 1 kho báu. Hết thời gian chọn kho báu, số người chọn cùng 1 kho báu sẽ chia đều giá trị của kho báu đó, người chọn kho báu đầu tiên sẽ nhận phần còn thừa. Trong trường hợp có Killer chọn kho báu cùng và giết được Pirate, Killer sẽ lấy toàn bộ số tiền của Pirate. Ví dụ có 3 người chọn cùng kho báu 50$, mỗi người sẽ nhận được 16$, riêng người đầu tiên sẽ nhận được 18$, tuy nhiên nếu có 2 trong 3 người là Killer, người còn lại sẽ bị giết và mỗi Killer sẽ nhận được 25$.</p>
                     <p>Giao diện game có thêm nút Chat để trao đổi giữa nhiều Killer và nút Kill để quyết định giết hay hủy giết (nếu là Killer), có thêm nút Scout để quan sát tình hình kho báu (nếu là Captain), có thêm thanh Familiarity biểu thị độ quen thuộc của người chơi (nếu là Pirate).</p>
                     <p>Màn hình vote sẽ được hiện ra sau khi hết thời gian chọn kho báu. Bảng leaderboard sẽ cập nhật sau mỗi lượt để biết được thứ hạng của các thành viên trong đoàn. Ở cuối mỗi lượt, người chơi bị nghi là Killer nhất, có số phiếu cao nhất (phải từ 2 phiếu trở lên) sẽ bị ném xuống biển. Ở lượt cuối, phe Killer thay vì tập hợp biểu quyết sẽ lẻn đi để ám sát Captain rồi bỏ trốn. Đừng để lộ thân phận của Captain cho chúng!!!</p>
@@ -94,6 +95,13 @@
                     <div class = "down"></div>
                 </div>
             </div>
+        </div>
+        <div class="trans_screen">
+            <p id="mes_trans"></p>
+            <div id="ship_trans"></div>
+        </div>
+        <div class="alert_bubble">
+            <p id="mes_alert"></p>
         </div>
         <div class="initial_screen">
             <h1>TREASURE CONQUER</h1>
@@ -195,13 +203,17 @@
             <div class="cave">
                 <div class="character"></div>
             </div>
+            <div class="klchat">
+                <h4>CHAT</h4>
+                <div class="content_show"></div>
+                <input type="text" class="text_chat">
+            </div>
         </div>
         <div class="role_screen">
             <p id="role_mes"></p>
             <p id="role_desc"></p>
             <div class="character"></div>
         </div>
-        <div class="activate_screen"></div>
         <div class="vote_screen">
             <h4 id="role">Role: </h4>
             <h4 id="day">DAY </h4>

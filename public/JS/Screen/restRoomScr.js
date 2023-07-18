@@ -11,24 +11,26 @@ leaveRoomBtn.on('click', function() {
         players.splice(leaveIndex, 1);
     }
     socket.emit("room:leave", leaveIndex);   
-    initialScr.css('display', "flex");
     restroomScr.css('display', "none");
+    transition(1500, 'Leave current room');
+    initialScr.fadeIn(3500);
+    initialScr.css('display', "flex");
 });
 
 startGameBtn.on('click', function() {
     room_size = playerBoxes.length;
-    if (room_size < 2 || room_size > 12){
-        alert("Game should be started with around 5-12 players!!!");
+    if (room_size < 4 || room_size > 12){
+        serverAlert("Game should be started with around 4-12 players!!!");
         return;
     }
     if (room_size / gameStats[0] <= 2){
-        alert("Game should be started with killer numbers lower than pirate numbers!!!");
+        serverAlert("Game should be started with killer numbers lower than pirate numbers!!!");
         return;
     }
     socket.emit("game:start", getCurrentPlayer(socket.id).room, room_size);
     setTimeout(function() {
         socket.emit("game:timing", getCurrentPlayer(socket.id).room);
-    }, 5000);
+    }, 9000);
 });
 
 for (let i = 0; i < sliders.length; i++) {

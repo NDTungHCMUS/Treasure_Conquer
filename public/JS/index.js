@@ -20,12 +20,12 @@ $.getScript("JS/utils.js", function(){
 // User events
 
 $(window).on('mouseup', function(e) {
-    const container = $('.activate_screen, #storyScreen, #settingScreen');
+    const container = $('#storyScreen, #settingScreen');
     if (ssiBar.hasClass('on_screen')){ 
         ssiBar.removeClass('on_screen');
     }
     if (!container.is(e.target) && container.has(e.target).length === 0){
-        container.fadeOut();
+        container.fadeOut('slow');
     }
 });
 

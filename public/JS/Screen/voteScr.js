@@ -10,3 +10,12 @@ skipBtn.on('click', function(){
     skipBtn.prop('disabled', true);
     $('.vote_screen .player_list').css('opacity', 0.8);
 });
+
+$(".vote_screen .text_chat").keypress((e) => {
+    var t = $(".vote_screen .text_chat").val()
+    if(e.which == 13 && t != "") {
+        let currentPlayer = getCurrentPlayer(socket.id);
+        let color = colorOptns.eq(currentPlayer.colorID).css('background-color');
+        socket.emit("game:sendMessages", getCurrentPlayer(socket.id).room, color, t);
+    }
+});

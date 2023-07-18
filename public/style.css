@@ -13,6 +13,16 @@
     src: url(/Textures/Font-SVG/rapscall.ttf);
 }
 
+@font-face {
+    font-family: "Pirates Kids";
+    src: url(/Textures/Font-SVG/pirateskids.ttf);
+}
+
+@font-face {
+    font-family: "Pirates Writers";
+    src: url(/Textures/Font-SVG/pirateswriters.ttf);
+}
+
 * {
     /* Displaying & Box Model */
     margin: 0;
@@ -20,7 +30,7 @@
     box-sizing: border-box;
 
     /* Text */
-    font-family: "Segoe UI";
+    font-family: "Pirates Writers";
 }
 
 body {
@@ -39,11 +49,12 @@ body {
 button {
     /* Text */
     font-weight: 600;
+    font-size: 18px;
 
     /* Color */
-    color: white;
+    color: rgb(59, 58, 58);
     background-image: linear-gradient(rgba(255, 255, 255, 0.6), rgba(62, 175, 184, 0.4)),
-        url("/Textures/closed_chest.svg");
+        url("/Textures/Font-SVG/closed_chest.svg");
     background-size: cover;
 }
 
@@ -62,29 +73,12 @@ button:hover {
 }
 
 /*
-* INITIAL SCREEN
+* MENU BARS
 */
 
-.initial_screen {
-    /* Displaying & Box Model */
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    min-width: 100%;
-    min-height: 100vh;
-
-    /* Color */
-    background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)),
-        url("/Textures/Background/pirate_background.jpg");
-    background-size: cover;
-}
-
-.initial_screen h1 {
-    /* Displaying & Box Model */
-    margin: 50px 0 70px 0;
-
+.ssi_bar * {
     /* Text */
-    font-family: "Carribean Caps";
+    font-family: "Segoe UI";
 }
 
 .ssi_bar.on_screen {
@@ -95,6 +89,7 @@ button:hover {
 }
 
 .ssi_list {
+    /* Displaying & Box Model */
     position: fixed;
     display: flex;
     right: 20px;
@@ -122,7 +117,7 @@ button:hover {
     top: 40px;
     right: 0px;
     padding: 20% 18% 5% 8%;
-    background-image: url("/Textures/Bubble_note.png");
+    background-image: url("/Textures/bubble_note.png");
     background-size: 100% 100%;
     text-anchor: middle;
     text-align: center;
@@ -168,6 +163,7 @@ button:hover {
 }
 
 #storyScreen .text {
+    /* Displaying & Box Model */
     width: 800px;
     height: 520px;
     flex-direction: column;
@@ -247,7 +243,7 @@ button:hover {
 }
 
 #storyScreen p {
-    /* Text */
+    /* Displaying & Box Model */
     margin: 15px 55px;
     text-align: justify;
     text-indent: 5%;
@@ -298,28 +294,6 @@ button:hover {
     /* Text */
     margin: 20px;
     font-size: 22px;
-}
-
-.initial_screen input {
-    /* Displaying & Box Model */
-    width: 200px;
-    height: 40px;
-    margin: 10px;
-    padding: 0px 5px;
-}
-
-.initial_screen #usernameInput {
-    /* Displaying & Box Model */
-    margin: 50px;
-}
-
-.initial_screen button {
-    /* Displaying & Box Model */
-    width: 100px;
-    height: 50px;
-    margin: 10px 0 10px 0;
-    border: none;
-    border-radius: 5%;
 }
 
 #settingScreen .setting_list {
@@ -411,6 +385,141 @@ button:hover {
 }
 
 /*
+* TRANSITION SCREEN
+*/
+
+.trans_screen {
+    /* Positioning */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-width: 100%;
+    min-height: 100vh;
+    
+    /* Color */
+    background-image: url("/Textures/Background/sea.jpg");
+    background-size: cover;
+}
+
+.trans_screen #ship_trans {
+    /* Positioning */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    display: none;
+    width: 100px;
+    height: 100px;
+    top: 55%;
+    left: 0%;
+    border-radius: 50%;
+    overflow-y: hidden;
+
+    /* Color */
+    background-image: url("/Textures/Font-SVG/ship.svg");
+}
+
+.trans_screen #mes_trans {
+    /* Displaying & Box Model */
+    margin: 120px auto;
+
+    /* Text */
+    font-size: 40px;
+    font-weight: 600;
+    font-family: "Pirates Kids";
+}
+
+/*
+* ALERT BUBBLE
+*/
+
+.alert_bubble {
+    /* Positioning */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    display: none;
+    flex-flow: row wrap;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 30%;
+    height: 70px;
+    top: 15%;
+    left: 100%;
+    z-index: 5;
+    
+    /* Color */
+    background-image: linear-gradient(to left, rgba(248, 82, 157, 0.9), rgba(99, 231, 252, 0.9));
+    border-radius: 20px;
+    border: 1px solid #bbb;
+    background-size: cover;
+}
+
+.alert_bubble #mes_alert {
+    /* Displaying & Box Model */
+    margin: auto;
+
+    /* Text */
+    font-size: 20px;
+    word-wrap: break-word;
+}
+
+/*
+* INITIAL SCREEN
+*/
+
+.initial_screen {
+    /* Displaying & Box Model */
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    min-width: 100%;
+    min-height: 100vh;
+
+    /* Color */
+    background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)),
+        url("/Textures/Background/pirate_background.jpg");
+    background-size: cover;
+}
+
+.initial_screen h1 {
+    /* Displaying & Box Model */
+    margin: 50px 0 70px 0;
+
+    /* Text */
+    font-family: "Carribean Caps";
+}
+
+.initial_screen input {
+    /* Displaying & Box Model */
+    width: 200px;
+    height: 40px;
+    margin: 10px;
+    padding: 0px 5px;
+
+    /* Text */
+    font-size: 19px;
+}
+
+.initial_screen #usernameInput {
+    /* Displaying & Box Model */
+    margin: 50px;
+}
+
+.initial_screen button {
+    /* Displaying & Box Model */
+    width: 100px;
+    height: 50px;
+    margin: 10px 0 10px 0;
+    border: none;
+    border-radius: 5%;
+}
+
+/*
 * RESTROOM SCREEN
 */
 
@@ -496,16 +605,15 @@ button:hover {
     height: 42px;
     margin: 10px;
     right: 70%;
-
-    /* Color */
-    /* background: url(/Textures/pirate_hat.svg);
-    background-size: cover; */
 }
 
 #show_player_list .box p {
     /* Displaying & Box Model */
     text-align: center;
     margin-left: 50px;
+
+    /* Text */
+    font-family: "Segoe UI";
 }
 
 #show_player_list .box.current p {
@@ -689,6 +797,9 @@ button:hover {
     /* Displaying & Box Model */
     width: 420px;
     text-align: left;
+
+    /* Text */
+    font-size: 20px;
 }
 
 .customize input {
@@ -754,6 +865,9 @@ button:hover {
     grid-row: 1;
     justify-self: center;
     margin: 5px;
+
+    /* Text */
+    font-size: 19px;
 }
 
 .game_screen #day {
@@ -764,7 +878,7 @@ button:hover {
     margin: 5px;
     
     /* Text */
-    font-size: 20px;
+    font-size: 24px;
 }
 
 .game_screen #time {
@@ -773,6 +887,9 @@ button:hover {
     grid-row: 1;
     justify-self: center;
     margin: 5px;
+
+    /* Text */
+    font-size: 19px;
 }
 
 .game_screen .activateRole {
@@ -864,13 +981,13 @@ button:hover {
 .chest.c100 {
     background-image: url("/Textures/Font-SVG/diamond_chest.svg");
 }
-.chest.c75 {
+.chest.c85 {
     background-image: url("/Textures/Font-SVG/gold_chest.svg");
 }
-.chest.c50 {
+.chest.c65 {
     background-image: url("/Textures/Font-SVG/silver_chest.svg");
 }
-.chest.c35 {
+.chest.c50 {
     background-image: url("/Textures/Font-SVG/iron_chest.svg");
 }
 
@@ -888,6 +1005,68 @@ button:hover {
 .treasure p {
     /* Text */
     font-weight: bold;
+}
+
+.game_screen .klchat {
+    /* Position */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    display: none;
+    width: 420px;
+    height: 600px;
+    flex-direction: column;
+    justify-content: center;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+    top: 55%;
+    left: 15%;
+    transform: translate(-50%, -50%);
+    box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
+
+    /* Color */
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
+    background-size: cover;
+}
+
+.klchat * {
+    /* Text */
+    font-family: "Segoe UI";
+}
+
+.klchat h4 {
+    /* Displaying & Box Model */
+    justify-self: center;
+    margin: 10px;
+}
+
+.klchat .content_show {
+    /* Displaying & Box Model */
+    overflow-y: scroll;
+    margin: 10px;
+    height: 85vh;
+}
+
+.klchat .text_chat {
+    /* Displaying & Box Model */
+    width: 420px;
+    height: 30px;
+    margin: auto;
+    padding: 3px 5px;
+}
+
+.klchat .chat_line {
+    /* Displaying & Box Model */
+    text-align: left;
+    font-size: 15px;
+    margin: 3px 3px;
+    padding: 3px 15px;
+
+    /* Color */
+    background-image: linear-gradient(to left, rgba(247, 207, 225, 0.6), rgba(186, 237, 245, 0.6));
+    border: 1px solid #bbb;
+    border-radius: 15vh 15vh 15vh 0;
 }
 
 /*
@@ -946,6 +1125,9 @@ button:hover {
     /* Displaying & Box Model */
     margin: 15px 50px;
     font-size: 25px;
+
+    /* Text */
+    font-family: "Segoe UI";
 }
 
 .role_screen #role_mes {
@@ -965,31 +1147,6 @@ button:hover {
     width: 140px;
     height: 180px;
     margin: 20px auto;
-}
-
-/*
-* ACTIVATE SCREEN
-*/
-
-.activate_screen {
-    /* Position */
-    position: absolute;
-
-    /* Displaying & Box Model */
-    display: none;
-    width: 800px;
-    height: 500px;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
-
-    /* Color */
-    background-image: url("/Textures/Background/treasure-scroll.jpg");
-    background-size: cover;
 }
 
 /*
@@ -1020,6 +1177,9 @@ button:hover {
     grid-row: 1;
     justify-self: center;
     margin: 10px;
+
+    /* Text */
+    font-size: 19px;
 }
 
 .vote_screen #day {
@@ -1030,7 +1190,7 @@ button:hover {
     margin: 10px;
     
     /* Text */
-    font-size: 20px;
+    font-size: 24px;
 }
 
 .vote_screen #time {
@@ -1039,6 +1199,9 @@ button:hover {
     grid-row: 1;
     justify-self: center;
     margin: 10px;
+
+    /* Text */
+    font-size: 19px;
 }
 
 .vote_screen .chat {
@@ -1057,23 +1220,37 @@ button:hover {
     background-size: cover;
 }
 
+.chat * {
+    /* Text */
+    font-family: "Segoe UI";
+}
+
 .chat .content_show{
+    /* Displaying & Box Model */
     overflow-y: scroll;
     margin: 10px;
     height: 75vh;
 }
 
-.chat input {
+.chat .text_chat {
     /* Displaying & Box Model */
     width: 280px;
     height: 30px;
     margin: auto;
-    padding: 0px 5px;
+    padding: 3px 5px;
 }
 
 .content_show .chat_line {
+    /* Displaying & Box Model */
     text-align: left;
     font-size: 15px;
+    margin: 3px 3px;
+    padding: 3px 15px;
+
+    /* Color */
+    background-image: linear-gradient(to left, rgba(247, 207, 225, 0.6), rgba(186, 237, 245, 0.6));
+    border: 1px solid #bbb;
+    border-radius: 15vh 15vh 15vh 0;
 }
 
 .vote_screen .player_list {
@@ -1182,6 +1359,9 @@ button:hover {
     /* Displaying & Box Model */
     text-align: center;
     margin-left: 50px;
+
+    /* Text */
+    font-family: "Segoe UI";
 }
 
 #show_vote_list .box.current p {
@@ -1246,6 +1426,11 @@ button:hover {
     background-size: cover;
 }
 
+.leaderboard * {
+    /* Text */
+    font-size: 19px;
+}
+
 .leaderboard #show_leaderboard{
     /* Displaying & Box Model */
     display: flex;
@@ -1256,7 +1441,7 @@ button:hover {
 .leaderboard .scroll_board{
     overflow-x: scroll;
     margin: 0px 5px;
-    width: 70vw;
+    width: 65vw;
 }
 
 #show_leaderboard .poster {
@@ -1315,3 +1500,9 @@ button:hover {
 /* Color */
 /* Text */
 /* Transitions & Animations */
+
+/*
+- Xu ly disconnect trong luc choi
+- Them animation cho screen
+- Xu ly responsive
+*/
