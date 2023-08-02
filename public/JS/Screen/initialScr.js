@@ -22,6 +22,12 @@ storyBtn.on('click', function() {
     ssiBar.addClass('on_screen');
 });
 
+infoBtn.on('click', function() {
+    infoScr.slideToggle('slow');
+    infoScr.css('display', 'block');
+    ssiBar.addClass('on_screen');
+});
+
 newRoomBtn.on("click", function() {
     const activeUsernames = getActiveNames(players);
     const leaveUsernames = getLeaveNames();
@@ -101,7 +107,7 @@ joinRoomBtn.on('click', function() {
         colorOptns.eq(index).addClass('selected');
         drawSprite_restroomScr(getBoxIndex(), index);
         socket.emit("room:chooseColor", roomID, index);
-    }, 50);
+    }, 100);
 
     // Handle swap room
     ranges.hide();
@@ -129,12 +135,12 @@ for (let i = 0; i < settingList.length; i++){
 // Navigate story
 
 NavUpBtn.on('click', function() {
-    currentPage = (currentPage + 3) % 4;
+    currentPage = (currentPage + 4) % 5;
     updateNav(currentPage);
 });
 
 NavDownBtn.on('click', function() {
-    currentPage = (currentPage + 1) % 4;
+    currentPage = (currentPage + 1) % 5;
     updateNav(currentPage);
 });
 

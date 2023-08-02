@@ -73,6 +73,70 @@ button:hover {
 }
 
 /*
+* LOADING
+*/
+
+.loading_wrapper {
+    /* Positioning */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    display: flex;
+    align-items: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.loading {
+    /* Positioning */
+    position: relative;
+
+    /* Displaying & Box Model */
+    margin: auto;
+    width: 100px;
+    height: 100px;
+}
+
+.loading div {
+    /* Positioning */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(calc(var(--key) * 45deg));
+}
+
+.loading div:before {
+    /* Positioning */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    content: "";
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    background-image: url("/Textures/Font-SVG/coin.svg");
+
+    /* Transitions & Animations */
+    animation: loading 2s infinite linear;
+    animation-delay: calc(var(--key) * 0.25s);
+    animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+@keyframes loading {
+    to {
+        transform: scale(0);
+    }
+}
+
+/*
 * MENU BARS
 */
 
@@ -93,30 +157,32 @@ button:hover {
     position: fixed;
     display: flex;
     right: 20px;
-    top: 5px;
+    top: 4px;
     z-index: 10;
 }
 
 .ssi_btn {
-    width: 35px;
-    height: 35px;
-    margin: 7px;
-    border-radius: 10px;
+    width: 25px;
+    height: 25px;
+    margin: 6px;
+    border-radius: 4px;
     background-size: cover;
 }
 
 .ssi_btn:hover {
-    transform: scale(1.05);
+    transform: scale(1.4);
 }
 
 .note_bubble {
     display: none;
     position: absolute;
 
-    width: 100px;
-    top: 40px;
+    width: 75px;
+    top: 30px;
     right: 0px;
-    padding: 20% 18% 5% 8%;
+    padding: 10% 18% 5% 8%;
+    font-size: 14px;
+    font-family: "Pirates Writers";
     background-image: url("/Textures/bubble_note.png");
     background-size: 100% 100%;
     text-anchor: middle;
@@ -125,12 +191,12 @@ button:hover {
     box-sizing: border-box;
 }
 
-.ssi_list #storyBtn {
-    background-image: url("/Textures/StoryBt.png");
-}
-
 .ssi_list .ssi_btn:hover > .note_bubble {
     display: block;
+}
+
+.ssi_list #storyBtn {
+    background-image: url("/Textures/StoryBt.png");
 }
 
 .ssi_list #settingBtn {
@@ -251,7 +317,7 @@ button:hover {
 
 #storyScreen .page1 p {
     /* Text */
-    font-size: 20px;
+    font-size: 16px;
 }
 
 #storyScreen .page2 p {
@@ -259,9 +325,16 @@ button:hover {
     font-size: 16px;
 }
 
+#storyScreen .page2 li {
+    /* Text */
+    text-align: justify;
+    margin: 5px 80px;
+    font-size: 15px;
+}
+
 #storyScreen .page3 p {
     /* Text */
-    font-size: 17px;
+    font-size: 18px;
 }
 
 #storyScreen .page3 img{
@@ -280,17 +353,52 @@ button:hover {
 
 #storyScreen .page4 p {
     /* Text */
+    font-size: 17px;
+}
+
+#storyScreen .page4 img{
+    /* Positioning */
+    position: relative;
+
+    /* Displaying & Box Model */
+    width: 25px;
+    height: 25px;
+    margin: 2px;
+    top: 5px;
+
+    /* Color */
+    background-size: cover;
+}
+
+#storyScreen .page5 p {
+    /* Text */
     font-size: 18px;
 }
 
-#storyScreen .page4 li {
+#storyScreen .page5 li {
     /* Text */
     text-align: justify;
     margin: 5px 120px;
-    font-size: 19px;
+    font-size: 18px;
 }
 
 #storyScreen strong {
+    /* Text */
+    margin: 20px;
+    font-size: 22px;
+}
+
+#infoScreen p {
+    /* Displaying & Box Model */
+    margin: 15px 55px;
+    text-align: justify;
+    text-indent: 5%;
+    
+    /* Text */
+    font-size: 20px;
+}
+
+#infoScreen strong {
     /* Text */
     margin: 20px;
     font-size: 22px;
@@ -436,9 +544,22 @@ button:hover {
 * ALERT BUBBLE
 */
 
-.alert_bubble {
+.alert_wrapper {
     /* Positioning */
     position: absolute;
+
+    /* Displaying & Box Model */
+    display: block;
+    width: 30%;
+    height: 70px;
+    top: 15%;
+    left: 70%;
+    overflow: hidden;
+}
+
+.alert_wrapper .alert_bubble {
+    /* Positioning */
+    position: relative;
 
     /* Displaying & Box Model */
     display: none;
@@ -446,9 +567,8 @@ button:hover {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    width: 30%;
-    height: 70px;
-    top: 15%;
+    width: 100%;
+    height: 100%;
     left: 100%;
     z-index: 5;
     
@@ -492,6 +612,7 @@ button:hover {
 
     /* Text */
     font-family: "Carribean Caps";
+    -webkit-text-stroke: 0.5px #000;
 }
 
 .initial_screen input {
@@ -613,12 +734,14 @@ button:hover {
     margin-left: 50px;
 
     /* Text */
+    font-weight: 600;
     font-family: "Segoe UI";
 }
 
 #show_player_list .box.current p {
     /* Text */
     font-weight: 650;
+    color: brown;
 }
 
 .update {
@@ -847,7 +970,7 @@ button:hover {
 
     /* Displaying & Box Model */
     display: none;
-    grid-template-rows: 35px 40px 1fr;
+    grid-template-rows: 40px 40px 1fr;
     grid-template-columns: 2fr 1fr 3fr;
     text-align: center;
     min-width: 100%;
@@ -899,7 +1022,7 @@ button:hover {
     justify-self: flex-start;
 }
 
-.activateRole button{
+.game_screen button{
     /* Displaying & Box Model */
     width: 100px;
     height: 40px;
@@ -915,7 +1038,7 @@ button:hover {
 
 #familiarityBar .title {
     /* Text */
-    font-weight: 600;
+    font-weight: 550;
 
     /* Color */
     color: white;
@@ -945,6 +1068,15 @@ button:hover {
 
     /* Transitions & Animations */
     transition: 1s ease 0.3s;
+}
+
+.game_screen #equip {
+    /* Displaying & Box Model */
+    display: none;
+    margin-right: 10px;
+    grid-column: 3;
+    grid-row: 2;
+    justify-self: right;
 }
 
 .treasure {
@@ -1050,7 +1182,7 @@ button:hover {
 
 .klchat .text_chat {
     /* Displaying & Box Model */
-    width: 420px;
+    width: 360px;
     height: 30px;
     margin: auto;
     padding: 3px 5px;
@@ -1159,7 +1291,7 @@ button:hover {
 
     /* Displaying & Box Model */
     display: none;
-    grid-template-rows: 80px 3fr 2fr;
+    grid-template-rows: 40px 40px 3fr 2fr 5px;
     grid-template-columns: 5px 4fr 3fr 7fr 5px;
     text-align: center;
     min-width: 100%;
@@ -1169,6 +1301,12 @@ button:hover {
     background-image: linear-gradient(rgba(132, 174, 173, 0.2), rgba(128, 135, 123, 0.6)), 
         url("/Textures/Background/pirate_background.jpg");
     background-size: cover;
+}
+
+.vote_screen h4 {
+    /* Displaying & Box Model */
+    justify-self: center;
+    margin: 10px;
 }
 
 .vote_screen #role {
@@ -1204,10 +1342,47 @@ button:hover {
     font-size: 19px;
 }
 
+.vote_screen #inventory {
+    /* Displaying & Box Model */
+    display: block;
+    grid-column: 4;
+    grid-row: 2;
+    justify-self: flex-end;
+    margin-right: 10px;
+    width: 100px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+}
+
+.vote_screen .invent_div {
+    /* Position */
+    position: absolute;
+
+    /* Displaying & Box Model */
+    display: none;
+    width: 420px;
+    height: 420px;
+    flex-direction: column;
+    justify-content: center;
+    border: none;
+    border-radius: 10px;
+    margin: 5px;
+    top: 45%;
+    left: 80%;
+    transform: translate(-50%, -50%);
+    box-shadow: rgba(149, 157, 165, 0.4) 0px 8px 24px;
+    z-index: 5;
+
+    /* Color */
+    background-image: url("/Textures/Background/treasure-scroll.jpg");
+    background-size: cover;
+}
+
 .vote_screen .chat {
     /* Displaying & Box Model */
     grid-column: 2;
-    grid-row: 2 / 4;
+    grid-row: 3 / 5;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1229,12 +1404,12 @@ button:hover {
     /* Displaying & Box Model */
     overflow-y: scroll;
     margin: 10px;
-    height: 75vh;
+    height: 70vh;
 }
 
 .chat .text_chat {
     /* Displaying & Box Model */
-    width: 280px;
+    width: 350px;
     height: 30px;
     margin: auto;
     padding: 3px 5px;
@@ -1256,7 +1431,7 @@ button:hover {
 .vote_screen .player_list {
     /* Displaying & Box Model */
     grid-column: 3 / 5;
-    grid-row: 2;
+    grid-row: 3;
     display: flex;
     flex-direction: column;
     text-align: center;
@@ -1361,12 +1536,14 @@ button:hover {
     margin-left: 50px;
 
     /* Text */
+    font-weight: 600;
     font-family: "Segoe UI";
 }
 
 #show_vote_list .box.current p {
     /* Text */
     font-weight: 650;
+    color: brown;
 }
 
 #show_vote_list .box .votedCircles {
@@ -1416,7 +1593,7 @@ button:hover {
 .leaderboard {
     /* Displaying & Box Model */
     grid-column: 3 / 5;
-    grid-row: 3;
+    grid-row: 4;
     border: none;
     border-radius: 10px;
     margin: 5px;
@@ -1440,8 +1617,8 @@ button:hover {
 
 .leaderboard .scroll_board{
     overflow-x: scroll;
-    margin: 0px 5px;
-    width: 65vw;
+    margin: auto;
+    width: 66vw;
 }
 
 #show_leaderboard .poster {
@@ -1449,8 +1626,8 @@ button:hover {
     display: flex;
     justify-content: center;
     flex-direction: column;
-    min-width: 120px;
-    height: 160px;
+    min-width: 115px;
+    height: 155px;
     border-radius: 3px;
     margin: 5px;
 
@@ -1502,7 +1679,7 @@ button:hover {
 /* Transitions & Animations */
 
 /*
-- Xu ly disconnect trong luc choi
-- Them animation cho screen
 - Xu ly responsive
+- Cai thien gameplay
+- Publish web
 */

@@ -113,12 +113,12 @@ socket.on("game:captainDuration", function(captainTimer){
     if (captainTimer === 5){
         if (getPlayerInRoom(socket.id).role !== 'Captain'){
             chests.off();
+            serverAlert("Waiting for captain's decision");
         }
     }
 });
 
 socket.on("game:waitDuration", function(waitTimer){
-    gameTime.text("Time: " + waitTimer.toString() + ' s');
     if (waitTimer === 5){
         chests.off();
         killBtn.css('display', 'none');
@@ -126,6 +126,7 @@ socket.on("game:waitDuration", function(waitTimer){
         chatBtn.css('display', 'none');
         offscoutBtn.css('display', 'none');
         klchatScr.css('display', 'none');
+        equipBtn.css('display', 'none');
     }
 });
 
@@ -181,6 +182,8 @@ socket.on("game:hint", function(captain, chests){
 
 socket.on("game:disabled", function(){
     voteBoxes = $('#show_vote_list .box');
+    chest.off();
+    votechatInput.off();
     voteBoxes.off();
     skipBtn.off();
     inDeadState = true;
@@ -225,8 +228,7 @@ socket.on("game:piratesWin", function() {
 });
 
 socket.on("game:end", function() {
-    gameScr.css('display', 'none');
-    voteScr.css('display', 'none');
+    $('.container > div').css('display', 'none');
     if (!isVictory) {
         ship.css('background-image', 'url("/Textures/Font-SVG/burnedship.svg")');
         transition(3500, "Defeat", false);
@@ -235,10 +237,10 @@ socket.on("game:end", function() {
         transition(3500, "Victory", false);
     }
     setTimeout(() => {
-        ship.css('background-image', 'url("/Textures/Font-SVG/ship.svg")');
-        restroomScr.fadeIn(1000);
+        restroomScr.fadeIn(200);
         restroomScr.css('display', 'grid');
-    }, 3000);
+        ship.css('background-image', 'url("/Textures/Font-SVG/ship.svg")');
+    }, 3400);
     
 });
 

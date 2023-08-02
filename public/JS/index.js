@@ -19,8 +19,13 @@ $.getScript("JS/utils.js", function(){
 
 // User events
 
+$(window).on('load', function(){
+    const loader = $('.loading_wrapper');
+    loader.fadeOut(1500);
+});
+
 $(window).on('mouseup', function(e) {
-    const container = $('#storyScreen, #settingScreen');
+    const container = $('#storyScreen, #settingScreen, #infoScreen');
     if (ssiBar.hasClass('on_screen')){ 
         ssiBar.removeClass('on_screen');
     }

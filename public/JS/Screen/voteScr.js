@@ -11,6 +11,16 @@ skipBtn.on('click', function(){
     $('.vote_screen .player_list').css('opacity', 0.8);
 });
 
+inventoryBtn.on('click', function() {
+    if (inventDiv.css('display') == 'none'){
+        inventDiv.slideToggle("slow");
+        inventDiv.css('display', 'flex');
+    }
+    else {
+        inventDiv.slideToggle("slow");
+    }
+});
+
 $(".vote_screen .text_chat").keypress((e) => {
     var t = $(".vote_screen .text_chat").val()
     if(e.which == 13 && t != "") {

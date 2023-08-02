@@ -5,6 +5,8 @@ const storyBtn = $('.ssi_bar #storyBtn');
 const storyScr = $('.ssi_bar #storyScreen');
 const settingBtn = $('.ssi_bar #settingBtn');
 const settingScr = $('.ssi_bar #settingScreen');
+const infoBtn = $('.ssi_bar #infoBtn');
+const infoScr = $('.ssi_bar #infoScreen');
 const settingContent = $('.ssi_bar #settingScreen .setting_content');
 const storyText = $('.ssi_bar #storyScreen .text');
 const NavUpBtn = $('.navigate .up');
@@ -46,12 +48,14 @@ const gameDay = $('.game_screen #day');
 const gameTime = $('.game_screen #time');
 const activateDiv = $('.game_screen .activateRole');
 let chests = $('.game_screen .treasure .chest');
+const equipBtn = $('#equip');
 const killBtn = $('.activateRole #killBtn');
 const offkillBtn = $('.activateRole #offkillBtn');
 const chatBtn = $('.activateRole #chatBtn');
 const offscoutBtn = $('.activateRole #offscoutBtn');
 const familiarityBar = $('.activateRole #familiarityBar');
 const familiarityPer = $('#familiarityBar .bar_front');
+
 const roleScr = $('.role_screen');
 const roleMes = $('.role_screen #role_mes');
 const roleDesc = $('#role_desc');
@@ -64,7 +68,10 @@ const voteList = $('.vote_screen #show_vote_list');
 const roleInVote = $('.vote_screen #role');
 const voteDay = $('.vote_screen #day');
 const voteTime = $('.vote_screen #time');
+const inventoryBtn = $('#inventory');
+const inventDiv = $('.vote_screen .invent_div');
 const votechatDiv = $('.vote_screen .chat .content_show');
+const votechatInput = $('.vote_screen .chat .text_chat');
 const skipBtn = $('.vote_screen #skipVoteBtn');
 const leaderboard = $('.leaderboard #show_leaderboard');
 let voteCircles;
@@ -74,7 +81,7 @@ let goldValue;
 
 let currentPage = 0;
 const role = ["Captain", "Killer", "Blacksmith", "Pirate"];
-let gameStats = [2, 5, 30, 90];
+let gameStats = [1, 4, 30, 90];
 let chestValue = [100, 85, 65, 50];
 let selectedColor;
 let randomID = [];
@@ -131,11 +138,11 @@ const getLeaveNames = function() {
 // Check if name hasn't used yet
 const checkValidName = function(activeUsernames, leaveUsernames){
     if (!usernameInput.val() || usernameInput.val().length > 16){
-        alert("Your username must have around 1-16 character(s)!!!");
+        serverAlert("Your username must have around 1-16 character(s)!!!");
         return false;
     }
     if (activeUsernames.includes(usernameInput.val()) || leaveUsernames.includes(usernameInput.val())){
-        alert("Existed username!!!");
+        serverAlert("Existed username!!!");
         return false;
     }
     return true;
@@ -144,15 +151,15 @@ const checkValidName = function(activeUsernames, leaveUsernames){
 // Check if room exists and hasn't played yet
 const checkValidRoom = function(rooms, roomID){
     if (!roomID){
-        alert("Forgot to enter room ID!!!");
+        serverAlert("Forgot to enter room ID!!!");
         return false;
     }
     if (!rooms.has(roomID)){
-        alert("Invalid room ID!!!");
+        serverAlert("Invalid room ID!!!");
         return false;
     }
     if (playingRooms.length > 0 && playingRooms.includes(roomID)){
-        alert(`Room ${roomID} has started`);
+        serverAlert(`Room ${roomID} has started`);
         return false;
     }
     return true;
@@ -263,7 +270,7 @@ const serverAlert = function(mes, time = 5000){
     alertBubble.fadeIn(200);
     alertBubble.css('display', 'flex');
     alertBubble.animate({
-        left: '70%'
+        left: '0%'
     }, 700);
     setTimeout(() => {
         alertBubble.animate({
@@ -283,6 +290,7 @@ const chestEvent_updateByServer = function(chests, scouted){
             socket.emit("game:huntChest", getPlayerInRoom(socket.id).room, i);
             treasureScr.fadeOut('slow');
             caveScr.fadeIn('slow');
+            equipBtn.show();
             caveScr.css('display', 'flex');
             if (getPlayerInRoom(socket.id).role === 'Captain' && !scouted) {
                 offscoutBtn.show();
@@ -422,6 +430,7 @@ const drawVoteScr = function() {
     roleInVote.text("Role: " + roleMes.text());
     voteList.html(player_list.html());
     voteBoxes = $('#show_vote_list .box');
+    leaderboard.html(``);
     for (let i = 0; i < voteBoxes.length; i++) {
         // Add leaderboard
         const poster = $('<div>').addClass('poster');
