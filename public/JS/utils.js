@@ -1,5 +1,7 @@
 // User constants
 
+const allButtons = $('.container button, input');
+
 const ssiBar = $('.ssi_bar');
 const storyBtn = $('.ssi_bar #storyBtn');
 const storyScr = $('.ssi_bar #storyScreen');
@@ -49,6 +51,9 @@ const gameTime = $('.game_screen #time');
 const activateDiv = $('.game_screen .activateRole');
 let chests = $('.game_screen .treasure .chest');
 const equipBtn = $('#equip');
+const equipDiv = $('.game_screen .armed');
+const usePsd = $('.armed .use1');
+const useScc = $('.armed .use2');
 const killBtn = $('.activateRole #killBtn');
 const offkillBtn = $('.activateRole #offkillBtn');
 const chatBtn = $('.activateRole #chatBtn');
@@ -74,6 +79,12 @@ const votechatDiv = $('.vote_screen .chat .content_show');
 const votechatInput = $('.vote_screen .chat .text_chat');
 const skipBtn = $('.vote_screen #skipVoteBtn');
 const leaderboard = $('.leaderboard #show_leaderboard');
+const itemList = $('.invent_div .item');
+const mergePsd = $('.invent_div .merge1');
+const mergeScc = $('.invent_div .merge2');
+const mergeRnd = $('.invent_div .merge3');
+const eqmDiv = $('.textures .eqmDiv');
+
 let voteCircles;
 let voteBtn;
 let posters;
@@ -100,6 +111,10 @@ let isVictory = false;
 // Clone HTML code
 characterSVG.html($('.textures .spriteDiv').html());
 voteList.html(player_list.html());
+
+allButtons.on('click', function(){
+    interactionSound1.play();
+});
 
 /*
 * USERS HANDLING FUNCTION

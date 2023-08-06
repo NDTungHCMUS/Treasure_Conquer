@@ -21,7 +21,11 @@ $.getScript("JS/utils.js", function(){
 
 $(window).on('load', function(){
     const loader = $('.loading_wrapper');
+    $('body').css('cursor', 'progress');
     loader.fadeOut(1500);
+    setTimeout(function(){
+        $('body').css('cursor', 'default');
+    }, 1500);
 });
 
 $(window).on('mouseup', function(e) {

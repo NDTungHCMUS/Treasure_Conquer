@@ -31,6 +31,38 @@ offscoutBtn.on('click', function() {
     socket.emit("game:outChest", getPlayerInRoom(socket.id));
 });
 
+equipBtn.on('click', function() {
+    if (equipDiv.css('display') == 'none'){
+        equipDiv.slideToggle("slow");
+        equipDiv.css('display', 'flex');
+        if (itemList.find('.eqm5').length > 0){
+            usePsd.prop('disabled', false);
+        }
+        if (itemList.find('.eqm6').length > 0){
+            useScc.prop('disabled', false);
+        }
+    }
+    else {
+        equipDiv.slideToggle("slow");
+    }
+});
+
+usePsd.on('click', function(e) {
+    e.stopPropagation();
+    equipDiv.slideToggle("slow");
+    itemList.find('.eqm5').last().remove();
+    serverAlert('Successfully used poison dagger');
+    equipBtn.css('pointer-events', 'none');
+});
+
+useScc.on('click', function() {
+    e.stopPropagation();
+    equipDiv.slideToggle("slow");
+    itemList.find('.eqm6').last().remove();
+    serverAlert('Successfully used scarecrow');
+    equipBtn.css('pointer-events', 'none');
+});
+
 // Chat in gameScr
 $(".klchat .text_chat").keypress((e) => {
     var t = $(".klchat .text_chat").val()
